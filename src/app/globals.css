@@ -1,26 +1,343 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+/* ─── Design Tokens ─────────────────────────────────────────────────────────── */
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Brand palette */
+    --blue:        #477BDB;
+    --blue-dark:   #3366C8;
+    --blue-light:  #EBF1FB;
+    --teal:        #32A88A;
+    --teal-dark:   #268C72;
+    --teal-light:  #E6F5F1;
+    --indigo:      #6477C8;
+    --indigo-dark: #4E62B8;
+    --indigo-light:#EEF0FA;
+
+    /* Backgrounds */
+    --bg:          #F8FAFC;
+    --bg-white:    #FFFFFF;
+    --bg-subtle:   #F1F5F9;
+    --bg-navy:     #1A2B4A;
+    --bg-navy-dark:#142038;
+
+    /* Text */
+    --text-heading: #243247;
+    --text-body:    #4A5568;
+    --text-muted:   #718096;
+    --text-light:   #A0AEC0;
+
+    /* Borders */
+    --border:       #E2E8F0;
+    --border-dark:  #CBD5E0;
+
+    /* Shadows */
+    --shadow-sm:    0 1px 3px rgba(36,50,71,0.08), 0 1px 2px rgba(36,50,71,0.04);
+    --shadow-md:    0 4px 16px rgba(36,50,71,0.10), 0 2px 6px rgba(36,50,71,0.06);
+    --shadow-lg:    0 12px 40px rgba(36,50,71,0.14), 0 4px 12px rgba(36,50,71,0.08);
+    --shadow-blue:  0 8px 30px rgba(71,123,219,0.28);
+    --shadow-teal:  0 8px 24px rgba(50,168,138,0.25);
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text-body);
+    font-family: -apple-system, "Inter", "Segoe UI", system-ui, sans-serif;
+    line-height: 1.65;
+    font-size: 15px;
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background: #477BDB;
+    color: #ffffff;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg-subtle); }
+  ::-webkit-scrollbar-thumb { background: var(--border-dark); border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+  /* Focus styles */
+  :focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ─── Utility Classes ───────────────────────────────────────────────────────── */
+@layer utilities {
+
+  /* Typography */
+  .heading-display {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--text-heading);
+  }
+
+  .heading-xl {
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--text-heading);
+  }
+
+  .heading-lg {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--text-heading);
+  }
+
+  /* Eyebrow label */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+
+  .eyebrow::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--blue);
+    border-radius: 1px;
+    flex-shrink: 0;
+  }
+
+  /* Gradient text */
+  .text-gradient-blue {
+    background: linear-gradient(135deg, #477BDB 0%, #6477C8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-teal {
+    background: linear-gradient(135deg, #32A88A 0%, #477BDB 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-hero {
+    background: linear-gradient(135deg, #477BDB 0%, #6477C8 55%, #32A88A 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Navy section */
+  .section-navy {
+    background: var(--bg-navy);
+    color: #E2EAF4;
+  }
+
+  /* Dot pattern */
+  .dot-pattern {
+    background-image: radial-gradient(circle, rgba(71,123,219,0.12) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  /* Line pattern */
+  .line-pattern {
+    background-image:
+      linear-gradient(rgba(71,123,219,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(71,123,219,0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  /* Cards */
+  .card-white {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .card-white:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-dark);
+    transform: translateY(-2px);
+  }
+
+  .card-subtle {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+  }
+
+  /* Pill badge */
+  .pill-blue {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.875rem;
+    background: var(--blue-light);
+    color: var(--blue-dark);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(71,123,219,0.2);
+  }
+
+  .pill-teal {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.875rem;
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(50,168,138,0.2);
+  }
+
+  /* Buttons */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--blue);
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    border-radius: 0.75rem;
+    border: none;
+    cursor: pointer;
+    transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.15s ease;
+    box-shadow: 0 2px 8px rgba(71,123,219,0.30);
+    text-decoration: none;
+  }
+
+  .btn-primary:hover {
+    background: var(--blue-dark);
+    box-shadow: var(--shadow-blue);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    color: var(--blue);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    border-radius: 0.75rem;
+    border: 1.5px solid var(--blue);
+    cursor: pointer;
+    transition: all 0.18s ease;
+    text-decoration: none;
+  }
+
+  .btn-secondary:hover {
+    background: var(--blue-light);
+    box-shadow: 0 2px 8px rgba(71,123,219,0.12);
+  }
+
+  .btn-ghost-light {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(255,255,255,0.12);
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    border-radius: 0.75rem;
+    border: 1.5px solid rgba(255,255,255,0.22);
+    cursor: pointer;
+    transition: all 0.18s ease;
+    text-decoration: none;
+  }
+
+  .btn-ghost-light:hover {
+    background: rgba(255,255,255,0.20);
+    border-color: rgba(255,255,255,0.35);
+  }
+
+  /* Animations */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-10px); }
+  }
+
+  @keyframes pulse-ring {
+    0%   { transform: scale(0.95); opacity: 0.7; }
+    70%  { transform: scale(1.15); opacity: 0; }
+    100% { transform: scale(1.15); opacity: 0; }
+  }
+
+  @keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  .animate-float { animation: float 4s ease-in-out infinite; }
+
+  /* Divider */
+  .divider-gradient {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-dark), transparent);
+  }
+
+  /* Service icon ring */
+  .icon-ring-blue {
+    background: var(--blue-light);
+    border: 1px solid rgba(71,123,219,0.2);
+  }
+  .icon-ring-teal {
+    background: var(--teal-light);
+    border: 1px solid rgba(50,168,138,0.2);
+  }
+  .icon-ring-indigo {
+    background: var(--indigo-light);
+    border: 1px solid rgba(100,119,200,0.2);
+  }
+
+  /* Number circle */
+  .step-number {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: var(--blue-light);
+    color: var(--blue);
+    font-weight: 800;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(71,123,219,0.25);
+    flex-shrink: 0;
+  }
 }

@@ -1,0 +1,118 @@
+/**
+ * Centralized icon resolver — maps string names (from CMS/data) to Lucide icons.
+ * Keeps data layer clean (strings only) while providing typed icon components.
+ */
+import {
+  Code2,
+  Palette,
+  TrendingUp,
+  Video,
+  Bot,
+  MoreHorizontal,
+  Globe,
+  LayoutTemplate,
+  ShoppingCart,
+  AppWindow,
+  Smartphone,
+  Wrench,
+  Fingerprint,
+  Layers,
+  ImageIcon,
+  FileText,
+  PenTool,
+  LayoutGrid,
+  Search,
+  Share2,
+  Users,
+  Mail,
+  Target,
+  PlaySquare,
+  Film,
+  Zap,
+  Map,
+  MessageSquare,
+  GitMerge,
+  Cpu,
+  BarChart3,
+  Plug,
+  Lightbulb,
+  Compass,
+  BarChart2,
+  Database,
+  UserCheck,
+  Package,
+  Server,
+  ClipboardList,
+  CheckCircle,
+  PackageCheck,
+  ArrowRight,
+  ChevronRight,
+  ExternalLink,
+  Scale,
+  ClipboardCheck,
+  type LucideProps,
+} from 'lucide-react';
+import type { FC } from 'react';
+
+const iconMap: Record<string, FC<LucideProps>> = {
+  Code2,
+  Palette,
+  TrendingUp,
+  Video,
+  Bot,
+  MoreHorizontal,
+  Globe,
+  LayoutTemplate,
+  ShoppingCart,
+  AppWindow,
+  Smartphone,
+  Wrench,
+  Fingerprint,
+  Layers,
+  ImageIcon,
+  FileText,
+  PenTool,
+  LayoutGrid,
+  Search,
+  Share2,
+  Users,
+  Mail,
+  Target,
+  PlaySquare,
+  Film,
+  Zap,
+  Map,
+  MessageSquare,
+  GitMerge,
+  Cpu,
+  BarChart3,
+  Plug,
+  Lightbulb,
+  Compass,
+  BarChart2,
+  Database,
+  UserCheck,
+  Package,
+  Server,
+  ClipboardList,
+  CheckCircle,
+  PackageCheck,
+  ArrowRight,
+  ChevronRight,
+  ExternalLink,
+  Scale,
+  ClipboardCheck,
+  Figma: Code2, // fallback for Figma (not in lucide core)
+  PresentationIcon: LayoutTemplate,
+};
+
+interface IconProps extends LucideProps {
+  name: string;
+}
+
+export function Icon({ name, ...props }: IconProps) {
+  const Component = iconMap[name] || MoreHorizontal;
+  return <Component {...props} />;
+}
+
+export default Icon;
