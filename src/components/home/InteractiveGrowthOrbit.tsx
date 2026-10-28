@@ -234,7 +234,7 @@ export default function InteractiveGrowthOrbit() {
 
               {/* Exact Brand Logo Emblem */}
               <Image
-                src="/growmybizz-logo.png"
+                src="/brand-logo-mark.png"
                 alt="Growmybizz Core"
                 width={84}
                 height={84}

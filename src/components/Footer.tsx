@@ -84,7 +84,7 @@ export default function Footer() {
             {/* Brand col */}
             <div className="col-span-2 md:col-span-4">
               <div className="mb-5">
-                <BrandLogo theme="dark" size="lg" showTagline={true} asLink={true} />
+                <BrandLogo theme="dark" size="lg" asLink={true} />
               </div>
               <p className="text-[#8BA5C8] text-sm leading-relaxed mb-6 max-w-[280px]">
                 {siteConfig.description}

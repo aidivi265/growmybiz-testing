@@ -75,15 +75,15 @@ export default function HeroSection() {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
-        <div className="flex flex-col lg:flex-row lg:items-center gap-0" style={{ minHeight: 'calc(100svh - 64px)' }}>
+        <div className="flex flex-col lg:flex-row lg:items-center gap-0 min-h-[calc(100svh-64px)] py-8 lg:py-0">
 
-          {/* ── LEFT ── */}
-          <div className="flex-1 flex flex-col justify-center pt-12 pb-10 lg:py-0 lg:pr-14 max-w-[600px]">
+          {/* ── LEFT (Full width on mobile, 55% split on desktop) ── */}
+          <div className="flex-1 flex flex-col justify-center w-full lg:max-w-[620px] pt-4 pb-8 sm:pt-8 sm:pb-10 lg:py-0 lg:pr-14">
 
             {/* Slide badge */}
-            <div className={`mb-7 transition-all duration-300 ${fading ? 'opacity-0 -translate-y-1' : 'opacity-100 translate-y-0'}`}>
+            <div className={`mb-5 sm:mb-7 transition-all duration-300 ${fading ? 'opacity-0 -translate-y-1' : 'opacity-100 translate-y-0'}`}>
               <span
-                className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest rounded-full px-4 py-1.5"
+                className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest rounded-full px-3.5 py-1.5"
                 style={{
                   background: 'rgba(71,123,219,0.12)',
                   border: '1px solid rgba(71,123,219,0.25)',
@@ -97,12 +97,12 @@ export default function HeroSection() {
 
             {/* Headline */}
             <h1
-              className={`mb-6 transition-all duration-300 ${fading ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}
+              className={`mb-5 sm:mb-6 transition-all duration-300 ${fading ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}
               style={{
                 fontFamily: SYNE_FONT,
                 fontWeight: 800,
-                fontSize: 'clamp(2.8rem, 5.5vw, 4.4rem)',
-                lineHeight: 1.02,
+                fontSize: 'clamp(2.3rem, 5.2vw, 4.4rem)',
+                lineHeight: 1.05,
                 letterSpacing: '-0.035em',
                 color: '#FFFFFF',
               }}
@@ -127,17 +127,17 @@ export default function HeroSection() {
 
             {/* Sub */}
             <p
-              className={`mb-9 transition-all duration-300 delay-75 ${fading ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}
-              style={{ color: 'rgba(255,255,255,0.55)', fontSize: '1.0625rem', lineHeight: 1.7, maxWidth: '460px' }}
+              className={`mb-7 sm:mb-9 transition-all duration-300 delay-75 ${fading ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}
+              style={{ color: 'rgba(255,255,255,0.65)', fontSize: 'clamp(0.9375rem, 2vw, 1.0625rem)', lineHeight: 1.7, maxWidth: '480px' }}
             >
               {cur.subheading}
             </p>
 
-            {/* CTAs */}
-            <div className={`flex flex-wrap items-center gap-3 mb-10 transition-all duration-300 delay-100 ${fading ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}>
+            {/* CTAs — Stack on small mobile, row on tablet/desktop */}
+            <div className={`flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 mb-8 sm:mb-10 transition-all duration-300 delay-100 ${fading ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}>
               <Link
                 href={cur.ctaPrimary.href}
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-[0.9375rem] text-white transition-all duration-200 hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-[0.9375rem] text-white transition-all duration-200 hover:-translate-y-0.5"
                 style={{
                   background: 'linear-gradient(135deg, #477BDB 0%, #5C6FCC 100%)',
                   boxShadow: '0 6px 24px rgba(71,123,219,0.40)',
@@ -149,7 +149,7 @@ export default function HeroSection() {
               <ScheduleCallButton />
               <Link
                 href={cur.ctaSecondary.href}
-                className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl font-semibold text-[0.9375rem] transition-all duration-200 hover:bg-white/[0.08]"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl font-semibold text-[0.9375rem] transition-all duration-200 hover:bg-white/[0.08]"
                 style={{
                   border: '1.5px solid rgba(255,255,255,0.18)',
                   color: 'rgba(255,255,255,0.80)',
@@ -160,7 +160,7 @@ export default function HeroSection() {
             </div>
 
             {/* Trust strip */}
-            <div className="flex flex-wrap items-center gap-4 mb-10">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-8 sm:mb-10">
               {[
                 { val: '6', label: 'service disciplines' },
                 { val: '30+', label: 'services offered' },
@@ -171,12 +171,12 @@ export default function HeroSection() {
                     style={{
                       fontFamily: SYNE_FONT,
                       fontWeight: 800,
-                      fontSize: '1.0625rem',
+                      fontSize: '1rem',
                       color: '#fff',
                     }}
                   >{stat.val}</span>
-                  <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.35)' }}>{stat.label}</span>
-                  <span style={{ color: 'rgba(255,255,255,0.12)', marginLeft: '4px' }}>·</span>
+                  <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.45)' }}>{stat.label}</span>
+                  <span style={{ color: 'rgba(255,255,255,0.15)', marginLeft: '2px' }}>·</span>
                 </div>
               ))}
             </div>
@@ -205,7 +205,7 @@ export default function HeroSection() {
                 fontFamily: SYNE_FONT,
                 fontSize: '0.65rem',
                 fontWeight: 700,
-                color: 'rgba(255,255,255,0.25)',
+                color: 'rgba(255,255,255,0.3)',
                 letterSpacing: '0.1em',
               }}>
                 {String(slide + 1).padStart(2, '0')} / {String(heroSlides.length).padStart(2, '0')}
@@ -213,8 +213,8 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* ── RIGHT — Fun Boxless Interactive 3D Growth Orbit ── */}
-          <div className="flex flex-col justify-center items-center lg:items-end flex-1 shrink-0 py-8 lg:py-12 z-20">
+          {/* ── RIGHT — Interactive 3D Growth Orbit (Active on Desktop/Laptop, Hidden on Mobile UI) ── */}
+          <div className="hidden lg:flex flex-col justify-center items-end flex-1 shrink-0 py-8 lg:py-12 z-20">
             <InteractiveGrowthOrbit />
           </div>
 

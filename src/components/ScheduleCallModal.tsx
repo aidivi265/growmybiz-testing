@@ -58,7 +58,7 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-sm animate-fadeIn">
       <div
-        className="relative w-full max-w-lg bg-[#0E1726] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl text-white overflow-hidden"
+        className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto bg-[#0E1726] border border-white/10 rounded-2xl p-5 sm:p-8 shadow-2xl text-white"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Glow accent */}
