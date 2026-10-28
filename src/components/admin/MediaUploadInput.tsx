@@ -9,6 +9,7 @@ interface MediaUploadInputProps {
   onChange: (url: string) => void;
   label?: string;
   placeholder?: string;
+  helperText?: string;
 }
 
 export default function MediaUploadInput({
@@ -16,6 +17,7 @@ export default function MediaUploadInput({
   onChange,
   label = 'Image / Mockup',
   placeholder = 'https://... or upload below',
+  helperText,
 }: MediaUploadInputProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -105,6 +107,7 @@ export default function MediaUploadInput({
       </div>
 
       {error && <p className="text-[11px] text-red-400">{error}</p>}
+      {helperText && !error && <p className="text-[11px] text-white/40">{helperText}</p>}
 
       {value && (
         <div className="mt-2 relative w-full h-28 rounded-lg overflow-hidden border border-white/10 bg-black/40 flex items-center justify-center">

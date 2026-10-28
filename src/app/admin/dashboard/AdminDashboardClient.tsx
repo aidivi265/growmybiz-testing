@@ -25,6 +25,7 @@ import {
   RefreshCw,
   Database,
   Check,
+  Share2,
 } from 'lucide-react';
 import type { InquiryRecord } from '@/lib/supabase';
 import BrandLogo from '@/components/BrandLogo';
@@ -32,12 +33,15 @@ import ServicesPanel from '@/components/admin/ServicesPanel';
 import PortfolioPanel from '@/components/admin/PortfolioPanel';
 import BlogPanel from '@/components/admin/BlogPanel';
 import TestimonialsPanel from '@/components/admin/TestimonialsPanel';
+import HeroPanel from '@/components/admin/HeroPanel';
+import SeoPanel from '@/components/admin/SeoPanel';
 
 // ─── Admin Nav Items ──────────────────────────────────────────────────────────
 const adminNav = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'leads', label: 'Inbound Inquiries', icon: Inbox },
   { id: 'site-config', label: 'Site Settings', icon: Settings },
+  { id: 'seo', label: 'SEO & Socials', icon: Share2 },
   { id: 'hero', label: 'Hero Slides', icon: Globe },
   { id: 'services', label: 'Services', icon: Briefcase },
   { id: 'portfolio', label: 'Portfolio', icon: Image },
@@ -169,6 +173,7 @@ export default function AdminDashboardClient() {
           {activeSection === 'dashboard' && <DashboardHome setSection={setActiveSection} />}
           {activeSection === 'leads' && <LeadsPanel />}
           {activeSection === 'site-config' && <SiteConfigPanel />}
+          {activeSection === 'seo' && <SeoPanel />}
           {activeSection === 'hero' && <HeroPanel />}
           {activeSection === 'services' && <ServicesPanel />}
           {activeSection === 'portfolio' && <PortfolioPanel />}
@@ -738,29 +743,7 @@ function SiteConfigPanel() {
 }
 
 // ─── Hero Panel ───────────────────────────────────────────────────────────────
-function HeroPanel() {
-  return (
-    <PanelWrapper
-      title="Hero Slides"
-      subtitle="Rotating headline banners managed in src/data/hero.ts for zero-latency edge delivery."
-      action={
-        <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/10 text-white/50">
-          File-Driven Module
-        </span>
-      }
-    >
-      <CMSTable
-        headers={['Badge', 'Heading', 'Subheading', 'Status']}
-        rows={heroSlides.map((s) => [
-          s.badge || '–',
-          s.heading,
-          s.subheading.slice(0, 45) + '...',
-          <span key="status" className="px-2 py-0.5 rounded text-[11px] font-mono text-emerald-400 bg-emerald-400/10">Active</span>,
-        ])}
-      />
-    </PanelWrapper>
-  );
-}
+
 
 // ─── Process Panel ────────────────────────────────────────────────────────────
 function ProcessPanel() {
