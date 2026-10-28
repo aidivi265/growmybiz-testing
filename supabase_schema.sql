@@ -109,6 +109,27 @@ CREATE TABLE IF NOT EXISTS public.admin_audit_logs (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
+
+-- ==============================================================================
+-- Idempotent Column Check for Pre-Existing Tables
+-- (Guarantees columns exist even if tables were already created previously)
+-- ==============================================================================
+ALTER TABLE IF EXISTS public.testimonials ADD COLUMN IF NOT EXISTS is_published BOOLEAN DEFAULT true;
+ALTER TABLE IF EXISTS public.testimonials ADD COLUMN IF NOT EXISTS featured BOOLEAN DEFAULT true;
+ALTER TABLE IF EXISTS public.testimonials ADD COLUMN IF NOT EXISTS order_index INT DEFAULT 0;
+
+ALTER TABLE IF EXISTS public.services ADD COLUMN IF NOT EXISTS is_published BOOLEAN DEFAULT true;
+ALTER TABLE IF EXISTS public.services ADD COLUMN IF NOT EXISTS order_index INT DEFAULT 0;
+
+ALTER TABLE IF EXISTS public.portfolio_projects ADD COLUMN IF NOT EXISTS is_published BOOLEAN DEFAULT true;
+ALTER TABLE IF EXISTS public.portfolio_projects ADD COLUMN IF NOT EXISTS is_featured BOOLEAN DEFAULT true;
+ALTER TABLE IF EXISTS public.portfolio_projects ADD COLUMN IF NOT EXISTS order_index INT DEFAULT 0;
+
+ALTER TABLE IF EXISTS public.articles ADD COLUMN IF NOT EXISTS is_published BOOLEAN DEFAULT true;
+
+-- Ensure existing rows have is_published set to true
+UPDATE public.testimonials SET is_published = true WHERE is_published IS NULL;
+
 -- Enable Row Level Security (RLS)
 ALTER TABLE public.services ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.portfolio_projects ENABLE ROW LEVEL SECURITY;
