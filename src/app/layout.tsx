@@ -1,8 +1,33 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
+import { Inter, Syne } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { siteConfig } from '@/data';
+
+// Load fonts via next/font — served from same origin, zero render-blocking
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  style: ['normal', 'italic'],
+  variable: '--font-inter',
+  display: 'swap',
+  preload: true,
+});
+
+const syne = Syne({
+  subsets: ['latin'],
+  weight: ['600', '700', '800'],
+  variable: '--font-syne',
+  display: 'swap',
+  preload: true,
+});
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#0F1C31',
+};
 
 export const metadata: Metadata = {
   title: {
@@ -10,15 +35,26 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.siteName}`,
   },
   description: siteConfig.description,
-  keywords: ['digital agency', 'web development', 'design', 'branding', 'digital marketing', 'AI automation', 'India'],
+  keywords: ['digital agency', 'web development', 'design', 'branding', 'digital marketing', 'AI automation', 'India', 'Growmybizz'],
   authors: [{ name: siteConfig.siteName }],
   creator: siteConfig.siteName,
-  metadataBase: new URL('https://growmybizz.com'),
+  metadataBase: new URL('https://growmybizz.vercel.app'),
   openGraph: {
     type: 'website',
     siteName: siteConfig.siteName,
     title: `${siteConfig.siteName} — ${siteConfig.tagline}`,
     description: siteConfig.description,
+    locale: 'en_IN',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${siteConfig.siteName} — ${siteConfig.tagline}`,
+    description: siteConfig.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
   },
 };
 
@@ -28,7 +64,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${syne.variable}`} suppressHydrationWarning>
       <body>
         <Navbar />
         <main>{children}</main>
