@@ -2,20 +2,48 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { verifyAdminCredentials, createSessionToken, ADMIN_COOKIE_NAME } from '@/lib/adminAuth';
 import { supabase } from '@/lib/supabase';
+import { checkRateLimit } from '@/lib/rateLimit';
 
 export async function POST(request: Request) {
   try {
+    // 1. Content-Length Limit (Max 5KB)
+    const contentLength = request.headers.get('content-length');
+    if (contentLength && parseInt(contentLength, 10) > 5120) {
+      return NextResponse.json({ error: 'Payload too large.' }, { status: 413 });
+    }
+
+    // 2. Defense-in-depth IP Rate Limiting (6 attempts per 15 mins)
+    const forwardedFor = request.headers.get('x-forwarded-for');
+    const ip = forwardedFor ? forwardedFor.split(',')[0].trim() : '127.0.0.1';
+    const rateCheck = checkRateLimit(`admin_login_${ip}`, {
+      limit: 6,
+      windowMs: 15 * 60 * 1000,
+    });
+
+    if (!rateCheck.success) {
+      return NextResponse.json(
+        { error: 'Too many failed login attempts. Please wait 15 minutes.' },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': Math.ceil(rateCheck.resetMs / 1000).toString(),
+            'X-Robots-Tag': 'noindex, nofollow, noarchive',
+          },
+        }
+      );
+    }
+
     const { username, password } = await request.json();
 
-    if (!username || !password) {
+    if (!username || !password || typeof username !== 'string' || typeof password !== 'string') {
       return NextResponse.json(
         { error: 'Please enter both username/email and password.' },
         { status: 400 }
       );
     }
 
-    // Slight throttling against brute-force
-    await new Promise((r) => setTimeout(r, 200));
+    // Anti-timing analysis artificial delay (200-300ms)
+    await new Promise((r) => setTimeout(r, 250));
 
     // Normalize email (if "admin" is passed, map to "admin@growmybizz.com")
     const loginEmail = username.includes('@')
@@ -26,7 +54,7 @@ export async function POST(request: Request) {
     let authUser: { email?: string; id?: string; role?: string } | null = null;
     let authProvider = 'env';
 
-    // 1. Attempt Supabase Auth Server-Side Verification
+    // 3. Attempt Supabase Auth Server-Side Verification
     try {
       const { data: supaData, error: supaError } = await supabase.auth.signInWithPassword({
         email: loginEmail,
@@ -46,7 +74,7 @@ export async function POST(request: Request) {
       // Fall through to fallback
     }
 
-    // 2. Timing-Safe Fallback Verification
+    // 4. Timing-Safe Fallback Verification
     if (!authenticated) {
       const isEnvValid =
         verifyAdminCredentials(username, password) ||
@@ -65,11 +93,14 @@ export async function POST(request: Request) {
     if (!authenticated) {
       return NextResponse.json(
         { error: 'Invalid credentials. Please verify your email/username and password.' },
-        { status: 401 }
+        {
+          status: 401,
+          headers: { 'X-Robots-Tag': 'noindex, nofollow, noarchive' },
+        }
       );
     }
 
-    // 3. Issue Cryptographic HMAC Session Cookie
+    // 5. Issue Cryptographic HMAC Session Cookie
     const token = createSessionToken(loginEmail);
     const cookieStore = await cookies();
 
@@ -81,24 +112,31 @@ export async function POST(request: Request) {
       value: token,
       httpOnly: true,
       secure: isHttps,
-      sameSite: 'lax' as const,
+      sameSite: 'strict' as const, // Strict CSRF protection
       path: '/',
       maxAge: 60 * 60 * 24 * 7, // 7 days
     };
 
     cookieStore.set(cookieOptions);
 
-    const response = NextResponse.json({
-      success: true,
-      provider: authProvider,
-      user: authUser,
-    });
+    const response = NextResponse.json(
+      {
+        success: true,
+        provider: authProvider,
+        user: authUser,
+      },
+      {
+        headers: {
+          'X-Robots-Tag': 'noindex, nofollow, noarchive, nosnippet',
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+        },
+      }
+    );
 
     response.cookies.set(cookieOptions);
-
     return response;
   } catch (err) {
-    console.error('Admin authentication error:', err);
+    console.error('Login route unexpected error:', err);
     return NextResponse.json(
       { error: 'An unexpected authentication error occurred.' },
       { status: 500 }

@@ -9,10 +9,18 @@ export async function POST() {
     value: '',
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    sameSite: 'strict',
     path: '/',
     maxAge: 0, // Immediately expire
   });
 
-  return NextResponse.json({ success: true });
+  return NextResponse.json(
+    { success: true },
+    {
+      headers: {
+        'X-Robots-Tag': 'noindex, nofollow, noarchive, nosnippet',
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+      },
+    }
+  );
 }
