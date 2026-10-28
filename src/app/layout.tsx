@@ -30,11 +30,20 @@ export const metadata: Metadata = {
     title: `${siteConfig.siteName} — ${siteConfig.tagline}`,
     description: siteConfig.description,
     locale: 'en_IN',
+    images: [
+      {
+        url: '/growmybizz-app-icon.png',
+        width: 512,
+        height: 512,
+        alt: `${siteConfig.siteName} — ${siteConfig.tagline}`,
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: `${siteConfig.siteName} — ${siteConfig.tagline}`,
     description: siteConfig.description,
+    images: ['/growmybizz-app-icon.png'],
   },
   robots: {
     index: true,

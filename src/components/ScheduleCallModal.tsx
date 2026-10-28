@@ -19,7 +19,11 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
 
   const handleCallbackRequest = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !phoneOrEmail) return;
+    if (!name.trim() || !phoneOrEmail.trim()) return;
+
+    const cleanInput = phoneOrEmail.trim();
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanInput);
+    const digitsOnly = cleanInput.replace(/[^0-9]/g, '');
 
     setLoading(true);
     try {
@@ -27,13 +31,15 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name,
-          email: phoneOrEmail.includes('@') ? phoneOrEmail : 'callback-requested@growmybizz.com',
-          phone: phoneOrEmail.includes('@') ? null : phoneOrEmail,
+          name: name.trim(),
+          email: isEmail
+            ? cleanInput.toLowerCase()
+            : `${digitsOnly || 'callback'}@phone.growmybizz.com`,
+          phone: isEmail ? null : cleanInput,
           service: 'Discovery Strategy Call',
           budget: 'Flexible',
           timeline: 'Immediate',
-          message: `Client requested a scheduled strategy call. Preferred slot: ${preferredTime}. Direct contact: ${phoneOrEmail}`,
+          message: `Client requested a scheduled strategy call. Preferred slot: ${preferredTime}. Direct contact provided: ${cleanInput}`,
         }),
       });
       setSubmitted(true);

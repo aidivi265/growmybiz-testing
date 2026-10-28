@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface BrandLogoProps {
   variant?: 'full' | 'icon' | 'stacked';
@@ -43,11 +44,12 @@ export default function BrandLogo({
         className="relative shrink-0 flex items-center justify-center transition-transform duration-300 group-hover:scale-105"
         style={{ width: dimensions.icon, height: dimensions.icon }}
       >
-        <img
+        <Image
           src="/growmybizz-logo.png"
           alt="Growmybizz"
           width={dimensions.icon}
           height={dimensions.icon}
+          priority
           className="w-full h-full object-contain rounded-xl drop-shadow-[0_2px_12px_rgba(59,130,246,0.35)]"
         />
       </div>

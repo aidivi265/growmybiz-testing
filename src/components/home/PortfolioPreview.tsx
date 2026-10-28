@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { portfolioItems } from '@/data/portfolio';
 import { SYNE_FONT } from '@/lib/fonts';
@@ -59,11 +60,12 @@ export default function PortfolioPreview() {
               }}
             >
               {/* Actual Project Mockup Graphic */}
-              <img
+              <Image
                 src={main.thumbnail}
                 alt={main.title}
+                fill
+                sizes="(max-width: 1024px) 100vw, 65vw"
                 className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                loading="lazy"
               />
 
               {/* Hover overlay */}
@@ -143,11 +145,12 @@ export default function PortfolioPreview() {
                     }}
                   >
                     {/* Real SVG preview image */}
-                    <img
+                    <Image
                       src={item.thumbnail}
                       alt={item.title}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 35vw"
                       className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                      loading="lazy"
                     />
 
                     {/* Category & Concept tag */}

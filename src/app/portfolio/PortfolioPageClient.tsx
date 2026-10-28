@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
 import { portfolioItems, portfolioCategories } from '@/data/portfolio';
 import { Breadcrumb } from '@/components/ui';
@@ -89,11 +90,12 @@ export default function PortfolioPageClient() {
                     <article className="rounded-2xl overflow-hidden border border-[#DDE3EC] hover:border-[#C8D2DF] hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(15,28,49,0.12)] transition-all duration-300 bg-white flex flex-col h-full">
                       {/* Real Mockup Visual */}
                       <div className="aspect-video relative overflow-hidden bg-[#0C1626]">
-                        <img
+                        <Image
                           src={item.thumbnail}
                           alt={item.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                          loading="lazy"
                         />
 
                         {/* Category & Concept tag */}

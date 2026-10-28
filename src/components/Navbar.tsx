@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown, ArrowRight } from 'lucide-react';
 import { navItems } from '@/data/navigation';
-import { siteConfig } from '@/data/siteConfig';
 import BrandLogo from '@/components/BrandLogo';
 import type { NavItem } from '@/types';
 
@@ -117,15 +116,7 @@ export default function Navbar() {
         }`}>
           {/* Drawer header */}
           <div className="flex items-center justify-between px-5 h-16 border-b border-[#E8EDF4]">
-            <div className="flex items-center gap-2">
-              <div
-                className="w-7 h-7 rounded-lg flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg,#477BDB,#6477C8)' }}
-              >
-                <span className="text-white font-black text-sm">G</span>
-              </div>
-              <span className="text-[#0F1C31] font-bold text-sm">{siteConfig.siteName}</span>
-            </div>
+            <BrandLogo theme="light" size="sm" asLink={false} />
             <button
               onClick={() => setMobileOpen(false)}
               className="w-8 h-8 flex items-center justify-center rounded-lg text-[#6B7E95] hover:text-[#0F1C31] hover:bg-[#F7F9FC]"

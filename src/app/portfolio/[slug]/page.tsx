@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { portfolioItems } from '@/data';
 import { Breadcrumb } from '@/components/ui';
@@ -102,9 +103,12 @@ export default async function PortfolioItemPage({ params }: Props) {
       <div className="w-full relative bg-[#09121F] border-b border-white/10 py-8 lg:py-14 overflow-hidden flex items-center justify-center">
         <div className="max-w-5xl mx-auto px-4 w-full">
           <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/15 bg-[#0C1728]">
-            <img
+            <Image
               src={item.thumbnail}
               alt={item.title}
+              width={1200}
+              height={675}
+              priority
               className="w-full h-auto object-contain max-h-[540px]"
             />
           </div>

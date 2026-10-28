@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import {
   Code2,
   Bot,
@@ -232,9 +233,12 @@ export default function InteractiveGrowthOrbit() {
               <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-cyan-400 to-purple-600 opacity-40 blur-md group-hover:opacity-80 transition-opacity animate-pulse-dot" />
 
               {/* Exact Brand Logo Emblem */}
-              <img
+              <Image
                 src="/growmybizz-logo.png"
                 alt="Growmybizz Core"
+                width={84}
+                height={84}
+                priority
                 className="relative z-10 w-full h-full object-contain rounded-2xl drop-shadow-[0_4px_16px_rgba(59,130,246,0.5)]"
               />
             </div>
