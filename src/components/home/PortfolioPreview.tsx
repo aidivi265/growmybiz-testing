@@ -20,7 +20,7 @@ export default function PortfolioPreview() {
   const mainAccent = ACCENT_COLORS[0];
 
   return (
-    <section className="section-pad-lg bg-white" id="portfolio">
+    <section className="section-pad-lg" id="portfolio" style={{ background: '#F7F9FC' }}>
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
 
         {/* ── Header ── */}
@@ -201,11 +201,11 @@ export default function PortfolioPreview() {
             {/* "See all" promo tile */}
             <Link href="/portfolio" className="group block">
               <div
-                className="rounded-[20px] flex flex-col items-center justify-center gap-3 transition-all duration-200 group-hover:border-[#477BDB]/40"
+                className="rounded-[20px] flex flex-col items-center justify-center gap-3 transition-all duration-200"
                 style={{
                   minHeight: '80px',
-                  background: '#F0F4F8',
-                  border: '1.5px dashed #DDE3EC',
+                  background: 'rgba(255,255,255,0.70)',
+                  border: '1.5px dashed #C8D3E0',
                   borderRadius: '20px',
                   padding: '20px',
                 }}

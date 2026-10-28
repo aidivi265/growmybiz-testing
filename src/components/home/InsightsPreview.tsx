@@ -193,29 +193,49 @@ export default function InsightsPreview() {
               );
             })}
 
-            {/* Newsletter nudge */}
+            {/* CTA nudge — dark card for contrast on light section */}
             <div
-              className="mt-auto p-5 rounded-2xl"
-              style={{ background: 'linear-gradient(135deg, #EBF1FB 0%, #EEF0FA 100%)', border: '1px solid rgba(71,123,219,0.15)' }}
+              className="mt-auto p-5 rounded-2xl relative overflow-hidden"
+              style={{
+                background: 'linear-gradient(135deg, #0F1C31 0%, #1A2B4A 100%)',
+                border: '1px solid rgba(255,255,255,0.06)',
+              }}
             >
-              <p
+              {/* Subtle grid */}
+              <div
+                className="absolute inset-0 opacity-[0.04]"
                 style={{
-                  fontFamily: "'Syne', sans-serif",
-                  fontWeight: 700,
-                  fontSize: '0.9375rem',
-                  color: '#0F1C31',
-                  lineHeight: 1.3,
-                  marginBottom: '6px',
+                  backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)',
+                  backgroundSize: '20px 20px',
                 }}
-              >
-                Stay sharp on digital growth
-              </p>
-              <p className="text-[#6B7E95] text-xs leading-relaxed mb-4">
-                Practical strategies for businesses growing online — delivered when ready.
-              </p>
-              <Link href="/contact" className="btn btn-primary btn-sm w-full justify-center">
-                Get in touch
-              </Link>
+              />
+              <div className="relative z-10">
+                <span
+                  className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest mb-3"
+                  style={{ color: '#32A88A' }}
+                >
+                  <span className="w-3 h-px bg-[#32A88A]" />
+                  Get in touch
+                </span>
+                <p
+                  style={{
+                    fontFamily: "'Syne', sans-serif",
+                    fontWeight: 700,
+                    fontSize: '0.9375rem',
+                    color: '#FFFFFF',
+                    lineHeight: 1.3,
+                    marginBottom: '6px',
+                  }}
+                >
+                  Ready to grow your digital presence?
+                </p>
+                <p style={{ color: 'rgba(255,255,255,0.40)', fontSize: '0.75rem', lineHeight: 1.6, marginBottom: '16px' }}>
+                  Tell us what you need. We will suggest the right approach.
+                </p>
+                <Link href="/contact" className="btn btn-primary btn-sm w-full justify-center">
+                  Start a Project
+                </Link>
+              </div>
             </div>
           </div>
 

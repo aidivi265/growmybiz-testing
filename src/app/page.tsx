@@ -16,10 +16,20 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
+      {/* Dark → White transition strip */}
+      <div style={{ height: '2px', background: 'linear-gradient(90deg, #1A2B4A, #243B66, #1A2B4A)' }} />
       <ServicesSection />
+      {/* White → Dark transition */}
+      <div style={{ height: '2px', background: 'linear-gradient(90deg, #0F1C31, #1A2B4A, #0F1C31)' }} />
       <ValuePropsSection />
+      {/* Dark → White transition */}
+      <div style={{ height: '2px', background: 'linear-gradient(90deg, #1A2B4A, #243B66, #1A2B4A)' }} />
       <PortfolioPreview />
+      {/* White → Dark transition */}
+      <div style={{ height: '2px', background: 'linear-gradient(90deg, #0F1C31, #1A2B4A, #0F1C31)' }} />
       <ProcessPreview />
+      {/* Dark → Light transition */}
+      <div style={{ height: '2px', background: 'linear-gradient(90deg, #0F1C31, #1A2B4A, #0F1C31)' }} />
       <InsightsPreview />
     </>
   );

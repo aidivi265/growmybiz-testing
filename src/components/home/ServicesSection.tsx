@@ -15,7 +15,7 @@ const CARD_STYLES = [
 
 export default function ServicesSection() {
   return (
-    <section className="section-pad-lg bg-white" id="services">
+    <section className="section-pad-lg" id="services" style={{ background: '#FFFFFF' }}>
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
 
         {/* ── Header ── */}
@@ -44,7 +44,7 @@ export default function ServicesSection() {
             </h2>
           </div>
           <Link href="/services"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold shrink-0 mb-1"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold shrink-0 mb-1 transition-colors hover:opacity-70"
             style={{ color: '#477BDB' }}>
             View all services <ArrowRight size={14} />
           </Link>
@@ -59,23 +59,36 @@ export default function ServicesSection() {
               <Link
                 key={svc.id}
                 href={`/services/${svc.slug}`}
-                className={`group relative rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(15,28,49,0.10)] ${cs.span}`}
+                className={`group relative flex flex-col rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-1 ${cs.span}`}
                 style={{
                   background: '#FAFBFD',
-                  border: '1px solid #DDE3EC',
-                  padding: isWide ? '28px 28px' : '24px 24px',
-                  minHeight: '160px',
+                  border: '1px solid #E8EDF4',
+                  padding: isWide ? '28px' : '24px',
+                  minHeight: isWide ? '170px' : '180px',
+                  boxShadow: '0 1px 4px rgba(15,28,49,0.04)',
                 }}
               >
-                {/* Index number — top right, very faint */}
+                {/* Hover: coloured top accent line */}
+                <div
+                  className="absolute top-0 inset-x-0 h-[3px] rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  style={{ background: `linear-gradient(90deg, ${svc.color}, ${svc.color}80)` }}
+                />
+
+                {/* Hover shadow using the service colour */}
+                <div
+                  className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+                  style={{ boxShadow: `0 12px 40px ${svc.color}18` }}
+                />
+
+                {/* Index number — faint watermark */}
                 <span
-                  className="absolute top-4 right-5 select-none pointer-events-none"
+                  className="absolute top-3 right-4 select-none pointer-events-none"
                   style={{
                     fontFamily: "'Syne', sans-serif",
                     fontWeight: 800,
-                    fontSize: '3.5rem',
-                    color: '#0F1C31',
-                    opacity: 0.025,
+                    fontSize: '3rem',
+                    color: svc.color,
+                    opacity: 0.06,
                     lineHeight: 1,
                     letterSpacing: '-0.05em',
                   }}
@@ -83,23 +96,17 @@ export default function ServicesSection() {
                   {String(i + 1).padStart(2, '0')}
                 </span>
 
-                {/* Active border on hover */}
-                <div
-                  className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-                  style={{ border: `1.5px solid ${svc.color}40` }}
-                />
-
                 {/* Icon */}
                 <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
-                  style={{ background: `${svc.color}15` }}
+                  className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 shrink-0 transition-transform duration-200 group-hover:scale-110"
+                  style={{ background: `${svc.color}18` }}
                 >
                   <Icon name={svc.icon} size={18} style={{ color: svc.color }} />
                 </div>
 
                 {/* Title */}
                 <h3
-                  className="font-bold text-[#0F1C31] mb-2 group-hover:text-[#477BDB] transition-colors"
+                  className="font-bold text-[#0F1C31] mb-2 transition-colors"
                   style={{
                     fontFamily: "'Inter', sans-serif",
                     fontSize: isWide ? '1.0625rem' : '0.9375rem',
@@ -109,12 +116,12 @@ export default function ServicesSection() {
                   {svc.title}
                 </h3>
 
-                <p className="text-[#6B7E95] text-sm leading-relaxed mb-4 line-clamp-2">
+                <p className="text-[#6B7E95] text-sm leading-relaxed mb-4 line-clamp-2 flex-1">
                   {svc.shortDescription}
                 </p>
 
                 {/* Tags */}
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-1.5 mt-auto">
                   {svc.offerings.slice(0, isWide ? 4 : 3).map(o => (
                     <span key={o.id} className="tag">{o.title}</span>
                   ))}
@@ -123,11 +130,11 @@ export default function ServicesSection() {
                   )}
                 </div>
 
-                {/* Arrow */}
-                <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                {/* Arrow — appears on hover */}
+                <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-y-1 group-hover:translate-y-0">
                   <div
                     className="w-7 h-7 rounded-lg flex items-center justify-center"
-                    style={{ background: svc.color, color: '#fff' }}
+                    style={{ background: svc.color, color: '#fff', boxShadow: `0 4px 12px ${svc.color}50` }}
                   >
                     <ArrowUpRight size={13} />
                   </div>
@@ -139,14 +146,14 @@ export default function ServicesSection() {
 
         {/* ── Bottom CTA bar ── */}
         <div
-          className="mt-6 flex items-center justify-between gap-4 px-5 py-4 rounded-2xl"
-          style={{ background: '#F0F4F8', border: '1px solid #DDE3EC' }}
+          className="mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-6 py-4 rounded-2xl"
+          style={{ background: 'linear-gradient(135deg, #0F1C31 0%, #1A2B4A 100%)', border: '1px solid rgba(255,255,255,0.06)' }}
         >
-          <p className="text-[#3D4F63] text-sm">
-            Not sure which fits?{' '}
-            <span className="text-[#6B7E95]">Tell us your goal and we will suggest the right approach.</span>
+          <p className="text-white/60 text-sm">
+            Not sure which service fits?{' '}
+            <span className="text-white/40">Tell us your goal and we will suggest the right approach.</span>
           </p>
-          <Link href="/contact" className="btn btn-dark btn-sm shrink-0">
+          <Link href="/contact" className="btn btn-primary btn-sm shrink-0">
             Let&apos;s talk <ArrowRight size={13} />
           </Link>
         </div>
