@@ -1,9 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { inter, syne } from '@/lib/fonts';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import { siteConfig } from '@/data';
+import LayoutShell from '@/components/LayoutShell';
+import { siteConfig } from '@/data/siteConfig';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -48,9 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
     >
       <body className={inter.className}>
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <LayoutShell>{children}</LayoutShell>
       </body>
     </html>
   );

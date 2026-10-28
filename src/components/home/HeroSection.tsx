@@ -3,8 +3,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { heroSlides, services } from '@/data';
+import { heroSlides } from '@/data/hero';
+import { services } from '@/data/services';
 import { SYNE_FONT } from '@/lib/fonts';
+import ScheduleCallButton from '@/components/ScheduleCallButton';
 
 const svcColors = ['#477BDB', '#32A88A', '#6477C8', '#E8912A', '#0EA5C8', '#B04EC4'];
 
@@ -21,6 +23,7 @@ export default function HeroSection() {
   const resetTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
+      if (document.hidden) return;
       setSlide(s => {
         const next = (s + 1) % heroSlides.length;
         setFading(true);
@@ -145,9 +148,10 @@ export default function HeroSection() {
                 {cur.ctaPrimary.label}
                 <ArrowRight size={16} />
               </Link>
+              <ScheduleCallButton />
               <Link
                 href={cur.ctaSecondary.href}
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-[0.9375rem] transition-all duration-200 hover:bg-white/[0.08]"
+                className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl font-semibold text-[0.9375rem] transition-all duration-200 hover:bg-white/[0.08]"
                 style={{
                   border: '1.5px solid rgba(255,255,255,0.18)',
                   color: 'rgba(255,255,255,0.80)',
@@ -219,10 +223,11 @@ export default function HeroSection() {
               <div
                 className="relative rounded-[24px] overflow-hidden"
                 style={{
-                  background: 'linear-gradient(155deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%)',
+                  background: 'linear-gradient(155deg, rgba(15,28,49,0.85) 0%, rgba(20,36,62,0.75) 100%)',
                   border: '1px solid rgba(255,255,255,0.10)',
-                  backdropFilter: 'blur(20px)',
-                  boxShadow: '0 32px 80px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08)',
+                  backdropFilter: 'blur(8px)',
+                  boxShadow: '0 24px 60px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08)',
+                  transform: 'translateZ(0)',
                 }}
               >
                 {/* Inner grid */}

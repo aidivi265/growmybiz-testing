@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import HeroSection from '@/components/home/HeroSection';
 import ServicesSection from '@/components/home/ServicesSection';
 import PortfolioPreview from '@/components/home/PortfolioPreview';
+import TestimonialsSection from '@/components/home/TestimonialsSection';
 import ProcessPreview from '@/components/home/ProcessPreview';
 import ValuePropsSection from '@/components/home/ValuePropsSection';
 import InsightsPreview from '@/components/home/InsightsPreview';
@@ -27,6 +28,9 @@ export default function HomePage() {
       <PortfolioPreview />
       {/* White → Dark transition */}
       <div style={{ height: '2px', background: 'linear-gradient(90deg, #0F1C31, #1A2B4A, #0F1C31)' }} />
+      <TestimonialsSection />
+      {/* Dark → Dark transition */}
+      <div style={{ height: '2px', background: 'linear-gradient(90deg, #0A1525, #152744, #0A1525)' }} />
       <ProcessPreview />
       {/* Dark → Light transition */}
       <div style={{ height: '2px', background: 'linear-gradient(90deg, #0F1C31, #1A2B4A, #0F1C31)' }} />

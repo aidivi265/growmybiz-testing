@@ -34,7 +34,6 @@ export default async function PortfolioItemPage({ params }: Props) {
   if (!item || !item.published) notFound();
 
   const idx = portfolioItems.findIndex((p) => p.slug === slug);
-  const grad = THUMB_GRADIENTS[idx % THUMB_GRADIENTS.length];
   const accent = THUMB_ACCENTS[idx % THUMB_ACCENTS.length];
 
   const related = portfolioItems
@@ -66,10 +65,12 @@ export default async function PortfolioItemPage({ params }: Props) {
               >
                 {item.category}
               </span>
-              {item.client === 'Concept Project' && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold text-amber-200"
-                  style={{ background: 'rgba(245,158,11,0.2)', border: '1px solid rgba(245,158,11,0.3)' }}>
-                  Concept Project
+              {(item.isConcept || item.client === 'Concept Project') && (
+                <span
+                  className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold text-amber-200"
+                  style={{ background: 'rgba(245,158,11,0.2)', border: '1px solid rgba(245,158,11,0.3)' }}
+                >
+                  Concept Demonstration
                 </span>
               )}
             </div>
@@ -86,38 +87,27 @@ export default async function PortfolioItemPage({ params }: Props) {
               {item.title}
             </h1>
             <p className="text-white/40 text-sm mt-2">{item.client} · {item.year}</p>
+
+            {item.isConcept && item.conceptDisclaimer && (
+              <div className="mt-4 p-3.5 rounded-xl border border-amber-500/25 bg-amber-500/10 text-amber-200/90 text-xs leading-relaxed max-w-2xl flex items-start gap-2.5">
+                <span className="text-amber-400 font-bold shrink-0">✦</span>
+                <span>{item.conceptDisclaimer}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* ── Hero thumbnail ── */}
-      <div
-        className="w-full relative overflow-hidden"
-        style={{ background: grad, aspectRatio: '21/7' }}
-      >
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: 'linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)',
-            backgroundSize: '56px 56px',
-          }}
-        />
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[100px] pointer-events-none"
-          style={{ background: `${accent}30` }}
-        />
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-          <span
-            style={{
-              fontFamily: SYNE_FONT,
-              fontWeight: 800,
-              fontSize: 'clamp(6rem, 18vw, 14rem)',
-              color: `${accent}12`,
-              letterSpacing: '-0.06em',
-            }}
-          >
-            {item.title.charAt(0)}
-          </span>
+      {/* ── Hero visual showcase ── */}
+      <div className="w-full relative bg-[#09121F] border-b border-white/10 py-8 lg:py-14 overflow-hidden flex items-center justify-center">
+        <div className="max-w-5xl mx-auto px-4 w-full">
+          <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/15 bg-[#0C1728]">
+            <img
+              src={item.thumbnail}
+              alt={item.title}
+              className="w-full h-auto object-contain max-h-[540px]"
+            />
+          </div>
         </div>
       </div>
 

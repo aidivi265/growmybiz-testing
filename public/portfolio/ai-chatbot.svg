@@ -1,0 +1,70 @@
+<svg width="800" height="500" viewBox="0 0 800 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="500" rx="16" fill="#0D1626"/>
+  <rect x="0.5" y="0.5" width="799" height="499" rx="15.5" stroke="#1F324D"/>
+  
+  <circle cx="200" cy="150" r="160" fill="#32A88A" fill-opacity="0.10" filter="blur(60px)"/>
+  <circle cx="650" cy="350" r="180" fill="#477BDB" fill-opacity="0.12" filter="blur(60px)"/>
+
+  <!-- Chat Interface Container -->
+  <g transform="translate(50, 40)">
+    <!-- Chat Widget Window -->
+    <rect width="700" height="420" rx="14" fill="#122035" stroke="#253D61"/>
+    
+    <!-- Top Bar -->
+    <rect width="700" height="55" rx="14" fill="#0E192B"/>
+    <circle cx="35" cy="28" r="14" fill="#32A88A"/>
+    <text x="35" y="33" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="12" font-weight="800" text-anchor="middle">AI</text>
+    <text x="60" y="26" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="13" font-weight="700">NexBot Enterprise AI Assistant</text>
+    <text x="60" y="42" fill="#4DD8B0" font-family="system-ui, sans-serif" font-size="10" font-weight="600">● 24/7 Active • Instant RAG Knowledge Sync</text>
+    <rect x="570" y="18" width="105" height="22" rx="11" fill="#477BDB" fill-opacity="0.2"/>
+    <text x="622" y="32" fill="#92AEED" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle">98.2% Accuracy</text>
+
+    <!-- Chat Messages -->
+    <!-- Message 1 (Customer) -->
+    <g transform="translate(30, 80)">
+      <rect x="220" y="0" width="420" height="45" rx="10" fill="#1C3352"/>
+      <text x="240" y="27" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="12">Do you support automated WhatsApp lead routing to Salesforce CRM?</text>
+    </g>
+
+    <!-- Message 2 (AI Response) -->
+    <g transform="translate(30, 140)">
+      <circle cx="15" cy="18" r="12" fill="#32A88A"/>
+      <text x="15" y="22" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="10" font-weight="800" text-anchor="middle">AI</text>
+      <rect x="40" y="0" width="500" height="95" rx="10" fill="#172B45" stroke="#2B466B"/>
+      <text x="58" y="25" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="12" font-weight="600">Yes! Our integration syncs WhatsApp conversations directly into Salesforce.</text>
+      <text x="58" y="46" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11">It auto-qualifies visitor intent, creates new Lead records, and notifies the account executive in real time.</text>
+      <!-- Action buttons -->
+      <rect x="58" y="60" width="130" height="24" rx="6" fill="#477BDB"/>
+      <text x="123" y="76" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle">Book Live Sandbox Demo</text>
+      <rect x="200" y="60" width="115" height="24" rx="6" fill="#243C5E"/>
+      <text x="257" y="76" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="10" font-weight="600" text-anchor="middle">View API Docs</text>
+    </g>
+
+    <!-- Performance Metric Pill Cards -->
+    <g transform="translate(30, 260)">
+      <rect width="640" height="130" rx="10" fill="#0C1728" stroke="#1F3452"/>
+      <text x="25" y="28" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="0.08em">PILOT DEPLOYMENT METRICS (30 DAYS)</text>
+
+      <!-- Metric 1 -->
+      <g transform="translate(25, 45)">
+        <text x="0" y="24" fill="#4DD8B0" font-family="system-ui, sans-serif" font-size="24" font-weight="800">88.4%</text>
+        <text x="0" y="44" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11">Automated Resolution Rate</text>
+        <text x="0" y="60" fill="#4DD8B0" font-family="system-ui, sans-serif" font-size="10">Zero human intervention</text>
+      </g>
+      <line x1="210" y1="45" x2="210" y2="115" stroke="#1E314D"/>
+      <!-- Metric 2 -->
+      <g transform="translate(240, 45)">
+        <text x="0" y="24" fill="#6AADFF" font-family="system-ui, sans-serif" font-size="24" font-weight="800">&lt; 1.4s</text>
+        <text x="0" y="44" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11">Avg Response Latency</text>
+        <text x="0" y="60" fill="#6AADFF" font-family="system-ui, sans-serif" font-size="10">Streaming semantic answer</text>
+      </g>
+      <line x1="430" y1="45" x2="430" y2="115" stroke="#1E314D"/>
+      <!-- Metric 3 -->
+      <g transform="translate(460, 45)">
+        <text x="0" y="24" fill="#F59E0B" font-family="system-ui, sans-serif" font-size="24" font-weight="800">+140 hrs</text>
+        <text x="0" y="44" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11">Support Time Saved / Mo</text>
+        <text x="0" y="60" fill="#F59E0B" font-family="system-ui, sans-serif" font-size="10">Equivalent to 2 full-time reps</text>
+      </g>
+    </g>
+  </g>
+</svg>

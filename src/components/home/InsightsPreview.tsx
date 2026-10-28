@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { blogPosts } from '@/data';
+import { blogPosts } from '@/data/insights';
 import { ArrowRight, Clock } from 'lucide-react';
 import { SYNE_FONT } from '@/lib/fonts';
 

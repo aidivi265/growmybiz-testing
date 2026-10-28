@@ -1,16 +1,18 @@
 import Link from 'next/link';
-import { ArrowRight, Mail, Phone, MapPin } from 'lucide-react';
-import { siteConfig, services } from '@/data';
+import { ArrowRight, Mail, Phone, MapPin, MessageCircle } from 'lucide-react';
+import { siteConfig } from '@/data/siteConfig';
+import { services } from '@/data/services';
 import { SYNE_FONT } from '@/lib/fonts';
+import ScheduleCallButton from '@/components/ScheduleCallButton';
 
-const CURRENT_YEAR = 2025;
+const CURRENT_YEAR = new Date().getFullYear();
 
 export default function Footer() {
   const socialLinks: { label: string; abbr: string; href: string }[] = [
-    { label: 'LinkedIn',  abbr: 'Li', href: siteConfig.social.linkedin  ?? '#' },
-    { label: 'Instagram', abbr: 'IG', href: siteConfig.social.instagram ?? '#' },
-    { label: 'Twitter/X', abbr: 'X',  href: siteConfig.social.twitter   ?? '#' },
-    { label: 'YouTube',   abbr: 'YT', href: siteConfig.social.youtube   ?? '#' },
+    { label: 'LinkedIn',  abbr: 'Li', href: siteConfig.social.linkedin  ?? 'https://linkedin.com/company/growmybizz' },
+    { label: 'Instagram', abbr: 'IG', href: siteConfig.social.instagram ?? 'https://instagram.com/growmybizz' },
+    { label: 'Twitter/X', abbr: 'X',  href: siteConfig.social.twitter   ?? 'https://x.com/growmybizz' },
+    { label: 'YouTube',   abbr: 'YT', href: siteConfig.social.youtube   ?? 'https://youtube.com/@growmybizz' },
   ];
 
   return (
@@ -55,7 +57,17 @@ export default function Footer() {
                 Start a Project
                 <ArrowRight size={15} />
               </Link>
-              <Link href="/services" className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-sm text-white/80 border border-white/20 hover:bg-white/10 hover:text-white transition-all">
+              <ScheduleCallButton />
+              <a
+                href={siteConfig.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-sm text-white/90 border border-[#25D366]/40 bg-[#25D366]/10 hover:bg-[#25D366]/20 hover:text-white transition-all"
+              >
+                <MessageCircle size={15} className="text-[#25D366]" />
+                WhatsApp Us
+              </a>
+              <Link href="/services" prefetch={false} className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-sm text-white/80 border border-white/20 hover:bg-white/10 hover:text-white transition-all">
                 Explore Services
               </Link>
             </div>
@@ -70,7 +82,7 @@ export default function Footer() {
 
             {/* Brand col */}
             <div className="col-span-2 md:col-span-4">
-              <Link href="/" className="flex items-center gap-2.5 mb-5">
+              <Link href="/" prefetch={false} className="flex items-center gap-2.5 mb-5">
                 <div className="relative w-9 h-9 rounded-xl flex items-center justify-center"
                   style={{ background: 'linear-gradient(135deg,#477BDB,#6477C8)' }}>
                   <span className="text-white font-black text-base">G</span>
@@ -118,7 +130,7 @@ export default function Footer() {
               <ul className="space-y-2">
                 {services.map((s) => (
                   <li key={s.id}>
-                    <Link href={`/services/${s.slug}`}
+                    <Link href={`/services/${s.slug}`} prefetch={false}
                       className="text-[#8BA5C8] text-sm hover:text-white transition-colors flex items-center gap-1.5 group">
                       <span className="w-1 h-1 rounded-full bg-[#477BDB]/40 group-hover:bg-[#477BDB] transition-colors flex-shrink-0" />
                       {s.title}
@@ -140,7 +152,7 @@ export default function Footer() {
                   { label: 'Contact',   href: '/contact' },
                 ].map((l) => (
                   <li key={l.href}>
-                    <Link href={l.href}
+                    <Link href={l.href} prefetch={false}
                       className="text-[#8BA5C8] text-sm hover:text-white transition-colors">
                       {l.label}
                     </Link>
@@ -156,9 +168,13 @@ export default function Footer() {
                 {[
                   { label: 'Privacy Policy',   href: '/legal/privacy-policy' },
                   { label: 'Terms of Service', href: '/legal/terms-of-service' },
+                  { label: 'Cookie Policy',    href: '/legal/cookie-policy' },
+                  { label: 'Refund Policy',    href: '/legal/refund-policy' },
+                  { label: 'Disclaimer',       href: '/legal/disclaimer' },
+                  { label: 'Accessibility',    href: '/legal/accessibility' },
                 ].map((l) => (
                   <li key={l.href}>
-                    <Link href={l.href} className="text-[#8BA5C8] text-sm hover:text-white transition-colors">{l.label}</Link>
+                    <Link href={l.href} prefetch={false} className="text-[#8BA5C8] text-sm hover:text-white transition-colors">{l.label}</Link>
                   </li>
                 ))}
               </ul>

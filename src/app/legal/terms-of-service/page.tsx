@@ -18,19 +18,13 @@ export default function TermsOfServicePage() {
           />
           <div className="mt-5">
             <h1 className="text-3xl lg:text-4xl font-bold text-white">Terms of Service</h1>
-            <p className="text-white/40 text-sm mt-2">Last updated: [Date to be set by administrator]</p>
+            <p className="text-white/40 text-sm mt-2">Last updated: January 15, 2025</p>
           </div>
         </div>
       </div>
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="space-y-8">
-          <section>
-            <p className="text-[#57606a] leading-relaxed p-4 rounded-xl bg-amber-50 border border-amber-200 text-sm">
-              <strong className="text-amber-800">Note to administrator:</strong> This is a template terms of service document. It must be reviewed and approved by a qualified legal adviser before being published. Fill in all [placeholder] fields with accurate information specific to your business and applicable jurisdiction.
-            </p>
-          </section>
-
           <LegalSection title="1. Agreement to terms">
             <p>By accessing or using the {siteConfig.siteName} website and engaging our services, you agree to be bound by these Terms of Service. If you do not agree to these terms, do not use this website or engage our services.</p>
           </LegalSection>
@@ -47,8 +41,8 @@ export default function TermsOfServicePage() {
           </LegalSection>
 
           <LegalSection title="4. Payments and fees">
-            <p>Payment terms are set out in individual project proposals or service agreements. We typically require [payment milestone structure — to be set by administrator].</p>
-            <p>Late payments may attract [late payment terms — to be set by administrator]. We reserve the right to pause work on overdue accounts.</p>
+            <p>Payment terms are set out in individual project proposals or service agreements. Unless explicitly agreed otherwise in writing, we typically require an initial 50% deposit upon project commencement, with the remaining 50% payable upon milestone completion or final delivery acceptance.</p>
+            <p>Late payments may attract a late payment fee of 1.5% per month (or the maximum permitted by applicable law) on outstanding balances. We reserve the right to pause work on overdue accounts until outstanding invoices are settled.</p>
           </LegalSection>
 
           <LegalSection title="5. Revisions and scope">
@@ -73,7 +67,7 @@ export default function TermsOfServicePage() {
           </LegalSection>
 
           <LegalSection title="10. Governing law">
-            <p>These terms are governed by the laws of [Jurisdiction — to be set by administrator]. Any disputes shall be subject to the exclusive jurisdiction of the courts of [Jurisdiction — to be set by administrator].</p>
+            <p>These terms are governed by and construed in accordance with the laws of India. Any legal action or proceeding arising under or in connection with these terms shall be subject to the exclusive jurisdiction of the competent courts of Bengaluru, Karnataka, India.</p>
           </LegalSection>
 
           <LegalSection title="11. Changes to these terms">

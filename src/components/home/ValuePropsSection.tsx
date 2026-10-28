@@ -1,4 +1,4 @@
-import { valueProps } from '@/data';
+import { valueProps } from '@/data/company';
 import { Icon } from '@/components/Icon';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';

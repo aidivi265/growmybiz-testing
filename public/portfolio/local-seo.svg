@@ -1,0 +1,70 @@
+<svg width="800" height="500" viewBox="0 0 800 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="500" rx="16" fill="#0A1320"/>
+  <rect x="0.5" y="0.5" width="799" height="499" rx="15.5" stroke="#1B2B42"/>
+  
+  <circle cx="650" cy="180" r="160" fill="#32A88A" fill-opacity="0.10" filter="blur(60px)"/>
+  <circle cx="150" cy="350" r="160" fill="#477BDB" fill-opacity="0.12" filter="blur(60px)"/>
+
+  <!-- Google Search & Maps Results Mockup -->
+  <g transform="translate(45, 35)">
+    <rect width="710" height="430" rx="12" fill="#101D30" stroke="#223754"/>
+    
+    <!-- Top Search Bar -->
+    <rect width="710" height="50" rx="12" fill="#0C1726"/>
+    <rect x="25" y="12" width="450" height="26" rx="13" fill="#182A42"/>
+    <text x="50" y="29" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="11">best boutique luxury hotel near lake pichola udaipur</text>
+    <rect x="600" y="14" width="85" height="22" rx="6" fill="#32A88A"/>
+    <text x="642" y="29" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle">#1 RANKING</text>
+
+    <!-- Google Map Pack Card -->
+    <g transform="translate(25, 65)">
+      <!-- Map Graphic preview -->
+      <rect width="280" height="230" rx="10" fill="#162942" stroke="#263E61"/>
+      <!-- Map grid roads -->
+      <path d="M 0 60 Q 140 80 280 40 M 0 160 Q 140 130 280 180 M 100 0 L 120 230 M 200 0 L 190 230" stroke="#233B5C" stroke-width="4"/>
+      <!-- Map Pin #1 -->
+      <circle cx="120" cy="110" r="18" fill="#EF4444" stroke="#FFFFFF" stroke-width="2"/>
+      <circle cx="120" cy="110" r="6" fill="#FFFFFF"/>
+      <rect x="70" y="140" width="100" height="22" rx="4" fill="#0F1C31" stroke="#32A88A"/>
+      <text x="120" y="155" fill="#4DD8B0" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle">Kalyan Heritage ★ 4.9</text>
+    </g>
+
+    <!-- Search Result Snippets -->
+    <g transform="translate(325, 65)">
+      <!-- Result 1 -->
+      <rect width="360" height="110" rx="8" fill="#14243A" stroke="#263F63"/>
+      <text x="16" y="24" fill="#4DD8B0" font-family="system-ui, sans-serif" font-size="10" font-weight="700">★ 4.9 (420+ Google Reviews) • 0.2 km from City Palace</text>
+      <text x="16" y="46" fill="#6AADFF" font-family="system-ui, sans-serif" font-size="15" font-weight="800">Kalyan Heritage Resort &amp; Spa, Udaipur</text>
+      <text x="16" y="68" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11">Direct official booking with complimentary breakfast &amp; lake view suites. No OTA commissions.</text>
+      <text x="16" y="94" fill="#32A88A" font-family="system-ui, sans-serif" font-size="11" font-weight="700">✓ In High Demand — 82 Direct Bookings This Week</text>
+
+      <!-- Result 2 -->
+      <g transform="translate(0, 120)">
+        <rect width="360" height="110" rx="8" fill="#122033" stroke="#1E3350"/>
+        <text x="16" y="24" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="10">LOCAL CITATIONS &amp; NAP CONSISTENCY</text>
+        <text x="16" y="46" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="13" font-weight="700">100% Verified Across 45+ Local Directories</text>
+        <text x="16" y="68" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11">Google Business Profile, TripAdvisor, Justdial, Apple Maps &amp; MakeMyTrip sync.</text>
+        <text x="16" y="94" fill="#477BDB" font-family="system-ui, sans-serif" font-size="11" font-weight="700">+185% Inbound Direct Phone Calls</text>
+      </g>
+    </g>
+
+    <!-- Bottom Growth Bar -->
+    <g transform="translate(25, 310)">
+      <rect width="660" height="95" rx="10" fill="#0E1A2B" stroke="#203552"/>
+      <g transform="translate(25, 25)">
+        <text x="0" y="22" fill="#4DD8B0" font-family="system-ui, sans-serif" font-size="22" font-weight="800">#1 Local Pack</text>
+        <text x="0" y="42" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11">Ranked for 18 High-Intent Keywords</text>
+      </g>
+      <line x1="225" y1="20" x2="225" y2="75" stroke="#1C2E47"/>
+      <g transform="translate(250, 25)">
+        <text x="0" y="22" fill="#6AADFF" font-family="system-ui, sans-serif" font-size="22" font-weight="800">+185%</text>
+        <text x="0" y="42" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11">Direct Online Bookings</text>
+      </g>
+      <line x1="440" y1="20" x2="440" y2="75" stroke="#1C2E47"/>
+      <g transform="translate(465, 25)">
+        <text x="0" y="22" fill="#F59E0B" font-family="system-ui, sans-serif" font-size="22" font-weight="800">₹4.8L Saved</text>
+        <text x="0" y="42" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11">Zero OTA Commissions (Q1)</text>
+      </g>
+    </g>
+  </g>
+</svg>

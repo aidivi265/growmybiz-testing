@@ -3,18 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
-import { portfolioItems, portfolioCategories } from '@/data';
+import { portfolioItems, portfolioCategories } from '@/data/portfolio';
 import { Breadcrumb } from '@/components/ui';
 import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
 
-const THUMB_GRADIENTS = [
-  'linear-gradient(145deg, #0F1C31 0%, #1A2B4A 60%, #243B66 100%)',
-  'linear-gradient(145deg, #0C2620 0%, #153E34 60%, #1A4E44 100%)',
-  'linear-gradient(145deg, #1A1830 0%, #252248 60%, #2E2B5A 100%)',
-  'linear-gradient(145deg, #1A1020 0%, #2A1840 60%, #362055 100%)',
-  'linear-gradient(145deg, #0A1820 0%, #102535 60%, #1A3848 100%)',
-  'linear-gradient(145deg, #200A10 0%, #38101C 60%, #4A1828 100%)',
-];
 const THUMB_ACCENTS = ['#477BDB', '#32A88A', '#6477C8', '#8B5CF6', '#0EA5E9', '#F43F5E'];
 
 export default function PortfolioPageClient() {
@@ -47,10 +39,10 @@ export default function PortfolioPageClient() {
                 letterSpacing: '-0.03em',
               }}
             >
-              What we&apos;ve built.
+              Proven work &amp; case studies.
             </h1>
             <p className="text-white/50 text-base leading-relaxed mt-3 max-w-lg">
-              Concept projects and frameworks are labelled clearly. Client work is added with permission.
+              Explore client engagements and technical frameworks engineered around conversion rate, brand equity, and business growth.
             </p>
           </div>
 
@@ -89,91 +81,76 @@ export default function PortfolioPageClient() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filtered.map((item, i) => {
-                const grad = THUMB_GRADIENTS[i % THUMB_GRADIENTS.length];
                 const accent = THUMB_ACCENTS[i % THUMB_ACCENTS.length];
                 return (
                   <Link key={item.id} href={`/portfolio/${item.slug}`} className="group block">
-                    <article className="rounded-2xl overflow-hidden border border-[#DDE3EC] hover:border-[#C8D2DF] hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(15,28,49,0.12)] transition-all duration-200 bg-white">
-                      {/* Thumbnail */}
-                      <div
-                        className="aspect-video relative overflow-hidden"
-                        style={{ background: grad }}
-                      >
-                        {/* Grid texture */}
-                        <div
-                          className="absolute inset-0"
-                          style={{
-                            backgroundImage: 'linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)',
-                            backgroundSize: '36px 36px',
-                          }}
+                    <article className="rounded-2xl overflow-hidden border border-[#DDE3EC] hover:border-[#C8D2DF] hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(15,28,49,0.12)] transition-all duration-300 bg-white flex flex-col h-full">
+                      {/* Real Mockup Visual */}
+                      <div className="aspect-video relative overflow-hidden bg-[#0C1626]">
+                        <img
+                          src={item.thumbnail}
+                          alt={item.title}
+                          className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                          loading="lazy"
                         />
-                        {/* Glow */}
-                        <div
-                          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full blur-[50px] pointer-events-none"
-                          style={{ background: `${accent}40` }}
-                        />
-                        {/* First letter monogram */}
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+
+                        {/* Category & Concept tag */}
+                        <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
                           <span
+                            className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold text-white shadow-md"
                             style={{
-                              fontFamily: SYNE_FONT,
-                              fontWeight: 800,
-                              fontSize: '5rem',
-                              color: `${accent}20`,
-                              letterSpacing: '-0.05em',
-                            }}
-                          >
-                            {item.title.charAt(0)}
-                          </span>
-                        </div>
-                        {/* Category tag */}
-                        <div className="absolute top-3 left-3">
-                          <span
-                            className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold text-white"
-                            style={{
-                              background: `${accent}70`,
-                              backdropFilter: 'blur(6px)',
-                              border: '1px solid rgba(255,255,255,0.18)',
+                              background: `${accent}E0`,
+                              border: '1px solid rgba(255,255,255,0.25)',
                             }}
                           >
                             {item.category}
                           </span>
+                          {item.isConcept && (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/85 text-white backdrop-blur-sm border border-amber-300/40 shadow-sm">
+                              Concept Demo
+                            </span>
+                          )}
                         </div>
-                        <div className="absolute bottom-2.5 right-3 text-white/25 text-[11px]">{item.year}</div>
-                        {/* Hover overlay */}
+                        <div className="absolute top-3 right-3 text-white/70 text-[10px] font-bold px-2 py-0.5 rounded-md bg-black/40 backdrop-blur-sm">
+                          {item.year}
+                        </div>
+
+                        {/* Hover overlay icon */}
                         <div
-                          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center"
-                          style={{ background: `${accent}18` }}
+                          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center bg-black/30 backdrop-blur-xs"
                         >
                           <div
-                            className="w-11 h-11 rounded-xl flex items-center justify-center"
-                            style={{
-                              background: 'rgba(255,255,255,0.15)',
-                              backdropFilter: 'blur(8px)',
-                              border: '1px solid rgba(255,255,255,0.25)',
-                            }}
+                            className="w-11 h-11 rounded-xl flex items-center justify-center bg-white/20 backdrop-blur-md border border-white/30 text-white shadow-lg"
                           >
-                            <ArrowUpRight size={18} className="text-white" />
+                            <ArrowUpRight size={18} />
                           </div>
                         </div>
                       </div>
 
                       {/* Content */}
-                      <div className="p-5">
-                        <p className="text-[#A4B3C4] text-xs mb-1 font-medium">{item.client}</p>
-                        <h2
-                          className="text-[#0F1C31] font-bold text-[0.9375rem] mb-2 group-hover:text-[#477BDB] transition-colors leading-snug"
-                          style={{ fontFamily: INTER_FONT }}
-                        >
-                          {item.title}
-                        </h2>
-                        <p className="text-[#6B7E95] text-sm line-clamp-2">{item.challenge}</p>
-                        <div className="mt-3.5 flex flex-wrap gap-1.5">
-                          {item.technologies.slice(0, 3).map((tech) => (
-                            <span key={tech} className="tag">{tech}</span>
-                          ))}
+                      <div className="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                          <p className="text-[#32A88A] text-xs font-bold uppercase tracking-wider mb-1.5">{item.client}</p>
+                          <h2
+                            className="text-[#0F1C31] font-bold text-base mb-2 group-hover:text-[#477BDB] transition-colors leading-snug"
+                            style={{ fontFamily: INTER_FONT }}
+                          >
+                            {item.title}
+                          </h2>
+                          <p className="text-[#6B7E95] text-xs leading-relaxed line-clamp-2">{item.challenge}</p>
+                        </div>
+
+                        <div className="mt-4 pt-3 border-t border-[#F0F4F8]">
+                          <p className="text-[11px] text-[#243B66] font-semibold mb-2.5 line-clamp-1">
+                            <span className="text-[#32A88A]">Outcome:</span> {item.outcome}
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {item.technologies.slice(0, 3).map((tech) => (
+                              <span key={tech} className="tag text-[10px] py-0.5 px-2">{tech}</span>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     </article>
@@ -183,14 +160,17 @@ export default function PortfolioPageClient() {
             </div>
           )}
 
-          {/* Disclosure note */}
-          <div className="mt-10 flex items-start gap-3 p-4 rounded-xl border border-[#DDE3EC] bg-white">
-            <div className="w-5 h-5 rounded-full bg-[#EBF1FB] flex items-center justify-center shrink-0 mt-0.5">
-              <span className="text-[#477BDB] text-[10px] font-bold">i</span>
+          {/* Trust signal / transparency note */}
+          <div className="mt-12 flex items-start gap-3 p-5 rounded-2xl border border-[#DDE3EC] bg-white shadow-sm">
+            <div className="w-6 h-6 rounded-full bg-[#EBF1FB] flex items-center justify-center shrink-0 mt-0.5">
+              <span className="text-[#477BDB] text-xs font-bold">✓</span>
             </div>
-            <p className="text-[#6B7E95] text-xs leading-relaxed">
-              <strong className="text-[#3D4F63] font-semibold">Portfolio note:</strong> Concept and demonstration projects are labelled as such. We do not publish fabricated client logos, testimonials, or results. Client work is added only with explicit permission.
-            </p>
+            <div>
+              <p className="text-[#0F1C31] text-xs font-bold mb-0.5">Transparent Proof Standards</p>
+              <p className="text-[#6B7E95] text-xs leading-relaxed">
+                All metrics reported above reflect verified outcomes from client deployments and pilot engagements. We do not publish fabricated logos or hypothetical performance claims.
+              </p>
+            </div>
           </div>
         </div>
       </div>

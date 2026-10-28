@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
-import { services } from '@/data';
+import { services } from '@/data/services';
 import { Icon } from '@/components/Icon';
 import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
 
@@ -57,7 +57,7 @@ export default function ServicesSection() {
             const cs = CARD_STYLES[i % CARD_STYLES.length];
             const isWide = cs.span === 'md:col-span-2';
             return (
-              <Link
+              <Link prefetch={false}
                 key={svc.id}
                 href={`/services/${svc.slug}`}
                 className={`group relative flex flex-col rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-1 ${cs.span}`}

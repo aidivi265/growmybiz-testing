@@ -1,18 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Eye, EyeOff, Lock, User, AlertCircle } from 'lucide-react';
 
-// NOTE: In production, replace with server-side session auth (NextAuth, JWT, etc.)
-// These credentials are for development demo only — must be environment variables in production.
-const DEMO_CREDENTIALS = {
-  username: 'admin',
-  password: 'growmybizz2025',
-};
-
 export default function AdminLoginPage() {
-  const router = useRouter();
   const [form, setForm] = useState({ username: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -23,26 +15,38 @@ export default function AdminLoginPage() {
     setError('');
     setLoading(true);
 
-    // Simulate auth latency
-    await new Promise((r) => setTimeout(r, 800));
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
 
-    if (
-      form.username === DEMO_CREDENTIALS.username &&
-      form.password === DEMO_CREDENTIALS.password
-    ) {
-      // Set a simple session marker (demo only — use proper auth in production)
-      sessionStorage.setItem('gmb_admin_auth', 'true');
-      router.push('/admin/dashboard');
-    } else {
-      setError('Invalid credentials. Please try again.');
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'Invalid credentials. Please try again.');
+        setLoading(false);
+        return;
+      }
+
+      // Hard redirect ensures the newly issued HTTP-only session cookie is sent on the fresh GET request
+      // and completely bypasses any stale Next.js client router cache
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+      window.location.href = '/admin/dashboard';
+    } catch {
+      setError('Connection error. Please try again.');
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      {/* Background */}
-      <div className="absolute inset-0 overflow-hidden">
+    <div
+      suppressHydrationWarning
+      className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-[#07070d]"
+    >
+      {/* Background decoration */}
+      <div className="absolute inset-0 pointer-events-none">
         <div
           className="absolute inset-0 opacity-[0.03]"
           style={{
@@ -52,13 +56,13 @@ export default function AdminLoginPage() {
           }}
         />
         <div
-          className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full blur-[150px] opacity-[0.05]"
+          className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full blur-[150px] opacity-[0.06]"
           style={{ background: 'radial-gradient(circle, #3b82d4, transparent)' }}
         />
       </div>
 
       <div className="relative z-10 w-full max-w-sm">
-        {/* Logo */}
+        {/* Brand header */}
         <div className="text-center mb-8">
           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#3b82d4] to-[#7c5cd8] flex items-center justify-center mx-auto mb-3 shadow-xl shadow-blue-500/20">
             <Lock size={18} className="text-white" />
@@ -67,12 +71,15 @@ export default function AdminLoginPage() {
           <p className="text-white/40 text-sm mt-1">Growmybizz CMS</p>
         </div>
 
-        {/* Card */}
-        <div className="bg-[#0d0d14] rounded-2xl border border-white/[0.06] p-7 shadow-2xl shadow-black/60">
-          <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Login form card */}
+        <div
+          suppressHydrationWarning
+          className="bg-[#0d0d14] rounded-2xl border border-white/[0.08] p-7 shadow-2xl shadow-black/80"
+        >
+          <form onSubmit={handleSubmit} className="space-y-4" suppressHydrationWarning>
             {/* Username */}
             <div>
-              <label className="block text-xs font-medium text-white/50 mb-1.5">Username</label>
+              <label className="block text-xs font-medium text-white/50 mb-1.5">Username or Email</label>
               <div className="relative">
                 <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30">
                   <User size={15} />
@@ -82,7 +89,7 @@ export default function AdminLoginPage() {
                   value={form.username}
                   onChange={(e) => setForm((p) => ({ ...p, username: e.target.value }))}
                   className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white/[0.05] border border-white/[0.08] text-white placeholder-white/25 text-sm focus:outline-none focus:border-[#3b82d4]/60 focus:ring-1 focus:ring-[#3b82d4]/20 transition-colors"
-                  placeholder="Enter username"
+                  placeholder="admin or admin@growmybizz.com"
                   autoComplete="username"
                   required
                 />
@@ -107,7 +114,7 @@ export default function AdminLoginPage() {
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => setShowPassword((p) => !p)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
@@ -116,11 +123,11 @@ export default function AdminLoginPage() {
               </div>
             </div>
 
-            {/* Error */}
+            {/* Error Message */}
             {error && (
-              <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
-                <AlertCircle size={14} className="text-red-400 shrink-0" />
-                <p className="text-red-400 text-xs">{error}</p>
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
+                <AlertCircle size={14} className="shrink-0" />
+                <span>{error}</span>
               </div>
             )}
 
@@ -128,28 +135,35 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-xl bg-[#3b82d4] hover:bg-[#2563eb] disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium text-sm transition-colors mt-2 flex items-center justify-center gap-2"
+              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#3b82d4] to-[#7c5cd8] text-white font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 mt-2 cursor-pointer"
             >
               {loading ? (
                 <>
-                  <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                  Verifying...
+                  <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                  <span>Verifying...</span>
                 </>
               ) : (
-                'Sign In'
+                'Sign in'
               )}
             </button>
+
+            {/* Quick credentials hint */}
+            <div className="pt-1 text-center">
+              <p className="text-[11px] text-white/30">
+                Authorized for <span className="text-white/50 font-mono">admin</span> or founder email
+              </p>
+            </div>
           </form>
         </div>
 
-        {/* Disclaimer */}
-        <p className="text-center text-white/20 text-xs mt-5">
-          This panel is not publicly linked. Access is logged.
-        </p>
-        <p className="text-center mt-3">
-          <a href="/" className="text-white/25 text-xs hover:text-white/40 transition-colors">
-            ← Back to site
-          </a>
+        {/* Back to site */}
+        <p className="text-center mt-6">
+          <Link
+            href="/"
+            className="text-xs text-white/40 hover:text-white/70 transition-colors"
+          >
+            ← Return to public website
+          </Link>
         </p>
       </div>
     </div>

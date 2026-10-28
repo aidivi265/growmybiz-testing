@@ -1,3 +1,13 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Admin Access | Growmybizz CMS',
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 /**
  * CMS Admin layout — separate from the public site layout.
  * Does NOT include Navbar or Footer.

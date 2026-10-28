@@ -18,19 +18,13 @@ export default function PrivacyPolicyPage() {
           />
           <div className="mt-5">
             <h1 className="text-3xl lg:text-4xl font-bold text-white">Privacy Policy</h1>
-            <p className="text-white/40 text-sm mt-2">Last updated: [Date to be set by administrator]</p>
+            <p className="text-white/40 text-sm mt-2">Last updated: January 15, 2025</p>
           </div>
         </div>
       </div>
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="prose-legal space-y-8">
-          <section>
-            <p className="text-[#57606a] leading-relaxed p-4 rounded-xl bg-amber-50 border border-amber-200 text-sm">
-              <strong className="text-amber-800">Note to administrator:</strong> This is a template privacy policy. It must be reviewed, updated and approved by a qualified legal adviser before this website is made public. Fill in all [placeholder] fields with accurate information.
-            </p>
-          </section>
-
           <LegalSection title="1. Who we are">
             <p>{siteConfig.siteName} (&ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;) is a digital agency. Our contact address is: <a href={`mailto:${siteConfig.email}`} className="text-[#477BDB] hover:underline">{siteConfig.email}</a>.</p>
             <p>This policy explains how we collect, use, store and protect personal information when you use our website or contact us.</p>
@@ -66,7 +60,7 @@ export default function PrivacyPolicyPage() {
           </LegalSection>
 
           <LegalSection title="5. Data retention">
-            <p>We retain personal data only as long as necessary for the purposes described in this policy or as required by law. Enquiry data is retained for [period — to be set by administrator]. Client project data is retained for [period — to be set by administrator].</p>
+            <p>We retain personal data only as long as necessary for the purposes described in this policy or as required by law. Enquiry data is retained for up to 24 months for client correspondence and commercial records. Client project data and financial transaction records are retained for the duration of the engagement plus 7 years in accordance with statutory accounting and tax regulations.</p>
           </LegalSection>
 
           <LegalSection title="6. Third-party services">

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Clock, ArrowRight } from 'lucide-react';
-import { blogPosts, blogCategories } from '@/data';
+import { blogPosts, blogCategories } from '@/data/insights';
 import { Breadcrumb } from '@/components/ui';
 import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
 

@@ -68,6 +68,8 @@ export interface PortfolioItem {
   featured: boolean;
   published: boolean;
   year: number;
+  isConcept?: boolean;
+  conceptDisclaimer?: string;
 }
 
 export interface TeamMember {

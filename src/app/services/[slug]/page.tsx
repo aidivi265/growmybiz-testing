@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle, ChevronDown } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { services } from '@/data';
-import { Section, SectionHeader, Card, Badge, Breadcrumb } from '@/components/ui';
+import { Section, SectionHeader, Card, Breadcrumb } from '@/components/ui';
 import { Icon } from '@/components/Icon';
 import { SYNE_FONT } from '@/lib/fonts';
+import ScheduleCallButton from '@/components/ScheduleCallButton';
+import FAQAccordion from '@/components/ui/FAQAccordion';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -76,9 +78,12 @@ export default async function ServicePage({ params }: Props) {
                 {service.title}
               </h1>
               <p className="text-white/50 leading-relaxed max-w-2xl">{service.description}</p>
-              <Link href="/contact" className="btn btn-primary btn-md mt-6">
-                Discuss this service <ArrowRight size={14} />
-              </Link>
+              <div className="flex flex-wrap items-center gap-3 mt-6">
+                <Link href="/contact" className="btn btn-primary btn-md">
+                  Discuss this service <ArrowRight size={14} />
+                </Link>
+                <ScheduleCallButton />
+              </div>
             </div>
           </div>
         </div>
@@ -157,18 +162,8 @@ export default async function ServicePage({ params }: Props) {
             title="Frequently asked"
             className="max-w-2xl"
           />
-          <div className="max-w-2xl space-y-3">
-            {service.faqs.map((faq) => (
-              <div
-                key={faq.id}
-                className="rounded-xl border border-white/[0.06] overflow-hidden"
-              >
-                <div className="px-5 py-4">
-                  <h3 className="text-white font-medium text-sm mb-2">{faq.question}</h3>
-                  <p className="text-white/45 text-sm leading-relaxed">{faq.answer}</p>
-                </div>
-              </div>
-            ))}
+          <div className="max-w-2xl">
+            <FAQAccordion faqs={service.faqs} accentColor={service.color} />
           </div>
         </Section>
       )}

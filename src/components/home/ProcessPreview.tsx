@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { processSteps } from '@/data';
+import { processSteps } from '@/data/process';
 import { Icon } from '@/components/Icon';
 import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
 

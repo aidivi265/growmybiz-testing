@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown, ArrowRight } from 'lucide-react';
-import { navItems, siteConfig } from '@/data';
+import { navItems } from '@/data/navigation';
+import { siteConfig } from '@/data/siteConfig';
 import type { NavItem } from '@/types';
 
 export default function Navbar() {
@@ -15,15 +16,32 @@ export default function Navbar() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
+    let ticking = false;
+    let lastScrolled = false;
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const isScrolled = window.scrollY > 16;
+          if (isScrolled !== lastScrolled) {
+            lastScrolled = isScrolled;
+            setScrolled(isScrolled);
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  useEffect(() => {
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
     setMobileOpen(false);
     setActiveDropdown(null);
-  }, [pathname]);
+  }
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
@@ -36,11 +54,12 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
+        className={`fixed top-0 inset-x-0 z-50 transition-[background-color,border-color,box-shadow] duration-200 ${
           scrolled
             ? 'bg-white/96 backdrop-blur-md shadow-[0_2px_24px_rgba(15,28,49,0.09)] border-b border-[#E8EDF4]'
             : 'bg-white/80 backdrop-blur-sm border-b border-transparent'
         }`}
+        style={{ transform: 'translateZ(0)' }}
       >
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -261,6 +280,7 @@ function NavItemComponent({
                 <Link
                   key={child.href}
                   href={child.href}
+                  prefetch={false}
                   className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#3D4F63] hover:text-[#477BDB] hover:bg-[#F7F9FC] transition-colors group"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-[#DDE3EC] group-hover:bg-[#477BDB] transition-colors flex-shrink-0" />

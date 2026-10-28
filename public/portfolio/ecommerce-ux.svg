@@ -1,0 +1,74 @@
+<svg width="800" height="500" viewBox="0 0 800 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="500" rx="16" fill="#0C1828"/>
+  <rect x="0.5" y="0.5" width="799" height="499" rx="15.5" stroke="#1F3352"/>
+  
+  <!-- Ambient glow -->
+  <circle cx="650" cy="150" r="180" fill="#32A88A" fill-opacity="0.12" filter="blur(60px)"/>
+  <circle cx="150" cy="400" r="160" fill="#477BDB" fill-opacity="0.10" filter="blur(60px)"/>
+
+  <!-- Browser Window Frame -->
+  <g transform="translate(40, 35)">
+    <!-- Browser bar -->
+    <rect width="720" height="430" rx="12" fill="#13233A" stroke="#253C5E"/>
+    <rect width="720" height="38" rx="12" fill="#0E1B2D"/>
+    <!-- Window controls -->
+    <circle cx="22" cy="19" r="5" fill="#EF4444" fill-opacity="0.8"/>
+    <circle cx="38" cy="19" r="5" fill="#F59E0B" fill-opacity="0.8"/>
+    <circle cx="54" cy="19" r="5" fill="#10B981" fill-opacity="0.8"/>
+    <!-- URL pill -->
+    <rect x="200" y="8" width="320" height="22" rx="6" fill="#172942"/>
+    <text x="360" y="23" fill="#6B7E95" font-family="system-ui, sans-serif" font-size="10" font-weight="500" text-anchor="middle">store.zenithorganics.in</text>
+
+    <!-- Store Navigation -->
+    <rect x="25" y="55" width="670" height="45" rx="8" fill="#172B45"/>
+    <text x="45" y="82" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="14" font-weight="800">ZENITH ORGANICS</text>
+    <text x="210" y="81" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11" font-weight="500">Shop All</text>
+    <text x="275" y="81" fill="#477BDB" font-family="system-ui, sans-serif" font-size="11" font-weight="600">Best Sellers</text>
+    <text x="360" y="81" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11" font-weight="500">Science</text>
+    <rect x="610" y="63" width="70" height="28" rx="6" fill="#32A88A"/>
+    <text x="645" y="81" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="11" font-weight="700" text-anchor="middle">Cart (2)</text>
+
+    <!-- Main Hero Banner in Store -->
+    <rect x="25" y="115" width="410" height="195" rx="10" fill="#1A304D" stroke="#2B466B"/>
+    <rect x="45" y="135" width="85" height="20" rx="10" fill="#32A88A" fill-opacity="0.2"/>
+    <text x="87" y="149" fill="#4DD8B0" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle">100% ORGANIC</text>
+    <text x="45" y="185" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="20" font-weight="800">Plant-Powered Daily Wellness</text>
+    <text x="45" y="210" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="12">Cold-pressed botanical adaptogens designed for focus &amp; gut balance.</text>
+    
+    <rect x="45" y="240" width="130" height="34" rx="8" fill="#477BDB"/>
+    <text x="110" y="261" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle">Buy Now — ₹1,499</text>
+    <text x="195" y="260" fill="#F59E0B" font-family="system-ui, sans-serif" font-size="12" font-weight="700">★ ★ ★ ★ ★ (4.9)</text>
+
+    <!-- Product Card 1 -->
+    <rect x="450" y="115" width="245" height="195" rx="10" fill="#172B45" stroke="#253E61"/>
+    <rect x="465" y="130" width="215" height="95" rx="8" fill="#1C3555"/>
+    <!-- Mock bottle graphic -->
+    <rect x="555" y="142" width="35" height="70" rx="6" fill="#32A88A" fill-opacity="0.8"/>
+    <rect x="563" y="135" width="19" height="10" rx="2" fill="#E6F5F1"/>
+    <text x="465" y="248" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="13" font-weight="700">Morning Adaptogen Elixir</text>
+    <text x="465" y="268" fill="#4DD8B0" font-family="system-ui, sans-serif" font-size="12" font-weight="700">₹1,299</text>
+    <text x="515" y="268" fill="#6B7E95" font-family="system-ui, sans-serif" font-size="11" text-decoration="line-through">₹1,799</text>
+    <rect x="610" y="250" width="70" height="24" rx="6" fill="#477BDB"/>
+    <text x="645" y="266" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle">Add +</text>
+
+    <!-- Bottom Metrics Strip -->
+    <g transform="translate(25, 325)">
+      <rect width="670" height="85" rx="10" fill="#0F1E33" stroke="#223956"/>
+      <g transform="translate(30, 20)">
+        <text x="0" y="22" fill="#4DD8B0" font-family="system-ui, sans-serif" font-size="22" font-weight="800">+42%</text>
+        <text x="0" y="42" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11">Mobile Checkout Rate</text>
+      </g>
+      <line x1="220" y1="15" x2="220" y2="70" stroke="#1F3352"/>
+      <g transform="translate(250, 20)">
+        <text x="0" y="22" fill="#6AADFF" font-family="system-ui, sans-serif" font-size="22" font-weight="800">1.1s</text>
+        <text x="0" y="42" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11">Page Speed Index</text>
+      </g>
+      <line x1="440" y1="15" x2="440" y2="70" stroke="#1F3352"/>
+      <g transform="translate(470, 20)">
+        <text x="0" y="22" fill="#F59E0B" font-family="system-ui, sans-serif" font-size="22" font-weight="800">₹28.4L</text>
+        <text x="0" y="42" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11">First Month Gross Revenue</text>
+      </g>
+    </g>
+  </g>
+</svg>

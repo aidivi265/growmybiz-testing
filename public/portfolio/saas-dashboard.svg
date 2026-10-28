@@ -1,0 +1,92 @@
+<svg width="800" height="500" viewBox="0 0 800 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="500" rx="16" fill="#0B1320"/>
+  <rect x="0.5" y="0.5" width="799" height="499" rx="15.5" stroke="#1D2E44"/>
+  
+  <circle cx="700" cy="120" r="160" fill="#477BDB" fill-opacity="0.12" filter="blur(60px)"/>
+  <circle cx="100" cy="380" r="180" fill="#32A88A" fill-opacity="0.10" filter="blur(60px)"/>
+
+  <!-- App Window Frame -->
+  <g transform="translate(40, 35)">
+    <rect width="720" height="430" rx="12" fill="#111D2E" stroke="#223652"/>
+    <rect width="720" height="36" rx="12" fill="#0C1523"/>
+    <circle cx="20" cy="18" r="4.5" fill="#EF4444"/>
+    <circle cx="34" cy="18" r="4.5" fill="#F59E0B"/>
+    <circle cx="48" cy="18" r="4.5" fill="#10B981"/>
+    <text x="360" y="22" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="10" font-weight="600" text-anchor="middle">app.nexarai.io — Pipeline Overview</text>
+
+    <!-- Sidebar -->
+    <g transform="translate(0, 36)">
+      <rect width="140" height="394" fill="#0E1928" stroke="#1E314B"/>
+      <!-- App logo -->
+      <rect x="20" y="20" width="24" height="24" rx="6" fill="#477BDB"/>
+      <text x="52" y="37" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="12" font-weight="800">Nexar.ai</text>
+      
+      <!-- Nav items -->
+      <rect x="15" y="70" width="110" height="30" rx="6" fill="#477BDB" fill-opacity="0.2"/>
+      <text x="32" y="89" fill="#6AADFF" font-family="system-ui, sans-serif" font-size="11" font-weight="700">Dashboard</text>
+      <text x="32" y="125" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11" font-weight="500">Analytics</text>
+      <text x="32" y="155" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11" font-weight="500">Customers</text>
+      <text x="32" y="185" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11" font-weight="500">Integrations</text>
+      <text x="32" y="215" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="11" font-weight="500">Settings</text>
+    </g>
+
+    <!-- Main Content Area -->
+    <g transform="translate(155, 50)">
+      <!-- Top Stats Row -->
+      <!-- Card 1 -->
+      <g transform="translate(0, 0)">
+        <rect width="170" height="75" rx="8" fill="#16273D" stroke="#263E5E"/>
+        <text x="14" y="24" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="10" font-weight="600">MONTHLY RECURRING</text>
+        <text x="14" y="52" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="20" font-weight="800">₹8,42,000</text>
+        <text x="110" y="52" fill="#32A88A" font-family="system-ui, sans-serif" font-size="11" font-weight="700">+28.4%</text>
+      </g>
+      <!-- Card 2 -->
+      <g transform="translate(185, 0)">
+        <rect width="170" height="75" rx="8" fill="#16273D" stroke="#263E5E"/>
+        <text x="14" y="24" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="10" font-weight="600">ACTIVE ACCOUNTS</text>
+        <text x="14" y="52" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="20" font-weight="800">1,248</text>
+        <text x="110" y="52" fill="#32A88A" font-family="system-ui, sans-serif" font-size="11" font-weight="700">+14.2%</text>
+      </g>
+      <!-- Card 3 -->
+      <g transform="translate(370, 0)">
+        <rect width="175" height="75" rx="8" fill="#16273D" stroke="#263E5E"/>
+        <text x="14" y="24" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="10" font-weight="600">CONVERSION RATE</text>
+        <text x="14" y="52" fill="#6AADFF" font-family="system-ui, sans-serif" font-size="20" font-weight="800">4.82%</text>
+        <text x="110" y="52" fill="#32A88A" font-family="system-ui, sans-serif" font-size="11" font-weight="700">+2.1%</text>
+      </g>
+
+      <!-- Chart Card -->
+      <g transform="translate(0, 90)">
+        <rect width="545" height="180" rx="10" fill="#16273D" stroke="#263E5E"/>
+        <text x="18" y="28" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="13" font-weight="700">Pipeline Velocity &amp; Revenue Growth</text>
+        <text x="440" y="28" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="10">Last 6 Months</text>
+        
+        <!-- Vector Graph Line -->
+        <path d="M 25 140 Q 110 110 180 120 T 320 80 T 450 50 T 520 30" fill="none" stroke="#477BDB" stroke-width="3" stroke-linecap="round"/>
+        <path d="M 25 140 Q 110 110 180 120 T 320 80 T 450 50 T 520 30 L 520 155 L 25 155 Z" fill="url(#chartFill)" fill-opacity="0.15"/>
+        <circle cx="520" cy="30" r="5" fill="#477BDB" stroke="#FFFFFF" stroke-width="2"/>
+        <text x="500" y="18" fill="#6AADFF" font-family="system-ui, sans-serif" font-size="10" font-weight="700">₹8.4L</text>
+      </g>
+
+      <!-- Bottom Recent Activity Row -->
+      <g transform="translate(0, 285)">
+        <rect width="545" height="85" rx="8" fill="#142337" stroke="#223652"/>
+        <text x="18" y="24" fill="#8BA5C8" font-family="system-ui, sans-serif" font-size="10" font-weight="700" letter-spacing="0.08em">RECENT TEAM CONVERSIONS</text>
+        <g transform="translate(18, 36)">
+          <circle cx="12" cy="14" r="10" fill="#32A88A"/>
+          <text x="12" y="18" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="9" font-weight="700" text-anchor="middle">AC</text>
+          <text x="32" y="18" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="11" font-weight="600">Apex Corp signed Annual Enterprise Contract</text>
+          <text x="470" y="18" fill="#4DD8B0" font-family="system-ui, sans-serif" font-size="11" font-weight="700">+₹3,20,000</text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <defs>
+    <linearGradient id="chartFill" x1="0" y1="30" x2="0" y2="155" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#477BDB"/>
+      <stop offset="1" stop-color="#111D2E" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>
