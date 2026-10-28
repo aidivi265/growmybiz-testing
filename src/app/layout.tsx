@@ -5,22 +5,20 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { siteConfig } from '@/data';
 
-// Load fonts via next/font — served from same origin, zero render-blocking
+// next/font — self-hosted at build time, zero render-blocking, no external request
 const inter = Inter({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700', '800', '900'],
   style: ['normal', 'italic'],
-  variable: '--font-inter',
   display: 'swap',
-  preload: true,
+  variable: '--font-inter',
 });
 
 const syne = Syne({
   subsets: ['latin'],
   weight: ['600', '700', '800'],
-  variable: '--font-syne',
   display: 'swap',
-  preload: true,
+  variable: '--font-syne',
 });
 
 export const viewport: Viewport = {
@@ -64,8 +62,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${syne.variable}`} suppressHydrationWarning>
-      <body>
+    <html
+      lang="en"
+      className={`${inter.variable} ${syne.variable}`}
+      suppressHydrationWarning
+    >
+      <body className={inter.className}>
         <Navbar />
         <main>{children}</main>
         <Footer />

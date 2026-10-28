@@ -37,21 +37,21 @@
   body {
     background: var(--bg-white);
     color: var(--text-body);
-    font-family: var(--font-inter), -apple-system, "Segoe UI", system-ui, sans-serif;
+    font-family: var(--font-inter, 'Inter'), -apple-system, "Segoe UI", system-ui, sans-serif;
     line-height: 1.65;
     font-size: 15px;
   }
 
   /* ── Global heading defaults — Syne for display impact ── */
   h1, h2 {
-    font-family: var(--font-syne), sans-serif;
+    font-family: var(--font-syne, 'Syne'), sans-serif;
     font-weight: 800;
     letter-spacing: -0.025em;
     line-height: 1.1;
     color: var(--text-heading);
   }
   h3, h4, h5, h6 {
-    font-family: var(--font-inter), sans-serif;
+    font-family: var(--font-inter, 'Inter'), sans-serif;
     font-weight: 700;
     color: var(--text-heading);
   }
@@ -173,7 +173,7 @@
 @layer utilities {
 
   /* ── Font faces ── */
-  .font-display { font-family: var(--font-syne), sans-serif !important; }
+  .font-display { font-family: var(--font-syne, 'Syne'), sans-serif !important; }
 
   /* ── Page header h1 reset (white text on dark bg) ── */
   .page-header h1 {
@@ -192,7 +192,7 @@
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--blue);
-    font-family: var(--font-inter), sans-serif;
+    font-family: var(--font-inter, 'Inter'), sans-serif;
   }
   .eyebrow::before {
     content: '';
@@ -273,7 +273,7 @@
     justify-content: center;
     gap: 8px;
     font-weight: 600;
-    font-family: var(--font-inter), sans-serif;
+    font-family: var(--font-inter, 'Inter'), sans-serif;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.18s ease;
