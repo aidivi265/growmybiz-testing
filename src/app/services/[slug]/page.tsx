@@ -33,14 +33,17 @@ export default async function ServicePage({ params }: Props) {
 
   return (
     <>
-      {/* Page Header */}
-      <div className="pt-24 pb-16 border-b border-white/[0.06] relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1A2B4A 0%, #243B66 100%)' }}>
-        {/* Ambient glow */}
+      {/* ── Page Header ── */}
+      <div
+        className="pt-24 pb-14 relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #0F1C31 0%, #1A2B4A 55%, #243B66 100%)' }}
+      >
+        <div className="absolute inset-0 dot-bg-dark" />
         <div
-          className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[150px] opacity-[0.06]"
+          className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[160px] opacity-[0.12] pointer-events-none"
           style={{ background: `radial-gradient(circle, ${service.color}, transparent)` }}
         />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
           <Breadcrumb
             dark
             items={[
@@ -49,27 +52,31 @@ export default async function ServicePage({ params }: Props) {
               { label: service.title },
             ]}
           />
-          <div className="mt-6 flex items-start gap-6">
+          <div className="mt-7 flex items-start gap-6">
             <div
               className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
-              style={{ backgroundColor: `${service.color}20` }}
+              style={{ backgroundColor: `${service.color}25`, border: `1px solid ${service.color}35` }}
             >
               <Icon name={service.icon} size={26} style={{ color: service.color }} />
             </div>
             <div>
-              <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight mb-3 tracking-tight">
+              <span className="section-label block mb-3">{service.title}</span>
+              <h1
+                style={{
+                  fontFamily: "'Syne', sans-serif",
+                  fontSize: 'clamp(2rem, 4.5vw, 3rem)',
+                  fontWeight: 800,
+                  color: '#fff',
+                  lineHeight: 1.05,
+                  letterSpacing: '-0.03em',
+                  marginBottom: '0.75rem',
+                }}
+              >
                 {service.title}
               </h1>
-              <p className="text-white/50 text-lg leading-relaxed max-w-2xl">
-                {service.description}
-              </p>
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 rounded-xl text-sm font-medium text-white transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/20"
-                style={{ backgroundColor: service.color }}
-              >
-                Discuss this service
-                <ArrowRight size={14} />
+              <p className="text-white/50 leading-relaxed max-w-2xl">{service.description}</p>
+              <Link href="/contact" className="btn btn-primary btn-md mt-6">
+                Discuss this service <ArrowRight size={14} />
               </Link>
             </div>
           </div>
@@ -114,13 +121,25 @@ export default async function ServicePage({ params }: Props) {
             subtitle="A high-level view of how we deliver this type of work. Detailed scopes are documented per engagement."
           />
           <div className="max-w-2xl">
-            <ol className="space-y-4">
+            <ol className="space-y-3">
               {service.process.map((step, i) => (
                 <li key={i} className="flex items-start gap-4">
-                  <div className="w-7 h-7 rounded-full border-2 border-[#477BDB]/30 flex items-center justify-center shrink-0 mt-0.5">
-                    <span className="text-xs font-bold text-[#477BDB]">{String(i + 1).padStart(2, '0')}</span>
+                  <div
+                    className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
+                    style={{ background: `${service.color}15`, border: `1px solid ${service.color}30` }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: "'Syne', sans-serif",
+                        fontWeight: 800,
+                        fontSize: '0.7rem',
+                        color: service.color,
+                      }}
+                    >
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
                   </div>
-                  <p className="text-[#1f2328] pt-0.5">{step}</p>
+                  <p className="text-[#3D4F63] pt-1.5 text-[0.9375rem] leading-relaxed">{step}</p>
                 </li>
               ))}
             </ol>
@@ -156,33 +175,33 @@ export default async function ServicePage({ params }: Props) {
       {/* CTA */}
       <Section>
         <div
-          className="rounded-2xl p-8 lg:p-12 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 border"
+          className="rounded-2xl p-8 lg:p-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6"
           style={{
-            borderColor: `${service.color}30`,
-            backgroundColor: `${service.color}08`,
+            background: 'linear-gradient(135deg, #0F1C31 0%, #1A2B4A 100%)',
           }}
         >
           <div>
-            <h2 className="text-2xl font-bold text-[#243247] mb-2">
+            <h2
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontSize: '1.5rem',
+                fontWeight: 800,
+                color: '#fff',
+                marginBottom: '0.5rem',
+                letterSpacing: '-0.02em',
+              }}
+            >
               Ready to talk about {service.title.toLowerCase()}?
             </h2>
-            <p className="text-[#718096]">
+            <p className="text-white/50 text-sm">
               Tell us your goals and we will propose a clear scope with no ambiguity.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 shrink-0">
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-white font-medium transition-all duration-200 hover:shadow-lg text-sm"
-              style={{ backgroundColor: service.color }}
-            >
-              Start a Project
-              <ArrowRight size={15} />
+            <Link href="/contact" className="btn btn-primary btn-md">
+              Start a Project <ArrowRight size={15} />
             </Link>
-            <Link
-              href="/portfolio"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border border-[#E2E8F0] text-[#243247] font-medium hover:bg-[#F8FAFC] transition-colors text-sm"
-            >
+            <Link href="/portfolio" className="btn btn-ghost-white btn-md">
               View Portfolio
             </Link>
           </div>

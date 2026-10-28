@@ -2,99 +2,224 @@ import Link from 'next/link';
 import { blogPosts } from '@/data';
 import { ArrowRight, Clock } from 'lucide-react';
 
-const CATEGORY_COLORS: Record<string, string> = {
-  'Web & Digital Strategy': '#EBF1FB',
-  'SEO': '#E6F5F1',
-  'Design & Branding': '#EEF0FA',
-  'AI & Automation': '#EBF1FB',
-  'Business & Strategy': '#E6F5F1',
+const CAT_CONFIG: Record<string, { bg: string; text: string; dot: string }> = {
+  'Web & Digital Strategy': { bg: '#EBF1FB', text: '#2A5DBF', dot: '#477BDB' },
+  'SEO':                    { bg: '#E6F5F1', text: '#1E7A62', dot: '#32A88A' },
+  'Design & Branding':      { bg: '#EEF0FA', text: '#4151AA', dot: '#6477C8' },
+  'AI & Automation':        { bg: '#EBF1FB', text: '#2A5DBF', dot: '#477BDB' },
+  'Business & Strategy':    { bg: '#E6F5F1', text: '#1E7A62', dot: '#32A88A' },
 };
-const CATEGORY_TEXT: Record<string, string> = {
-  'Web & Digital Strategy': '#477BDB',
-  'SEO': '#32A88A',
-  'Design & Branding': '#6477C8',
-  'AI & Automation': '#477BDB',
-  'Business & Strategy': '#32A88A',
-};
+const DEFAULT_CAT = { bg: '#EBF1FB', text: '#2A5DBF', dot: '#477BDB' };
+
+function formatDate(dateStr: string) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
 
 export default function InsightsPreview() {
   const posts = blogPosts.filter((p) => p.featured && p.published).slice(0, 3);
+  if (posts.length === 0) return null;
+
+  const [featured, ...rest] = posts;
+  const featCat = CAT_CONFIG[featured.category] ?? DEFAULT_CAT;
 
   return (
-    <section className="py-20 lg:py-28 bg-white" id="insights">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section
+      className="section-pad-lg relative overflow-hidden"
+      id="insights"
+      style={{ background: '#F7F9FC' }}
+    >
+      <div className="absolute inset-0 dot-bg opacity-40" />
 
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-12">
+      <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
+
+        {/* ── Header ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] items-end gap-6 mb-12">
           <div>
-            <p className="eyebrow mb-3">Insights</p>
-            <h2 className="text-3xl lg:text-4xl font-extrabold text-[#243247] leading-tight tracking-tight">
-              Useful thinking for<br />growing businesses.
+            <span className="eyebrow block mb-4">Insights</span>
+            <h2
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontWeight: 800,
+                fontSize: 'clamp(1.9rem, 3vw, 2.6rem)',
+                lineHeight: 1.1,
+                letterSpacing: '-0.025em',
+                color: '#0F1C31',
+              }}
+            >
+              Useful thinking for<br />
+              <span
+                style={{
+                  background: 'linear-gradient(120deg,#477BDB,#6477C8)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
+                growing businesses.
+              </span>
             </h2>
           </div>
-          <Link href="/insights"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#477BDB] hover:text-[#3366C8] transition-colors shrink-0">
+          <Link
+            href="/insights"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold shrink-0"
+            style={{ color: '#477BDB' }}
+          >
             All articles <ArrowRight size={14} />
           </Link>
         </div>
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {posts.map((post) => {
-            const catBg = CATEGORY_COLORS[post.category] ?? '#EBF1FB';
-            const catTx = CATEGORY_TEXT[post.category] ?? '#477BDB';
-            return (
-              <Link key={post.id} href={`/insights/${post.slug}`} className="group block">
-                <article className="h-full bg-white rounded-2xl border border-[#E2E8F0] overflow-hidden transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-[0_8px_32px_rgba(36,50,71,0.12)] group-hover:border-[#CBD5E0]">
+        {/* ── Editorial layout: 1 feature + side stack ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
 
-                  {/* Cover — colourful gradient using category colour */}
-                  <div className="aspect-[16/7] relative overflow-hidden"
-                    style={{ background: `linear-gradient(135deg, ${catBg} 0%, #F8FAFC 100%)` }}>
-                    {/* Large initial letter */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-[80px] font-black leading-none select-none"
-                        style={{ color: catBg === '#EBF1FB' ? 'rgba(71,123,219,0.12)' : catBg === '#E6F5F1' ? 'rgba(50,168,138,0.12)' : 'rgba(100,119,200,0.12)' }}>
-                        {post.category[0]}
-                      </span>
-                    </div>
-                    {/* Category pill */}
-                    <div className="absolute top-3 left-3">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold border"
-                        style={{ background: catBg, color: catTx, borderColor: `${catTx}30` }}>
-                        {post.category}
-                      </span>
-                    </div>
-                  </div>
+          {/* Feature post — large card */}
+          <Link href={`/insights/${featured.slug}`} className="group block">
+            <article
+              className="h-full rounded-[20px] overflow-hidden border transition-all duration-200 group-hover:shadow-[0_12px_48px_rgba(15,28,49,0.12)] group-hover:-translate-y-1"
+              style={{ background: '#fff', borderColor: '#DDE3EC' }}
+            >
+              {/* Cover image area */}
+              <div
+                className="relative overflow-hidden"
+                style={{
+                  aspectRatio: '16/7',
+                  background: `linear-gradient(135deg, ${featCat.bg} 0%, #fff 100%)`,
+                }}
+              >
+                {/* Large decorative letter */}
+                <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none">
+                  <span
+                    style={{
+                      fontFamily: "'Syne', sans-serif",
+                      fontWeight: 800,
+                      fontSize: 'clamp(80px, 14vw, 140px)',
+                      lineHeight: 1,
+                      color: featCat.dot,
+                      opacity: 0.06,
+                    }}
+                  >
+                    {featured.category[0]}
+                  </span>
+                </div>
+                {/* Category badge */}
+                <div className="absolute top-4 left-4">
+                  <span
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold"
+                    style={{
+                      background: featCat.bg,
+                      color: featCat.text,
+                      border: `1px solid ${featCat.dot}30`,
+                    }}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: featCat.dot }} />
+                    {featured.category}
+                  </span>
+                </div>
+                {/* Read time */}
+                <div
+                  className="absolute top-4 right-4 flex items-center gap-1 text-[11px] font-medium"
+                  style={{ color: '#6B7E95' }}
+                >
+                  <Clock size={11} />
+                  {featured.readTime} min
+                </div>
+              </div>
 
-                  {/* Content */}
-                  <div className="p-5">
-                    <div className="flex items-center gap-3 mb-3 text-xs text-[#A0AEC0]">
-                      <span className="flex items-center gap-1">
-                        <Clock size={11} />
-                        {post.readTime} min read
-                      </span>
-                      <span>·</span>
-                      <span>
-                        {new Date(post.publishedAt).toLocaleDateString('en-GB', {
-                          day: 'numeric', month: 'short', year: 'numeric'
-                        })}
-                      </span>
-                    </div>
-                    <h3 className="font-bold text-[#243247] text-base leading-snug mb-2 group-hover:text-[#477BDB] transition-colors line-clamp-2">
-                      {post.title}
-                    </h3>
-                    <p className="text-sm text-[#718096] line-clamp-2">{post.excerpt}</p>
+              {/* Content */}
+              <div className="p-6 lg:p-8">
+                <p className="text-[#A4B3C4] text-xs mb-3">{formatDate(featured.publishedAt)}</p>
+                <h3
+                  className="font-bold text-[#0F1C31] leading-snug mb-3 group-hover:text-[#477BDB] transition-colors"
+                  style={{
+                    fontFamily: "'Syne', sans-serif",
+                    fontSize: 'clamp(1.1rem, 2vw, 1.4rem)',
+                  }}
+                >
+                  {featured.title}
+                </h3>
+                <p className="text-[#6B7E95] text-sm leading-relaxed line-clamp-3 mb-5">
+                  {featured.excerpt}
+                </p>
+                <div
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold transition-colors"
+                  style={{ color: '#477BDB' }}
+                >
+                  Read article <ArrowRight size={13} />
+                </div>
+              </div>
+            </article>
+          </Link>
 
-                    <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-[#477BDB] opacity-0 group-hover:opacity-100 transition-opacity">
-                      Read article <ArrowRight size={11} />
+          {/* Side stack — compact post list */}
+          <div className="flex flex-col gap-4">
+            {rest.map((post) => {
+              const cat = CAT_CONFIG[post.category] ?? DEFAULT_CAT;
+              return (
+                <Link key={post.id} href={`/insights/${post.slug}`} className="group block">
+                  <article
+                    className="flex gap-4 p-4 rounded-2xl border transition-all duration-200 group-hover:shadow-[0_4px_20px_rgba(15,28,49,0.08)] group-hover:-translate-y-0.5"
+                    style={{ background: '#fff', borderColor: '#DDE3EC' }}
+                  >
+                    {/* Color strip */}
+                    <div
+                      className="w-1 rounded-full shrink-0 self-stretch"
+                      style={{ background: cat.dot }}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span
+                          className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold"
+                          style={{ background: cat.bg, color: cat.text }}
+                        >
+                          {post.category}
+                        </span>
+                        <span className="text-[#A4B3C4] text-[10px] flex items-center gap-1">
+                          <Clock size={9} /> {post.readTime}m
+                        </span>
+                      </div>
+                      <h3
+                        className="text-[#0F1C31] font-bold text-sm leading-snug line-clamp-2 group-hover:text-[#477BDB] transition-colors"
+                      >
+                        {post.title}
+                      </h3>
+                      <p className="text-[#A4B3C4] text-[11px] mt-1.5">{formatDate(post.publishedAt)}</p>
                     </div>
-                  </div>
-                </article>
+                    <ArrowRight
+                      size={14}
+                      className="text-[#DDE3EC] group-hover:text-[#477BDB] transition-colors shrink-0 mt-1"
+                    />
+                  </article>
+                </Link>
+              );
+            })}
+
+            {/* Newsletter nudge */}
+            <div
+              className="mt-auto p-5 rounded-2xl"
+              style={{ background: 'linear-gradient(135deg, #EBF1FB 0%, #EEF0FA 100%)', border: '1px solid rgba(71,123,219,0.15)' }}
+            >
+              <p
+                style={{
+                  fontFamily: "'Syne', sans-serif",
+                  fontWeight: 700,
+                  fontSize: '0.9375rem',
+                  color: '#0F1C31',
+                  lineHeight: 1.3,
+                  marginBottom: '6px',
+                }}
+              >
+                Stay sharp on digital growth
+              </p>
+              <p className="text-[#6B7E95] text-xs leading-relaxed mb-4">
+                Practical strategies for businesses growing online — delivered when ready.
+              </p>
+              <Link href="/contact" className="btn btn-primary btn-sm w-full justify-center">
+                Get in touch
               </Link>
-            );
-          })}
-        </div>
+            </div>
+          </div>
 
+        </div>
       </div>
     </section>
   );

@@ -3,71 +3,146 @@ import { ArrowRight } from 'lucide-react';
 import { processSteps } from '@/data';
 import { Icon } from '@/components/Icon';
 
-const STEP_COLORS = ['#477BDB', '#6477C8', '#32A88A', '#477BDB', '#6477C8', '#32A88A'];
+const STEP_COLORS = [
+  { accent: '#477BDB', bg: 'rgba(71,123,219,0.12)', border: 'rgba(71,123,219,0.25)' },
+  { accent: '#6477C8', bg: 'rgba(100,119,200,0.12)', border: 'rgba(100,119,200,0.25)' },
+  { accent: '#32A88A', bg: 'rgba(50,168,138,0.12)', border: 'rgba(50,168,138,0.25)' },
+  { accent: '#477BDB', bg: 'rgba(71,123,219,0.12)', border: 'rgba(71,123,219,0.25)' },
+  { accent: '#6477C8', bg: 'rgba(100,119,200,0.12)', border: 'rgba(100,119,200,0.25)' },
+  { accent: '#32A88A', bg: 'rgba(50,168,138,0.12)', border: 'rgba(50,168,138,0.25)' },
+];
 
 export default function ProcessPreview() {
   return (
-    <section className="py-20 lg:py-28 relative overflow-hidden" id="process"
-      style={{ background: 'linear-gradient(135deg, #1A2B4A 0%, #243B66 50%, #1E3354 100%)' }}>
+    <section
+      className="section-pad-lg relative overflow-hidden"
+      id="process"
+      style={{ background: '#F7F9FC' }}
+    >
+      {/* subtle background grid */}
+      <div className="absolute inset-0 cross-bg opacity-60" />
 
-      {/* Dot pattern overlay */}
-      <div className="absolute inset-0 opacity-10"
-        style={{
-          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.2) 1px, transparent 1px)',
-          backgroundSize: '26px 26px',
-        }} />
+      <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        {/* Header */}
-        <div className="text-center mb-14">
-          <p className="text-[#32A88A] text-xs font-bold tracking-[0.18em] uppercase mb-3 inline-flex items-center gap-2">
-            <span className="w-5 h-px bg-[#32A88A]" />
-            How we work
-            <span className="w-5 h-px bg-[#32A88A]" />
-          </p>
-          <h2 className="text-3xl lg:text-4xl font-extrabold text-white leading-tight tracking-tight mb-4">
-            Clear process, no surprises.
-          </h2>
-          <p className="text-white/50 max-w-lg mx-auto">
-            A six-step delivery process that keeps scope, communication and expectations aligned from start to finish.
-          </p>
-        </div>
-
-        {/* Steps grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {processSteps.map((step, i) => (
-            <div key={step.id}
-              className="group text-center p-5 rounded-2xl border border-white/[0.08] hover:border-white/[0.2] hover:bg-white/[0.04] transition-all duration-200 cursor-default">
-
-              {/* Number circle */}
-              <div className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3 border-2"
+        {/* ── Header: left-aligned, asymmetric ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 items-end mb-16">
+          <div>
+            <span className="eyebrow eyebrow-teal block mb-4">How we work</span>
+            <h2
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontWeight: 800,
+                fontSize: 'clamp(1.9rem, 3vw, 2.6rem)',
+                lineHeight: 1.1,
+                letterSpacing: '-0.025em',
+                color: '#0F1C31',
+              }}
+            >
+              Clear steps.<br />
+              <span
                 style={{
-                  background: `${STEP_COLORS[i]}22`,
-                  borderColor: `${STEP_COLORS[i]}60`,
-                }}>
-                <span className="font-extrabold text-xs" style={{ color: STEP_COLORS[i] }}>
-                  {step.number}
-                </span>
-              </div>
-
-              {/* Icon */}
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center mx-auto mb-3"
-                style={{ background: 'rgba(255,255,255,0.06)' }}>
-                <Icon name={step.icon} size={14} className="text-white/40" />
-              </div>
-
-              <h3 className="text-white font-bold text-sm mb-1.5">{step.title}</h3>
-              <p className="text-white/40 text-xs leading-relaxed line-clamp-3">{step.description}</p>
-            </div>
-          ))}
+                  background: 'linear-gradient(120deg,#32A88A,#477BDB)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
+                No surprises.
+              </span>
+            </h2>
+          </div>
+          <div className="lg:text-right">
+            <p className="text-[#6B7E95] text-sm leading-relaxed mb-4 max-w-[320px] lg:ml-auto">
+              A six-step delivery process that keeps scope, communication and expectations aligned from start to finish.
+            </p>
+            <Link href="/process" className="btn btn-outline btn-sm">
+              Full process breakdown <ArrowRight size={13} />
+            </Link>
+          </div>
         </div>
 
-        {/* CTA */}
-        <div className="mt-12 text-center">
-          <Link href="/process"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-white/60 hover:text-white transition-colors">
-            Learn more about our process <ArrowRight size={13} />
+        {/* ── Steps: horizontal scroll on mobile, grid on desktop ── */}
+        <div className="relative">
+          {/* Horizontal connector line — desktop only, sits behind the circles */}
+          <div
+            className="hidden lg:block absolute h-px pointer-events-none"
+            style={{
+              top: '26px',
+              left: '8.33%',
+              right: '8.33%',
+              background: 'linear-gradient(90deg, transparent 0%, #DDE3EC 8%, #DDE3EC 92%, transparent 100%)',
+              zIndex: 0,
+            }}
+          />
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-3 relative z-10">
+            {processSteps.map((step, i) => {
+              const c = STEP_COLORS[i % STEP_COLORS.length];
+              return (
+                <div
+                  key={step.id}
+                  className="flex flex-col items-center text-center group"
+                >
+                  {/* Number + icon stack */}
+                  <div className="relative mb-4">
+                    {/* Step number circle — sits on the connector line */}
+                    <div
+                      className="w-[52px] h-[52px] rounded-full flex items-center justify-center border-2 bg-white relative z-10 transition-all duration-200 group-hover:scale-105"
+                      style={{ borderColor: c.border, boxShadow: `0 0 0 6px #F7F9FC` }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: "'Syne', sans-serif",
+                          fontWeight: 800,
+                          fontSize: '0.875rem',
+                          color: c.accent,
+                          letterSpacing: '0.02em',
+                        }}
+                      >
+                        {step.number}
+                      </span>
+                    </div>
+                    {/* Small icon below */}
+                    <div
+                      className="absolute -bottom-2 -right-2 w-6 h-6 rounded-lg flex items-center justify-center"
+                      style={{ background: c.bg, border: `1px solid ${c.border}` }}
+                    >
+                      <Icon name={step.icon} size={11} style={{ color: c.accent }} />
+                    </div>
+                  </div>
+
+                  <h3
+                    className="font-bold text-[#0F1C31] text-sm mb-1.5 leading-snug"
+                    style={{ fontFamily: "'Inter', sans-serif" }}
+                  >
+                    {step.title}
+                  </h3>
+                  <p className="text-[#6B7E95] text-xs leading-relaxed line-clamp-3">
+                    {step.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ── Bottom strip ── */}
+        <div
+          className="mt-14 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-2xl"
+          style={{ background: 'linear-gradient(135deg, #0F1C31 0%, #1A2B4A 100%)' }}
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+              style={{ background: 'rgba(50,168,138,0.15)', border: '1px solid rgba(50,168,138,0.25)' }}>
+              <span style={{ color: '#32A88A', fontSize: '1.1rem' }}>✓</span>
+            </div>
+            <div>
+              <p className="text-white font-semibold text-sm">Transparent from day one</p>
+              <p className="text-white/40 text-xs">Scope, milestones and deliverables are agreed in writing before any work begins.</p>
+            </div>
+          </div>
+          <Link href="/contact" className="btn btn-primary btn-sm shrink-0">
+            Start a conversation <ArrowRight size={13} />
           </Link>
         </div>
 

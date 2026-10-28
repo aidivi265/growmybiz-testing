@@ -24,7 +24,7 @@ export function Button({
     primary:   'bg-[#477BDB] hover:bg-[#3366C8] text-white hover:shadow-[0_6px_20px_rgba(71,123,219,0.35)] hover:-translate-y-0.5',
     secondary: 'border-[1.5px] border-[#477BDB] text-[#477BDB] hover:bg-[#EBF1FB]',
     ghost:     'text-[#477BDB] hover:bg-[#EBF1FB]',
-    outline:   'border border-[#E2E8F0] text-[#243247] hover:bg-[#F8FAFC] hover:border-[#CBD5E0]',
+    outline:   'border border-[#E8EDF4] text-[#0F1C31] hover:bg-[#F7F9FC] hover:border-[#C8D3E0]',
   };
   return (
     <button className={clsx(base, sizes[size], variants[variant], className)} {...props}>
@@ -52,7 +52,7 @@ export function LinkButton({ href, variant = 'primary', size = 'md', icon = fals
     primary:    'bg-[#477BDB] hover:bg-[#3366C8] text-white hover:shadow-[0_6px_20px_rgba(71,123,219,0.35)] hover:-translate-y-0.5',
     secondary:  'border-[1.5px] border-[#477BDB] text-[#477BDB] hover:bg-[#EBF1FB]',
     ghost:      'text-[#477BDB] hover:bg-[#EBF1FB]',
-    outline:    'border border-[#E2E8F0] text-[#243247] hover:bg-[#F8FAFC] hover:border-[#CBD5E0]',
+    outline:    'border border-[#E8EDF4] text-[#0F1C31] hover:bg-[#F7F9FC] hover:border-[#C8D3E0]',
     'navy-ghost': 'border border-white/20 text-white/80 hover:bg-white/10 hover:text-white',
   };
   const cls = clsx(base, sizes[size], variants[variant], className);
@@ -69,7 +69,7 @@ interface BadgeProps {
 }
 export function Badge({ children, variant = 'default', size = 'md', className }: BadgeProps) {
   const variants = {
-    default: 'bg-[#F1F5F9] text-[#4A5568] border border-[#E2E8F0]',
+    default: 'bg-[#F1F5F9] text-[#3D4F63] border border-[#E8EDF4]',
     accent:  'bg-[#EBF1FB] text-[#3366C8] border border-[rgba(71,123,219,0.2)]',
     success: 'bg-[#E6F5F1] text-[#268C72] border border-[rgba(50,168,138,0.2)]',
     warning: 'bg-amber-50 text-amber-700 border border-amber-200',
@@ -84,22 +84,26 @@ export function Badge({ children, variant = 'default', size = 'md', className }:
 }
 
 // ─── Section ──────────────────────────────────────────────────────────────────
+// dark  = dark navy background (#0F1C31 → #1A2B4A) — white text content inside
+// subtle = soft grey (#F7F9FC) — dark text content inside
+// default = pure white
 interface SectionProps {
   children: React.ReactNode;
   className?: string;
-  dark?: boolean;
-  navy?: boolean;
+  dark?: boolean;     // dark navy
+  subtle?: boolean;   // soft grey
+  navy?: boolean;     // legacy alias for dark
   id?: string;
 }
-export function Section({ children, className, dark, navy, id }: SectionProps) {
+export function Section({ children, className, dark, subtle, navy, id }: SectionProps) {
+  const isDark = dark || navy;
   return (
     <section
       id={id}
+      style={isDark ? { background: 'linear-gradient(135deg, #0F1C31 0%, #1A2B4A 100%)' } : undefined}
       className={clsx(
         'py-16 lg:py-24',
-        dark  ? 'bg-[#F8FAFC]' : '',
-        navy  ? 'bg-[#1A2B4A]' : '',
-        !dark && !navy ? 'bg-white' : '',
+        isDark  ? '' : subtle ? 'bg-[#F7F9FC]' : 'bg-white',
         className
       )}
     >
@@ -119,25 +123,25 @@ interface SectionHeaderProps {
   className?: string;
 }
 export function SectionHeader({ eyebrow, title, subtitle, dark, navy, centered, className }: SectionHeaderProps) {
-  const isLight = !dark && !navy;
+  const isDark = dark || navy;
   return (
     <div className={clsx('mb-12 lg:mb-16', centered && 'text-center', className)}>
       {eyebrow && (
-        <p className={clsx('text-xs font-bold tracking-[0.18em] uppercase mb-3', navy ? 'text-[#32A88A]' : 'text-[#477BDB]')}>
+        <p className={clsx('text-xs font-bold tracking-[0.18em] uppercase mb-3', isDark ? 'text-[#32A88A]' : 'text-[#477BDB]')}>
           {eyebrow}
         </p>
       )}
-      <h2 className={clsx(
-        'text-3xl lg:text-4xl font-extrabold leading-tight tracking-tight',
-        navy ? 'text-white' : 'text-[#243247]'
-      )}>
+      <h2
+        className={clsx('leading-tight', isDark ? 'text-white' : 'text-[#0F1C31]')}
+        style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 'clamp(1.6rem, 2.5vw, 2.25rem)', letterSpacing: '-0.025em' }}
+      >
         {title}
       </h2>
       {subtitle && (
         <p className={clsx(
           'mt-4 text-base leading-relaxed max-w-2xl',
           centered && 'mx-auto',
-          navy ? 'text-white/50' : 'text-[#718096]'
+          isDark ? 'text-white/50' : 'text-[#6B7E95]'
         )}>
           {subtitle}
         </p>
@@ -147,6 +151,8 @@ export function SectionHeader({ eyebrow, title, subtitle, dark, navy, centered, 
 }
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
+// dark/navy = translucent white-on-dark card (for use on dark Section bg)
+// default   = white card with border
 interface CardProps {
   children: React.ReactNode;
   className?: string;
@@ -156,15 +162,16 @@ interface CardProps {
   onClick?: () => void;
 }
 export function Card({ children, className, dark, navy, hover, onClick }: CardProps) {
+  const isDark = dark || navy;
   return (
     <div onClick={onClick}
       className={clsx(
         'rounded-2xl border',
-        navy  ? 'bg-white/[0.05] border-white/10' :
-        dark  ? 'bg-[#F8FAFC] border-[#E2E8F0]'  :
-                'bg-white border-[#E2E8F0]',
-        hover && 'transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(36,50,71,0.12)] cursor-pointer',
-        hover && (navy ? 'hover:border-white/20' : 'hover:border-[#CBD5E0]'),
+        isDark ? 'bg-white/[0.05] border-white/[0.08]' : 'bg-white border-[#DDE3EC]',
+        hover && 'transition-all duration-200 hover:-translate-y-1 cursor-pointer',
+        hover && (isDark
+          ? 'hover:bg-white/[0.09] hover:border-white/[0.18] hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)]'
+          : 'hover:shadow-[0_8px_32px_rgba(15,28,49,0.10)] hover:border-[#C8D2DF]'),
         className
       )}
     >
@@ -183,14 +190,14 @@ export function Breadcrumb({ items, dark }: BreadcrumbProps) {
     <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 flex-wrap">
       {items.map((item, i) => (
         <div key={i} className="flex items-center gap-1.5">
-          {i > 0 && <ChevronRight size={11} className={dark ? 'text-white/25' : 'text-[#A0AEC0]'} />}
+          {i > 0 && <ChevronRight size={11} className={dark ? 'text-white/25' : 'text-[#6B7E95]'} />}
           {item.href && i < items.length - 1 ? (
             <Link href={item.href}
-              className={clsx('text-xs font-medium transition-colors', dark ? 'text-white/40 hover:text-white/70' : 'text-[#718096] hover:text-[#243247]')}>
+              className={clsx('text-xs font-medium transition-colors', dark ? 'text-white/40 hover:text-white/70' : 'text-[#6B7E95] hover:text-[#0F1C31]')}>
               {item.label}
             </Link>
           ) : (
-            <span className={clsx('text-xs font-medium', dark ? 'text-white/70' : 'text-[#243247]')}>
+            <span className={clsx('text-xs font-medium', dark ? 'text-white/70' : 'text-[#0F1C31]')}>
               {item.label}
             </span>
           )}
@@ -211,24 +218,24 @@ export function Input({ label, error, hint, className, id, ...props }: InputProp
   return (
     <div className="space-y-1.5">
       {label && (
-        <label htmlFor={inputId} className="block text-sm font-semibold text-[#243247]">
+        <label htmlFor={inputId} className="block text-sm font-semibold text-[#0F1C31]">
           {label}{props.required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
       )}
       <input id={inputId}
         className={clsx(
           'w-full px-4 py-3 rounded-xl border text-sm transition-colors',
-          'bg-white text-[#243247] placeholder-[#A0AEC0]',
+          'bg-white text-[#0F1C31] placeholder-[#6B7E95]',
           error
             ? 'border-red-400 focus:border-red-400 focus:ring-2 focus:ring-red-100'
-            : 'border-[#E2E8F0] focus:border-[#477BDB] focus:ring-2 focus:ring-[#477BDB]/10',
+            : 'border-[#E8EDF4] focus:border-[#477BDB] focus:ring-2 focus:ring-[#477BDB]/10',
           'outline-none',
           className
         )}
         {...props}
       />
       {error  && <p className="text-xs text-red-500">{error}</p>}
-      {hint && !error && <p className="text-xs text-[#718096]">{hint}</p>}
+      {hint && !error && <p className="text-xs text-[#6B7E95]">{hint}</p>}
     </div>
   );
 }
@@ -244,17 +251,17 @@ export function Textarea({ label, error, hint, className, id, ...props }: Textar
   return (
     <div className="space-y-1.5">
       {label && (
-        <label htmlFor={inputId} className="block text-sm font-semibold text-[#243247]">
+        <label htmlFor={inputId} className="block text-sm font-semibold text-[#0F1C31]">
           {label}{props.required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
       )}
       <textarea id={inputId}
         className={clsx(
           'w-full px-4 py-3 rounded-xl border text-sm transition-colors resize-none',
-          'bg-white text-[#243247] placeholder-[#A0AEC0]',
+          'bg-white text-[#0F1C31] placeholder-[#6B7E95]',
           error
             ? 'border-red-400 focus:border-red-400 focus:ring-2 focus:ring-red-100'
-            : 'border-[#E2E8F0] focus:border-[#477BDB] focus:ring-2 focus:ring-[#477BDB]/10',
+            : 'border-[#E8EDF4] focus:border-[#477BDB] focus:ring-2 focus:ring-[#477BDB]/10',
           'outline-none',
           className
         )}
@@ -262,7 +269,7 @@ export function Textarea({ label, error, hint, className, id, ...props }: Textar
         {...props}
       />
       {error  && <p className="text-xs text-red-500">{error}</p>}
-      {hint && !error && <p className="text-xs text-[#718096]">{hint}</p>}
+      {hint && !error && <p className="text-xs text-[#6B7E95]">{hint}</p>}
     </div>
   );
 }
@@ -278,17 +285,17 @@ export function Select({ label, error, options, className, id, ...props }: Selec
   return (
     <div className="space-y-1.5">
       {label && (
-        <label htmlFor={inputId} className="block text-sm font-semibold text-[#243247]">
+        <label htmlFor={inputId} className="block text-sm font-semibold text-[#0F1C31]">
           {label}{props.required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
       )}
       <select id={inputId}
         className={clsx(
           'w-full px-4 py-3 rounded-xl border text-sm transition-colors',
-          'bg-white text-[#243247]',
+          'bg-white text-[#0F1C31]',
           error
             ? 'border-red-400 focus:border-red-400'
-            : 'border-[#E2E8F0] focus:border-[#477BDB] focus:ring-2 focus:ring-[#477BDB]/10',
+            : 'border-[#E8EDF4] focus:border-[#477BDB] focus:ring-2 focus:ring-[#477BDB]/10',
           'outline-none appearance-none cursor-pointer',
           className
         )}

@@ -1,173 +1,273 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Sparkles, BarChart3, Code2, Palette } from 'lucide-react';
-import { heroSlides } from '@/data';
+import { ArrowRight } from 'lucide-react';
+import { heroSlides, services } from '@/data';
 
-// Floating stat chips shown in the hero visual
-const CHIPS = [
-  { icon: Code2,     label: 'Web & Apps',   color: '#477BDB', bg: '#EBF1FB' },
-  { icon: Palette,   label: 'Design',       color: '#6477C8', bg: '#EEF0FA' },
-  { icon: BarChart3, label: 'Marketing',    color: '#32A88A', bg: '#E6F5F1' },
-  { icon: Sparkles,  label: 'AI & Automation', color: '#477BDB', bg: '#EBF1FB' },
-];
+const svcColors = ['#477BDB', '#32A88A', '#6477C8', '#E8912A', '#0EA5C8', '#B04EC4'];
 
 export default function HeroSection() {
-  const [current, setCurrent] = useState(0);
+  const [slide, setSlide] = useState(0);
   const [fading, setFading] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const goTo = useCallback((idx: number) => {
+  const advance = useCallback((to: number) => {
     setFading(true);
-    setTimeout(() => { setCurrent(idx); setFading(false); }, 280);
+    setTimeout(() => { setSlide(to); setFading(false); }, 300);
   }, []);
 
-  useEffect(() => {
-    const t = setInterval(() => goTo((current + 1) % heroSlides.length), 6500);
-    return () => clearInterval(t);
-  }, [current, goTo]);
+  const resetTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setSlide(s => {
+        const next = (s + 1) % heroSlides.length;
+        setFading(true);
+        setTimeout(() => setFading(false), 300);
+        return next;
+      });
+    }, 6500);
+  }, []);
 
-  const slide = heroSlides[current];
+  useEffect(() => { resetTimer(); return () => { if (timerRef.current) clearInterval(timerRef.current); }; }, [resetTimer]);
+
+  const cur = heroSlides[slide];
 
   return (
-    <section className="relative overflow-hidden bg-white pt-16" aria-label="Hero">
+    <section className="relative bg-white overflow-hidden" style={{ minHeight: '100svh', paddingTop: '64px' }}>
 
-      {/* ── Background decoration ── */}
-      <div className="absolute inset-0 dot-pattern opacity-60" />
-      {/* Right-side gradient blob */}
-      <div className="absolute right-0 top-0 w-1/2 h-full pointer-events-none overflow-hidden">
-        <div className="absolute right-[-10%] top-[-10%] w-[700px] h-[700px] rounded-full opacity-[0.07]"
-          style={{ background: 'radial-gradient(circle at 60% 40%, #477BDB, #6477C8, transparent 65%)' }} />
-        <div className="absolute right-[-5%] bottom-[-10%] w-[400px] h-[400px] rounded-full opacity-[0.06]"
-          style={{ background: 'radial-gradient(circle, #32A88A, transparent 60%)' }} />
+      {/* ── Background: right half only ── */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Right half texture */}
+        <div className="absolute right-0 top-0 bottom-0 w-[55%]"
+          style={{
+            background: 'linear-gradient(135deg, #F7F9FC 0%, #EEF2F9 100%)',
+            backgroundImage: 'linear-gradient(rgba(71,123,219,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(71,123,219,0.04) 1px,transparent 1px)',
+            backgroundSize: '40px 40px',
+          }} />
+        {/* Soft left-to-right edge fade */}
+        <div className="absolute inset-y-0 right-0 w-[55%]"
+          style={{ background: 'linear-gradient(90deg, white 0%, transparent 18%)' }} />
+        {/* Ambient glows */}
+        <div className="absolute right-[15%] top-[18%] w-[380px] h-[380px] rounded-full blur-[110px]"
+          style={{ background: 'radial-gradient(circle, rgba(71,123,219,0.12) 0%, transparent 70%)' }} />
+        <div className="absolute right-[4%] bottom-[12%] w-[260px] h-[260px] rounded-full blur-[80px]"
+          style={{ background: 'radial-gradient(circle, rgba(50,168,138,0.09) 0%, transparent 70%)' }} />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="min-h-[calc(100vh-64px)] flex items-center py-16 lg:py-0">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
+      <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-0" style={{ minHeight: 'calc(100svh - 64px)' }}>
 
-            {/* ── Left: Copy ── */}
-            <div>
-              {/* Eyebrow pill */}
-              <div className={`transition-all duration-300 ${fading ? 'opacity-0 -translate-y-2' : 'opacity-100 translate-y-0'}`}>
-                {slide.badge && (
-                  <span className="pill-blue mb-5 inline-flex">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#477BDB] animate-pulse" />
-                    {slide.badge}
-                  </span>
-                )}
-              </div>
+          {/* ── LEFT ── */}
+          <div className="flex-1 flex flex-col justify-center pt-12 pb-10 lg:py-0 lg:pr-14 max-w-[600px]">
 
-              {/* Headline */}
-              <h1
-                className={`text-[2.75rem] sm:text-5xl lg:text-6xl font-extrabold text-[#243247] leading-[1.06] tracking-[-0.035em] mb-6 transition-all duration-300 delay-75 ${
-                  fading ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
-                }`}
-              >
-                {slide.heading.split('\n').map((line, i) => (
-                  <span key={i}>
-                    {i === 0 ? line : (
-                      <span className="text-gradient-hero" style={{
-                        background: 'linear-gradient(135deg,#477BDB 0%,#6477C8 50%,#32A88A 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text',
-                      }}>{line}</span>
-                    )}
-                    {i < slide.heading.split('\n').length - 1 && <br />}
-                  </span>
-                ))}
-              </h1>
-
-              {/* Subheading */}
-              <p className={`text-[#4A5568] text-lg leading-relaxed max-w-lg mb-9 transition-all duration-300 delay-100 ${
-                fading ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
-              }`}>
-                {slide.subheading}
-              </p>
-
-              {/* CTAs */}
-              <div className={`flex flex-wrap items-center gap-3 mb-10 transition-all duration-300 delay-150 ${
-                fading ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
-              }`}>
-                <Link href={slide.ctaPrimary.href} className="btn-primary text-[0.9375rem]">
-                  {slide.ctaPrimary.label}
-                  <ArrowRight size={16} />
-                </Link>
-                <Link href={slide.ctaSecondary.href} className="btn-secondary text-[0.9375rem]">
-                  {slide.ctaSecondary.label}
-                </Link>
-              </div>
-
-              {/* Slide dots */}
-              <div className="flex items-center gap-2">
-                {heroSlides.map((_, i) => (
-                  <button key={i} onClick={() => goTo(i)} aria-label={`Slide ${i + 1}`}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                      i === current ? 'bg-[#477BDB] w-7' : 'bg-[#E2E8F0] w-3 hover:bg-[#CBD5E0]'
-                    }`} />
-                ))}
-                <span className="ml-2 text-[#A0AEC0] text-xs">{current + 1} / {heroSlides.length}</span>
-              </div>
+            {/* Slide badge */}
+            <div className={`mb-7 transition-all duration-300 ${fading ? 'opacity-0 -translate-y-1' : 'opacity-100 translate-y-0'}`}>
+              <span className="pill pill-blue">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#477BDB] pulse-dot" />
+                {cur.badge}
+              </span>
             </div>
 
-            {/* ── Right: Visual panel ── */}
-            <div className="hidden lg:block">
-              <div className="relative">
-                {/* Main card */}
-                <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-[0_20px_70px_rgba(36,50,71,0.12)]"
-                  style={{ background: 'linear-gradient(135deg, #1A2B4A 0%, #243B66 50%, #1E3A5F 100%)' }}>
-                  {/* Pattern overlay */}
-                  <div className="absolute inset-0 opacity-10"
+            {/* Headline */}
+            <h1
+              className={`mb-6 transition-all duration-300 ${fading ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontWeight: 800,
+                fontSize: 'clamp(2.8rem, 5.8vw, 4.5rem)',
+                lineHeight: 1.02,
+                letterSpacing: '-0.035em',
+                color: '#0F1C31',
+              }}
+            >
+              {cur.heading.split('\n').map((line, i) => (
+                <span key={i} className="block">
+                  {i === 0 ? line : (
+                    <span style={{
+                      background: 'linear-gradient(120deg, #477BDB 0%, #5C6FCC 50%, #32A88A 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text',
+                    }}>
+                      {line}
+                    </span>
+                  )}
+                </span>
+              ))}
+            </h1>
+
+            {/* Sub */}
+            <p
+              className={`mb-9 transition-all duration-300 delay-75 ${fading ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}
+              style={{ color: '#3D4F63', fontSize: '1.0625rem', lineHeight: 1.7, maxWidth: '460px' }}
+            >
+              {cur.subheading}
+            </p>
+
+            {/* CTAs */}
+            <div className={`flex flex-wrap items-center gap-3 mb-10 transition-all duration-300 delay-100 ${fading ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}>
+              <Link href={cur.ctaPrimary.href} className="btn btn-primary btn-lg">
+                {cur.ctaPrimary.label}
+                <ArrowRight size={16} />
+              </Link>
+              <Link href={cur.ctaSecondary.href} className="btn btn-outline btn-lg">
+                {cur.ctaSecondary.label}
+              </Link>
+            </div>
+
+            {/* Slide indicators */}
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1.5">
+                {heroSlides.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => { advance(i); resetTimer(); }}
+                    aria-label={`Slide ${i + 1}`}
                     style={{
-                      backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.2) 1px, transparent 1px)',
-                      backgroundSize: '22px 22px',
-                    }} />
-                  {/* Center mark */}
-                  <div className="relative z-10 aspect-[4/3.2] flex items-center justify-center p-10">
-                    <div className="text-center">
-                      <div className="w-20 h-20 rounded-3xl mx-auto mb-5 flex items-center justify-center shadow-[0_8px_30px_rgba(71,123,219,0.4)]"
-                        style={{ background: 'linear-gradient(135deg,#477BDB,#6477C8)' }}>
-                        <span className="text-white font-black text-3xl">G</span>
+                      height: '3px',
+                      borderRadius: '2px',
+                      width: i === slide ? '32px' : '10px',
+                      background: i === slide ? '#477BDB' : '#DDE3EC',
+                      border: 'none',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                    }}
+                  />
+                ))}
+              </div>
+              <span style={{
+                fontFamily: "'Syne', sans-serif",
+                fontSize: '0.65rem',
+                fontWeight: 700,
+                color: '#A4B3C4',
+                letterSpacing: '0.1em',
+              }}>
+                {String(slide + 1).padStart(2, '0')} / {String(heroSlides.length).padStart(2, '0')}
+              </span>
+            </div>
+          </div>
+
+          {/* ── RIGHT — editorial card panel ── */}
+          <div className="hidden lg:flex flex-col justify-center w-[420px] xl:w-[468px] shrink-0 py-12">
+            <div className="relative">
+
+              {/* Main dark card */}
+              <div
+                className="relative rounded-[24px] overflow-hidden"
+                style={{
+                  background: 'linear-gradient(155deg, #0F1C31 0%, #162540 55%, #1E3060 100%)',
+                  boxShadow: '0 32px 80px rgba(15,28,49,0.20), 0 8px 24px rgba(71,123,219,0.14)',
+                }}
+              >
+                {/* Fine grid inside */}
+                <div className="absolute inset-0 opacity-[0.06]"
+                  style={{
+                    backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)',
+                    backgroundSize: '32px 32px',
+                  }} />
+                {/* Blue glow spot */}
+                <div className="absolute top-[40%] left-[40%] w-[200px] h-[200px] rounded-full blur-[70px] opacity-25"
+                  style={{ background: '#477BDB' }} />
+
+                <div className="relative z-10 p-7">
+                  {/* Top bar */}
+                  <div className="flex items-center justify-between mb-7">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+                        style={{ background: 'linear-gradient(135deg,#477BDB,#5C6FCC)', boxShadow: '0 4px 12px rgba(71,123,219,0.45)' }}>
+                        <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: '1rem', color: '#fff' }}>G</span>
                       </div>
-                      <p className="text-white/60 text-sm font-medium tracking-widest uppercase">Growmybizz</p>
-                      <p className="text-white/30 text-xs mt-1">Digital Growth Partner</p>
+                      <div>
+                        <p className="text-white font-semibold text-sm leading-none">Growmybizz</p>
+                        <p className="text-white/35 text-[10px] mt-0.5">Digital Growth Partner</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-semibold"
+                      style={{ background: 'rgba(50,168,138,0.15)', color: '#32A88A', padding: '4px 10px', borderRadius: '100px', border: '1px solid rgba(50,168,138,0.25)' }}>
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#32A88A] pulse-dot" />
+                      Available
                     </div>
                   </div>
-                </div>
 
-                {/* Floating chips */}
-                {CHIPS.map((chip, ci) => {
-                  const ChipIcon = chip.icon;
-                  const positions = [
-                    'absolute -top-4 -left-4',
-                    'absolute -top-4 -right-4',
-                    'absolute -bottom-4 -left-4',
-                    'absolute -bottom-4 -right-4',
-                  ];
-                  const delays = ['0s', '1.2s', '2.1s', '3s'];
-                  return (
-                    <div key={ci} className={`${positions[ci]} animate-float`} style={{ animationDelay: delays[ci] }}>
-                      <div className="flex items-center gap-2 bg-white rounded-xl px-3 py-2.5 shadow-[0_4px_20px_rgba(36,50,71,0.14)] border border-[#E2E8F0]">
-                        <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: chip.bg }}>
-                          <ChipIcon size={14} style={{ color: chip.color }} />
-                        </div>
-                        <span className="text-[#243247] font-semibold text-xs whitespace-nowrap">{chip.label}</span>
+                  {/* Service rows — each slightly different padding */}
+                  <div className="space-y-2 mb-7">
+                    {services.slice(0, 5).map((svc, si) => (
+                      <div key={svc.id}
+                        className="flex items-center gap-3 rounded-xl transition-all duration-150"
+                        style={{
+                          background: si === 0 ? 'rgba(71,123,219,0.12)' : 'rgba(255,255,255,0.04)',
+                          border: si === 0 ? '1px solid rgba(71,123,219,0.20)' : '1px solid rgba(255,255,255,0.07)',
+                          padding: `${10 + si * 0}px 14px`,
+                        }}>
+                        <div className="w-2 h-2 rounded-full shrink-0" style={{ background: svcColors[si] }} />
+                        <span className="text-white/70 text-[13px] font-medium flex-1 leading-none">{svc.title}</span>
+                        {si === 0 && (
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                            style={{ background: 'rgba(71,123,219,0.25)', color: '#92AEED' }}>
+                            Popular
+                          </span>
+                        )}
                       </div>
-                    </div>
-                  );
-                })}
+                    ))}
+                  </div>
+
+                  {/* Bottom CTA */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-white/25 text-[11px]">Ready when you are</span>
+                    <Link href="/contact"
+                      className="flex items-center gap-1.5 text-xs font-semibold rounded-lg px-3 py-2"
+                      style={{ background: 'linear-gradient(135deg,#477BDB,#5C6FCC)', color: '#fff' }}>
+                      Start a project <ArrowRight size={11} />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Float badge — left */}
+              <div className="absolute -left-10 top-[22%] float">
+                <div className="bg-white rounded-2xl px-3.5 py-2.5 flex items-center gap-2.5"
+                  style={{ boxShadow: '0 8px 28px rgba(15,28,49,0.14)', border: '1px solid #DDE3EC' }}>
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#EBF1FB' }}>
+                    <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: '0.875rem', color: '#477BDB' }}>6</span>
+                  </div>
+                  <div>
+                    <p className="text-[#0F1C31] font-bold text-xs leading-tight">Disciplines</p>
+                    <p className="text-[#6B7E95] text-[10px]">one team</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Float badge — right */}
+              <div className="absolute -right-8 bottom-[28%] float-2">
+                <div className="bg-white rounded-2xl px-3.5 py-2.5 flex items-center gap-2.5"
+                  style={{ boxShadow: '0 8px 28px rgba(15,28,49,0.14)', border: '1px solid #DDE3EC' }}>
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#E6F5F1' }}>
+                    <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: '0.875rem', color: '#32A88A' }}>30+</span>
+                  </div>
+                  <div>
+                    <p className="text-[#0F1C31] font-bold text-xs leading-tight">Services</p>
+                    <p className="text-[#6B7E95] text-[10px]">offered</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Float dot — top right */}
+              <div className="absolute -right-4 top-[-12px] float-3">
+                <div className="bg-white rounded-xl px-3 py-1.5 flex items-center gap-2"
+                  style={{ boxShadow: '0 4px 16px rgba(15,28,49,0.10)', border: '1px solid #DDE3EC' }}>
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#32A88A]" />
+                  <span className="text-[#0F1C31] font-semibold text-[11px]">India + Global</span>
+                </div>
               </div>
             </div>
-
           </div>
+
         </div>
       </div>
 
-      {/* ── Bottom wave / divider ── */}
-      <div className="relative h-12 bg-white">
-        <div className="absolute bottom-0 inset-x-0 h-px divider-gradient" />
-      </div>
+      {/* Bottom rule */}
+      <div className="absolute bottom-0 inset-x-0 rule-fade" />
     </section>
   );
 }

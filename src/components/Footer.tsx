@@ -29,9 +29,17 @@ export default function Footer() {
                 <span className="w-5 h-px bg-[#32A88A]" />
                 Ready to grow?
               </p>
-              <h2 className="text-3xl lg:text-4xl font-extrabold text-white leading-tight tracking-tight">
-                Let&apos;s build something
-                <br />
+              <h2
+                style={{
+                  fontFamily: "'Syne', sans-serif",
+                  fontWeight: 800,
+                  fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
+                  lineHeight: 1.1,
+                  letterSpacing: '-0.03em',
+                  color: '#fff',
+                }}
+              >
+                Let&apos;s build something<br />
                 <span style={{
                   background: 'linear-gradient(135deg, #477BDB, #32A88A)',
                   WebkitBackgroundClip: 'text',

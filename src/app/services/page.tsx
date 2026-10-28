@@ -14,21 +14,29 @@ export const metadata: Metadata = {
 export default function ServicesPage() {
   return (
     <>
-      {/* Page Header */}
-      <div className="pt-24 pb-16 border-b border-white/[0.06]" style={{ background: 'linear-gradient(135deg, #1A2B4A 0%, #243B66 100%)' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Breadcrumb
-            dark
-            items={[{ label: 'Home', href: '/' }, { label: 'Services' }]}
-          />
-          <div className="mt-6 max-w-3xl">
-            <p className="text-[#32A88A] text-xs font-semibold tracking-[0.2em] uppercase mb-3">
-              What we do
-            </p>
-            <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight mb-4 tracking-tight">
+      {/* ── Page Header ── */}
+      <div
+        className="pt-24 pb-14 relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #0F1C31 0%, #1A2B4A 55%, #243B66 100%)' }}
+      >
+        <div className="absolute inset-0 dot-bg-dark" />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+          <Breadcrumb dark items={[{ label: 'Home', href: '/' }, { label: 'Services' }]} />
+          <div className="mt-7 max-w-3xl">
+            <span className="section-label block mb-4">What we do</span>
+            <h1
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontSize: 'clamp(2.2rem, 5vw, 3.4rem)',
+                fontWeight: 800,
+                color: '#fff',
+                lineHeight: 1.05,
+                letterSpacing: '-0.03em',
+              }}
+            >
               Six disciplines,<br />one connected team.
             </h1>
-            <p className="text-white/50 text-lg leading-relaxed">
+            <p className="text-white/50 text-base leading-relaxed mt-3 max-w-xl">
               Engage for a focused project or combine services when your scope calls for it. Every service is delivered from the same strategic foundation.
             </p>
           </div>
@@ -101,22 +109,29 @@ export default function ServicesPage() {
 
       {/* Bottom CTA */}
       <Section>
-        <div className="rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC] p-8 lg:p-12 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+        <div
+          className="rounded-2xl p-8 lg:p-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6"
+          style={{ background: 'linear-gradient(135deg, #0F1C31 0%, #1A2B4A 100%)' }}
+        >
           <div>
-            <h2 className="text-2xl font-bold text-[#243247] mb-2">
+            <h2
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontSize: '1.4rem',
+                fontWeight: 800,
+                color: '#fff',
+                letterSpacing: '-0.02em',
+                marginBottom: '0.4rem',
+              }}
+            >
               Not sure which service you need?
             </h2>
-            <p className="text-[#718096]">
+            <p className="text-white/50 text-sm">
               Tell us about your project and we will recommend the right approach.
             </p>
           </div>
-          <Link
-            href="/contact"
-            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-white font-medium transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/20 shrink-0 text-sm"
-            style={{ background: 'linear-gradient(135deg,#477BDB,#6477C8)' }}
-          >
-            Start a conversation
-            <ArrowRight size={15} />
+          <Link href="/contact" className="btn btn-primary btn-md shrink-0">
+            Start a conversation <ArrowRight size={15} />
           </Link>
         </div>
       </Section>

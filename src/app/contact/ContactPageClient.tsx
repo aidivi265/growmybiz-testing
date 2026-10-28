@@ -62,19 +62,29 @@ export default function ContactPageClient() {
 
   return (
     <>
-      {/* Page Header */}
-      <div className="pt-24 pb-16 border-b border-white/[0.06]" style={{ background: 'linear-gradient(135deg, #1A2B4A 0%, #243B66 100%)' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Breadcrumb
-            dark
-            items={[{ label: 'Home', href: '/' }, { label: 'Contact' }]}
-          />
-          <div className="mt-6 max-w-2xl">
-            <p className="text-[#32A88A] text-xs font-semibold tracking-[0.2em] uppercase mb-3">Get in touch</p>
-            <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight mb-4 tracking-tight">
+      {/* ── Page Header ── */}
+      <div
+        className="pt-24 pb-14 relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #0F1C31 0%, #1A2B4A 55%, #243B66 100%)' }}
+      >
+        <div className="absolute inset-0 dot-bg-dark" />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+          <Breadcrumb dark items={[{ label: 'Home', href: '/' }, { label: 'Contact' }]} />
+          <div className="mt-7 max-w-2xl">
+            <span className="section-label block mb-4">Get in touch</span>
+            <h1
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontSize: 'clamp(2.2rem, 5vw, 3.4rem)',
+                fontWeight: 800,
+                color: '#fff',
+                lineHeight: 1.05,
+                letterSpacing: '-0.03em',
+              }}
+            >
               Start a project.
             </h1>
-            <p className="text-white/50 text-base leading-relaxed">
+            <p className="text-white/50 text-base leading-relaxed mt-3 max-w-lg">
               Tell us what you are trying to achieve. We will respond with a clear view on scope, timing and cost — no ambiguity.
             </p>
           </div>
@@ -91,8 +101,8 @@ export default function ContactPageClient() {
                 <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mb-5">
                   <CheckCircle size={32} className="text-emerald-600" />
                 </div>
-                <h2 className="text-2xl font-bold text-[#243247] mb-3">Message received.</h2>
-                <p className="text-[#718096] max-w-md leading-relaxed">
+                <h2 className="text-2xl font-bold text-[#0F1C31] mb-3">Message received.</h2>
+                <p className="text-[#6B7E95] max-w-md leading-relaxed">
                   Thank you for reaching out. We will review your enquiry and respond within 1–2 business days.
                 </p>
                 <button
@@ -174,7 +184,7 @@ export default function ContactPageClient() {
                 />
 
                 {/* Disclaimer */}
-                <p className="text-xs text-[#718096]">
+                <p className="text-xs text-[#6B7E95]">
                   Your information is used only to respond to this enquiry. We do not share or sell personal data. See our{' '}
                   <a href="/legal/privacy-policy" className="text-[#477BDB] hover:underline">Privacy Policy</a>.
                 </p>
@@ -182,8 +192,7 @@ export default function ContactPageClient() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium text-sm transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/20"
-                  style={{ background: 'linear-gradient(135deg,#477BDB,#6477C8)' }}
+                  className="btn btn-primary btn-md disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
                 >
                   {submitting ? (
                     <>
@@ -204,8 +213,8 @@ export default function ContactPageClient() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Contact details */}
-            <div className="p-5 rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC]">
-              <h3 className="text-sm font-semibold text-[#243247] mb-4">Contact details</h3>
+            <div className="p-5 rounded-2xl border border-[#E8EDF4] bg-[#F7F9FC]">
+              <h3 className="text-sm font-semibold text-[#0F1C31] mb-4">Contact details</h3>
               <div className="space-y-4">
                 {[
                   { icon: Mail, label: 'Email', value: siteConfig.email, href: `mailto:${siteConfig.email}` },
@@ -213,17 +222,17 @@ export default function ContactPageClient() {
                   { icon: MapPin, label: 'Based in', value: siteConfig.address, href: undefined },
                 ].map((item) => (
                   <div key={item.label} className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-white border border-[#E2E8F0] flex items-center justify-center shrink-0">
-                      <item.icon size={13} className="text-[#718096]" />
+                    <div className="w-8 h-8 rounded-lg bg-white border border-[#E8EDF4] flex items-center justify-center shrink-0">
+                      <item.icon size={13} className="text-[#6B7E95]" />
                     </div>
                     <div>
-                      <p className="text-xs text-[#718096] mb-0.5">{item.label}</p>
+                      <p className="text-xs text-[#6B7E95] mb-0.5">{item.label}</p>
                       {item.href ? (
-                        <a href={item.href} className="text-sm text-[#243247] hover:text-[#477BDB] transition-colors">
+                        <a href={item.href} className="text-sm text-[#0F1C31] hover:text-[#477BDB] transition-colors">
                           {item.value}
                         </a>
                       ) : (
-                        <p className="text-sm text-[#243247]">{item.value}</p>
+                        <p className="text-sm text-[#0F1C31]">{item.value}</p>
                       )}
                     </div>
                   </div>
@@ -232,26 +241,26 @@ export default function ContactPageClient() {
             </div>
 
             {/* Response time */}
-            <div className="p-5 rounded-2xl border border-[#E2E8F0]">
+            <div className="p-5 rounded-2xl border border-[#E8EDF4]">
               <div className="flex items-center gap-2 mb-2">
                 <MessageSquare size={14} className="text-[#477BDB]" />
-                <h3 className="text-sm font-semibold text-[#243247]">Response time</h3>
+                <h3 className="text-sm font-semibold text-[#0F1C31]">Response time</h3>
               </div>
-              <p className="text-sm text-[#718096] leading-relaxed">
+              <p className="text-sm text-[#6B7E95] leading-relaxed">
                 We aim to respond to all enquiries within 1–2 business days. For time-sensitive requests, please mention it in your message.
               </p>
             </div>
 
             {/* What to expect */}
-            <div className="p-5 rounded-2xl border border-[#E2E8F0]">
-              <h3 className="text-sm font-semibold text-[#243247] mb-3">What happens next</h3>
+            <div className="p-5 rounded-2xl border border-[#E8EDF4]">
+              <h3 className="text-sm font-semibold text-[#0F1C31] mb-3">What happens next</h3>
               <ol className="space-y-3">
                 {[
                   'We review your enquiry',
                   'We respond with initial questions or a scoping call invitation',
                   'We agree a clear scope before any commitment',
                 ].map((step, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-[#718096]">
+                  <li key={i} className="flex items-start gap-3 text-sm text-[#6B7E95]">
                     <span className="w-5 h-5 rounded-full bg-[#477BDB]/10 text-[#477BDB] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                       {i + 1}
                     </span>

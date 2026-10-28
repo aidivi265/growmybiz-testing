@@ -4,7 +4,23 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Clock, ArrowRight } from 'lucide-react';
 import { blogPosts, blogCategories } from '@/data';
-import { Badge, Breadcrumb } from '@/components/ui';
+import { Breadcrumb } from '@/components/ui';
+
+const CAT_CONFIG: Record<string, { bg: string; text: string; dot: string }> = {
+  'All':                    { bg: '#EBF1FB', text: '#2A5DBF', dot: '#477BDB' },
+  'Web & Digital Strategy': { bg: '#EBF1FB', text: '#2A5DBF', dot: '#477BDB' },
+  'SEO':                    { bg: '#E6F5F1', text: '#1E7A62', dot: '#32A88A' },
+  'Design & Branding':      { bg: '#EEF0FA', text: '#4151AA', dot: '#6477C8' },
+  'AI & Automation':        { bg: '#EBF1FB', text: '#2A5DBF', dot: '#477BDB' },
+  'Business & Strategy':    { bg: '#E6F5F1', text: '#1E7A62', dot: '#32A88A' },
+};
+const DEFAULT_CAT = { bg: '#EBF1FB', text: '#2A5DBF', dot: '#477BDB' };
+
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString('en-GB', {
+    day: 'numeric', month: 'short', year: 'numeric',
+  });
+}
 
 export default function InsightsPageClient() {
   const [active, setActive] = useState('All');
@@ -19,35 +35,40 @@ export default function InsightsPageClient() {
 
   return (
     <>
-      {/* Header */}
-      <div className="pt-24 pb-16 border-b border-white/[0.06]" style={{ background: 'linear-gradient(135deg, #1A2B4A 0%, #243B66 100%)' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Breadcrumb
-            dark
-            items={[{ label: 'Home', href: '/' }, { label: 'Insights' }]}
-          />
-          <div className="mt-6 max-w-2xl">
-            <p className="text-[#32A88A] text-xs font-semibold tracking-[0.2em] uppercase mb-3">Insights</p>
-            <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight mb-3 tracking-tight">
+      {/* ── Page Header ── */}
+      <div
+        className="pt-24 pb-14 relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #0F1C31 0%, #1A2B4A 55%, #243B66 100%)' }}
+      >
+        <div className="absolute inset-0 dot-bg-dark" />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+          <Breadcrumb dark items={[{ label: 'Home', href: '/' }, { label: 'Insights' }]} />
+          <div className="mt-7 max-w-2xl">
+            <span className="section-label block mb-4">Insights</span>
+            <h1
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontSize: 'clamp(2.2rem, 5vw, 3.4rem)',
+                fontWeight: 800,
+                color: '#fff',
+                lineHeight: 1.05,
+                letterSpacing: '-0.03em',
+              }}
+            >
               Practical thinking<br />for growing businesses.
             </h1>
-            <p className="text-white/50 text-base leading-relaxed">
+            <p className="text-white/50 text-base leading-relaxed mt-3 max-w-lg">
               Guides, frameworks and honest thinking on web, design, marketing, AI and strategy.
             </p>
           </div>
 
-          {/* Category filters */}
+          {/* ── Filter pills ── */}
           <div className="mt-8 flex flex-wrap gap-2">
             {blogCategories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActive(cat)}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-150 ${
-                  active === cat
-                    ? 'text-white'
-                    : 'bg-[#F1F5F9] text-[#4A5568] hover:text-[#243247] hover:bg-[#E2E8F0]'
-                }`}
-                style={active === cat ? { background: 'linear-gradient(135deg,#477BDB,#6477C8)' } : undefined}
+                className={`filter-pill ${active === cat ? 'filter-pill-active' : ''}`}
               >
                 {cat}
               </button>
@@ -56,83 +77,152 @@ export default function InsightsPageClient() {
         </div>
       </div>
 
-      <div className="bg-white min-h-[60vh]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      {/* ── Content ── */}
+      <div className="bg-[#F7F9FC] min-h-[60vh]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-12 lg:py-16">
           {filtered.length === 0 ? (
-            <p className="text-[#718096] text-sm text-center py-16">No articles in this category yet.</p>
+            <div className="text-center py-20">
+              <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center" style={{ background: '#EBF1FB' }}>
+                <span style={{ color: '#477BDB', fontSize: '1.5rem' }}>○</span>
+              </div>
+              <p className="text-[#6B7E95] text-sm font-medium">No articles in this category yet.</p>
+              <button onClick={() => setActive('All')} className="mt-4 btn btn-outline btn-sm">
+                View all articles
+              </button>
+            </div>
           ) : (
             <>
-              {/* Featured post */}
-              {featured && (
-                <Link href={`/insights/${featured.slug}`} className="group block mb-10">
-                  <article className="rounded-2xl border border-[#e5e7eb] hover:border-[#d0d7de] hover:shadow-xl hover:shadow-black/[0.06] transition-all duration-200 overflow-hidden grid grid-cols-1 lg:grid-cols-5">
-                    {/* Cover */}
-                    <div className="lg:col-span-2 aspect-video lg:aspect-auto bg-gradient-to-br from-[#0d0d14] to-[#111128] flex items-center justify-center relative">
-                      <span className="text-white/10 text-[80px] font-bold">{featured.category[0]}</span>
-                      <div className="absolute top-4 left-4">
-                        <Badge variant="accent">Featured</Badge>
-                      </div>
-                    </div>
-                    {/* Content */}
-                    <div className="lg:col-span-3 p-7 lg:p-8 flex flex-col justify-center">
-                      <div className="flex items-center gap-3 mb-3">
-                        <Badge variant="default" size="sm">{featured.category}</Badge>
-                        <div className="flex items-center gap-1.5 text-xs text-[#718096]">
-                          <Clock size={11} />
-                          {featured.readTime} min read
-                        </div>
-                        <span className="text-xs text-[#718096]">
-                          {new Date(featured.publishedAt).toLocaleDateString('en-GB', {
-                            day: 'numeric', month: 'short', year: 'numeric'
-                          })}
-                        </span>
-                      </div>
-                      <h2 className="text-xl lg:text-2xl font-bold text-[#243247] mb-3 group-hover:text-[#477BDB] transition-colors leading-snug">
-                        {featured.title}
-                      </h2>
-                      <p className="text-[#718096] leading-relaxed mb-5 line-clamp-3">
-                        {featured.excerpt}
-                      </p>
-                      <div className="flex items-center gap-1.5 text-sm text-[#477BDB] font-medium">
-                        Read article <ArrowRight size={13} />
-                      </div>
-                    </div>
-                  </article>
-                </Link>
-              )}
-
-              {/* Rest */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {rest.map((post) => (
-                  <Link key={post.id} href={`/insights/${post.slug}`} className="group block">
-                    <article className="h-full rounded-2xl border border-[#E2E8F0] hover:border-[#d0d7de] hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200 overflow-hidden">
+              {/* ── Featured post ── */}
+              {featured && (() => {
+                const cat = CAT_CONFIG[featured.category] ?? DEFAULT_CAT;
+                return (
+                  <Link href={`/insights/${featured.slug}`} className="group block mb-8">
+                    <article
+                      className="rounded-2xl overflow-hidden border border-[#DDE3EC] hover:border-[#C8D2DF] hover:shadow-[0_12px_48px_rgba(15,28,49,0.10)] transition-all duration-200 bg-white grid grid-cols-1 lg:grid-cols-5"
+                    >
                       {/* Cover */}
-                      <div className="aspect-[16/7] bg-gradient-to-br from-[#F8FAFC] to-[#eaecef] flex items-center justify-center relative">
-                        <span className="text-[#e0e4e8] text-5xl font-bold">{post.category[0]}</span>
-                        <div className="absolute top-3 left-3">
-                          <Badge variant="accent" size="sm">{post.category}</Badge>
-                        </div>
-                      </div>
-                      <div className="p-5">
-                        <div className="flex items-center gap-2 mb-2.5">
-                          <Clock size={11} className="text-[#718096]" />
-                          <span className="text-xs text-[#718096]">{post.readTime} min read</span>
-                          <span className="text-xs text-[#718096]/40">·</span>
-                          <span className="text-xs text-[#718096]">
-                            {new Date(post.publishedAt).toLocaleDateString('en-GB', {
-                              day: 'numeric', month: 'short', year: 'numeric'
-                            })}
+                      <div
+                        className="lg:col-span-2 relative overflow-hidden"
+                        style={{
+                          background: `linear-gradient(135deg, ${cat.bg} 0%, #fff 100%)`,
+                          minHeight: '220px',
+                        }}
+                      >
+                        {/* Big letter decor */}
+                        <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none">
+                          <span
+                            style={{
+                              fontFamily: "'Syne', sans-serif",
+                              fontWeight: 800,
+                              fontSize: 'clamp(80px, 12vw, 130px)',
+                              color: cat.dot,
+                              opacity: 0.07,
+                              lineHeight: 1,
+                            }}
+                          >
+                            {featured.category.charAt(0)}
                           </span>
                         </div>
-                        <h3 className="font-semibold text-[#243247] text-sm leading-snug mb-2 group-hover:text-[#477BDB] transition-colors line-clamp-2">
-                          {post.title}
-                        </h3>
-                        <p className="text-xs text-[#718096] line-clamp-2">{post.excerpt}</p>
+                        {/* Featured badge */}
+                        <div className="absolute top-4 left-4 flex gap-2">
+                          <span
+                            className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold"
+                            style={{ background: cat.bg, color: cat.text, border: `1px solid ${cat.dot}30` }}
+                          >
+                            {featured.category}
+                          </span>
+                          <span
+                            className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold"
+                            style={{ background: '#0F1C31', color: '#fff' }}
+                          >
+                            Featured
+                          </span>
+                        </div>
+                      </div>
+                      {/* Content */}
+                      <div className="lg:col-span-3 p-7 lg:p-8 flex flex-col justify-center">
+                        <div className="flex items-center gap-3 mb-3 text-xs text-[#A4B3C4]">
+                          <span className="flex items-center gap-1"><Clock size={11} />{featured.readTime} min read</span>
+                          <span>·</span>
+                          <span>{formatDate(featured.publishedAt)}</span>
+                        </div>
+                        <h2
+                          className="text-xl lg:text-2xl font-bold text-[#0F1C31] mb-3 group-hover:text-[#477BDB] transition-colors leading-snug"
+                          style={{ fontFamily: "'Syne', sans-serif", letterSpacing: '-0.02em' }}
+                        >
+                          {featured.title}
+                        </h2>
+                        <p className="text-[#6B7E95] leading-relaxed mb-5 line-clamp-3 text-sm">{featured.excerpt}</p>
+                        <div className="inline-flex items-center gap-1.5 text-sm font-semibold" style={{ color: '#477BDB' }}>
+                          Read article <ArrowRight size={13} />
+                        </div>
                       </div>
                     </article>
                   </Link>
-                ))}
-              </div>
+                );
+              })()}
+
+              {/* ── Rest of posts ── */}
+              {rest.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {rest.map((post) => {
+                    const cat = CAT_CONFIG[post.category] ?? DEFAULT_CAT;
+                    return (
+                      <Link key={post.id} href={`/insights/${post.slug}`} className="group block">
+                        <article className="h-full bg-white rounded-2xl border border-[#DDE3EC] overflow-hidden hover:border-[#C8D2DF] hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(15,28,49,0.10)] transition-all duration-200">
+                          {/* Cover */}
+                          <div
+                            className="aspect-[16/7] relative overflow-hidden"
+                            style={{ background: `linear-gradient(135deg, ${cat.bg} 0%, #fff 100%)` }}
+                          >
+                            <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none">
+                              <span
+                                style={{
+                                  fontFamily: "'Syne', sans-serif",
+                                  fontWeight: 800,
+                                  fontSize: '5rem',
+                                  color: cat.dot,
+                                  opacity: 0.08,
+                                  lineHeight: 1,
+                                }}
+                              >
+                                {post.category.charAt(0)}
+                              </span>
+                            </div>
+                            <div className="absolute top-3 left-3">
+                              <span
+                                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold"
+                                style={{ background: cat.bg, color: cat.text, border: `1px solid ${cat.dot}25` }}
+                              >
+                                <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: cat.dot }} />
+                                {post.category}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="p-5">
+                            <div className="flex items-center gap-2 mb-2.5 text-xs text-[#A4B3C4]">
+                              <Clock size={11} />
+                              <span>{post.readTime} min</span>
+                              <span className="opacity-50">·</span>
+                              <span>{formatDate(post.publishedAt)}</span>
+                            </div>
+                            <h3
+                              className="font-bold text-[#0F1C31] text-[0.9375rem] leading-snug mb-2 group-hover:text-[#477BDB] transition-colors line-clamp-2"
+                              style={{ fontFamily: "'Inter', sans-serif" }}
+                            >
+                              {post.title}
+                            </h3>
+                            <p className="text-xs text-[#6B7E95] line-clamp-2 leading-relaxed">{post.excerpt}</p>
+                            <div className="mt-3.5 flex items-center gap-1 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: '#477BDB' }}>
+                              Read <ArrowRight size={11} />
+                            </div>
+                          </div>
+                        </article>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
             </>
           )}
         </div>

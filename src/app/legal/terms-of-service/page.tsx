@@ -86,12 +86,6 @@ export default function TermsOfServicePage() {
         </div>
       </div>
 
-      <style>{`
-        .prose-legal p { color: #718096; margin-bottom: 0.75rem; line-height: 1.75; font-size: 0.9375rem; }
-        .prose-legal ul { list-style: none; padding: 0; margin: 0.5rem 0 0.75rem 0; }
-        .prose-legal ul li::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: #477BDB; margin-top: 0.5rem; flex-shrink: 0; display: inline-block; }
-        .prose-legal strong { color: #1f2328; }
-      `}</style>
     </>
   );
 }
@@ -99,7 +93,7 @@ export default function TermsOfServicePage() {
 function LegalSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <h2 className="text-lg font-bold text-[#243247] mb-3">{title}</h2>
+      <h2 className="text-lg font-bold text-[#0F1C31] mb-3">{title}</h2>
       <div className="prose-legal">{children}</div>
     </section>
   );

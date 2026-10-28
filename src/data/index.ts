@@ -93,7 +93,7 @@ export const services: Service[] = [
     description:
       'From a single landing page to a complex web application, we architect, design and develop digital products that perform. Every project starts with understanding your audience, goals and technical requirements before a single line of code is written.',
     icon: 'Code2',
-    color: '#3b82f6',
+    color: '#477BDB',
     featured: true,
     offerings: [
       {
@@ -171,7 +171,7 @@ export const services: Service[] = [
     description:
       'Good design earns trust before a single word is read. We create brand identities, interfaces and visual assets that reflect your positioning, communicate clearly and hold together consistently across every touchpoint.',
     icon: 'Palette',
-    color: '#8b5cf6',
+    color: '#6477C8',
     featured: true,
     offerings: [
       {
@@ -242,7 +242,7 @@ export const services: Service[] = [
     description:
       'Marketing works best when the channels, creative and measurement are aligned. We plan and execute digital marketing that fits your audience, stage and budget — with honest reporting on what is and is not working.',
     icon: 'TrendingUp',
-    color: '#10b981',
+    color: '#32A88A',
     featured: true,
     offerings: [
       {
@@ -314,7 +314,7 @@ export const services: Service[] = [
     description:
       'Content that connects starts with understanding what your audience actually wants to consume. We plan, produce and edit video and written content that fits your brand voice and distribution channels.',
     icon: 'Video',
-    color: '#f59e0b',
+    color: '#E8912A',
     featured: true,
     offerings: [
       {
@@ -380,7 +380,7 @@ export const services: Service[] = [
     description:
       'AI should create measurable value, not just novelty. We identify where automation and AI genuinely improve your workflows, customer experience or data visibility — then build and integrate thoughtfully.',
     icon: 'Bot',
-    color: '#06b6d4',
+    color: '#0EA5C8',
     featured: true,
     offerings: [
       {
@@ -452,7 +452,7 @@ export const services: Service[] = [
     description:
       'Some digital needs do not fit neatly into a single category. We offer a range of supporting services for businesses that need practical, hands-on digital expertise without the overhead of full-time hires.',
     icon: 'MoreHorizontal',
-    color: '#ec4899',
+    color: '#B04EC4',
     featured: false,
     offerings: [
       {

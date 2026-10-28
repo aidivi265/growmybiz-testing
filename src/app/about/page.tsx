@@ -13,20 +13,30 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <>
-      {/* Page Header */}
-      <div className="pt-24 pb-16 border-b border-white/[0.06]" style={{ background: 'linear-gradient(135deg, #1A2B4A 0%, #243B66 100%)' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Breadcrumb
-            dark
-            items={[{ label: 'Home', href: '/' }, { label: 'About Us' }]}
-          />
-          <div className="mt-6 max-w-3xl">
-            <p className="text-[#32A88A] text-xs font-semibold tracking-[0.2em] uppercase mb-3">About</p>
-            <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight mb-4 tracking-tight">
+      {/* ── Page Header ── */}
+      <div
+        className="pt-24 pb-14 relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #0F1C31 0%, #1A2B4A 55%, #243B66 100%)' }}
+      >
+        <div className="absolute inset-0 dot-bg-dark" />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+          <Breadcrumb dark items={[{ label: 'Home', href: '/' }, { label: 'About Us' }]} />
+          <div className="mt-7 max-w-3xl">
+            <span className="section-label block mb-4">About us</span>
+            <h1
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontSize: 'clamp(2.2rem, 5vw, 3.4rem)',
+                fontWeight: 800,
+                color: '#fff',
+                lineHeight: 1.05,
+                letterSpacing: '-0.03em',
+              }}
+            >
               Built to help businesses<br />grow online.
             </h1>
-            <p className="text-white/50 text-lg leading-relaxed">
-              Growmybizz is a full-service digital agency that brings web, design, marketing, content and AI services together — so growing businesses do not have to coordinate separate vendors.
+            <p className="text-white/50 text-base leading-relaxed mt-3 max-w-xl">
+              A full-service digital agency that brings web, design, marketing, content and AI together — so growing businesses do not have to coordinate separate vendors.
             </p>
           </div>
         </div>
@@ -36,11 +46,21 @@ export default function AboutPage() {
       <Section>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div>
-            <p className="text-[#32A88A] text-xs font-semibold tracking-[0.2em] uppercase mb-3">Our story</p>
-            <h2 className="text-3xl font-bold text-[#243247] leading-tight mb-5 tracking-tight">
+            <span className="eyebrow block mb-3">Our story</span>
+            <h2
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontWeight: 800,
+                fontSize: 'clamp(1.5rem, 2.5vw, 2rem)',
+                letterSpacing: '-0.025em',
+                lineHeight: 1.15,
+                color: '#0F1C31',
+                marginBottom: '1.25rem',
+              }}
+            >
               The opportunity: make digital execution simpler.
             </h2>
-            <div className="space-y-4 text-[#718096] leading-relaxed">
+            <div className="space-y-4 text-[#6B7E95] leading-relaxed">
               <p>
                 Digital growth is fragmented. Businesses need a connected digital presence — but often coordinate separate providers, tools and workflows that do not speak to each other.
               </p>
@@ -51,17 +71,12 @@ export default function AboutPage() {
                 We are building this the right way: starting focused, proving capability through real work, and expanding with evidence rather than promises.
               </p>
             </div>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 mt-7 px-5 py-2.5 rounded-xl text-white font-medium text-sm transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/20"
-              style={{ background: 'linear-gradient(135deg,#477BDB,#6477C8)' }}
-            >
-              Work with us
-              <ArrowRight size={14} />
+            <Link href="/contact" className="btn btn-primary btn-md mt-7">
+              Work with us <ArrowRight size={14} />
             </Link>
           </div>
           {/* Visual placeholder */}
-          <div className="rounded-2xl overflow-hidden border border-[#E2E8F0] aspect-square max-h-[420px] bg-gradient-to-br from-[#1A2B4A] to-[#243B66] flex items-center justify-center relative">
+          <div className="rounded-2xl overflow-hidden border border-[#E8EDF4] aspect-square max-h-[420px] bg-gradient-to-br from-[#1A2B4A] to-[#243B66] flex items-center justify-center relative">
             <div
               className="absolute inset-0 opacity-20"
               style={{
@@ -119,19 +134,19 @@ export default function AboutPage() {
           {teamMembers.map((member) => (
             <div
               key={member.id}
-              className="p-6 rounded-2xl border border-[#E2E8F0] hover:shadow-lg hover:shadow-black/[0.06] transition-all duration-200"
+              className="p-6 rounded-2xl border border-[#E8EDF4] hover:shadow-lg hover:shadow-black/[0.06] transition-all duration-200"
             >
               {/* Avatar placeholder */}
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#477BDB]/20 to-[#6477C8]/20 flex items-center justify-center mb-4 border border-[#E2E8F0]">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#477BDB]/20 to-[#6477C8]/20 flex items-center justify-center mb-4 border border-[#E8EDF4]">
                 <Users size={22} className="text-[#477BDB]" />
               </div>
-              <h3 className="font-semibold text-[#243247] mb-0.5">{member.name}</h3>
+              <h3 className="font-semibold text-[#0F1C31] mb-0.5">{member.name}</h3>
               <p className="text-[#477BDB] text-sm mb-3">{member.role}</p>
-              <p className="text-[#718096] text-sm leading-relaxed">{member.bio}</p>
+              <p className="text-[#6B7E95] text-sm leading-relaxed">{member.bio}</p>
               {member.linkedin && (
                 <a
                   href={member.linkedin}
-                  className="inline-flex items-center gap-1.5 mt-4 text-xs text-[#718096] hover:text-[#477BDB] transition-colors"
+                  className="inline-flex items-center gap-1.5 mt-4 text-xs text-[#6B7E95] hover:text-[#477BDB] transition-colors"
                 >
                   LinkedIn
                   <ArrowRight size={11} />
@@ -141,8 +156,8 @@ export default function AboutPage() {
           ))}
 
           {/* Placeholder card */}
-          <div className="p-6 rounded-2xl border border-dashed border-[#E2E8F0] flex flex-col items-center justify-center text-center min-h-[200px]">
-            <div className="w-12 h-12 rounded-2xl bg-[#F8FAFC] flex items-center justify-center mb-3">
+          <div className="p-6 rounded-2xl border border-dashed border-[#E8EDF4] flex flex-col items-center justify-center text-center min-h-[200px]">
+            <div className="w-12 h-12 rounded-2xl bg-[#F7F9FC] flex items-center justify-center mb-3">
               <Users size={18} className="text-[#d0d7de]" />
             </div>
             <p className="text-[#d0d7de] text-sm font-medium mb-1">Team growing</p>
@@ -192,13 +207,8 @@ export default function AboutPage() {
         </div>
         <div className="mt-10 text-center">
           <p className="text-white/30 text-sm mb-5">Market focus: India first, with delivery designed to support international clients.</p>
-          <Link
-            href="/contact"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-medium text-sm transition-all duration-200"
-            style={{ background: 'linear-gradient(135deg,#477BDB,#6477C8)' }}
-          >
-            Start a conversation
-            <ArrowRight size={14} />
+          <Link href="/contact" className="btn btn-primary btn-md">
+            Start a conversation <ArrowRight size={14} />
           </Link>
         </div>
       </Section>
