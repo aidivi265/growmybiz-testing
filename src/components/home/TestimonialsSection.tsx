@@ -1,6 +1,6 @@
 import { testimonials } from '@/data/company';
 import { SYNE_FONT } from '@/lib/fonts';
-import { Star, CheckCircle, Quote } from 'lucide-react';
+import { Star, Quote } from 'lucide-react';
 
 export default function TestimonialsSection() {
   if (!testimonials || testimonials.length === 0) return null;
@@ -78,19 +78,6 @@ export default function TestimonialsSection() {
                       <Star key={idx} size={14} className="fill-[#F59E0B] text-[#F59E0B]" />
                     ))}
                   </div>
-
-                  {/* Verification Pill */}
-                  <span
-                    className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold"
-                    style={{
-                      background: 'rgba(50,168,138,0.15)',
-                      color: '#4DD8B0',
-                      border: '1px solid rgba(50,168,138,0.3)',
-                    }}
-                  >
-                    <CheckCircle size={10} />
-                    Verified Engagement
-                  </span>
                 </div>
 
                 {/* Quote */}

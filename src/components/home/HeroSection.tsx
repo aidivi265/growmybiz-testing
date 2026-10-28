@@ -81,16 +81,9 @@ export default function HeroSection() {
           <div className="flex-1 flex flex-col justify-center w-full lg:max-w-[620px] pt-4 pb-8 sm:pt-8 sm:pb-10 lg:py-0 lg:pr-14">
 
             {/* Slide badge */}
-            <div className={`mb-5 sm:mb-7 transition-all duration-300 ${fading ? 'opacity-0 -translate-y-1' : 'opacity-100 translate-y-0'}`}>
-              <span
-                className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest rounded-full px-3.5 py-1.5"
-                style={{
-                  background: 'rgba(71,123,219,0.12)',
-                  border: '1px solid rgba(71,123,219,0.25)',
-                  color: '#92AEED',
-                }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-[#477BDB] pulse-dot" />
+            <div className={`mb-5 sm:mb-6 flex items-center gap-2.5 transition-all duration-300 ${fading ? 'opacity-0 -translate-y-1' : 'opacity-100 translate-y-0'}`}>
+              <span className="w-2 h-2 rounded-full bg-[#477BDB] pulse-dot" />
+              <span className="text-xs font-bold uppercase tracking-widest text-[#7AA2FF]">
                 {cur.badge}
               </span>
             </div>

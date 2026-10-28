@@ -108,34 +108,7 @@ export default function ServicesPage() {
         </div>
       </Section>
 
-      {/* Bottom CTA */}
-      <Section>
-        <div
-          className="rounded-2xl p-8 lg:p-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6"
-          style={{ background: 'linear-gradient(135deg, #0F1C31 0%, #1A2B4A 100%)' }}
-        >
-          <div>
-            <h2
-              style={{
-                fontFamily: SYNE_FONT,
-                fontSize: '1.4rem',
-                fontWeight: 800,
-                color: '#fff',
-                letterSpacing: '-0.02em',
-                marginBottom: '0.4rem',
-              }}
-            >
-              Not sure which service you need?
-            </h2>
-            <p className="text-white/50 text-sm">
-              Tell us about your project and we will recommend the right approach.
-            </p>
-          </div>
-          <Link href="/contact" className="btn btn-primary btn-md shrink-0">
-            Start a conversation <ArrowRight size={15} />
-          </Link>
-        </div>
-      </Section>
+      
     </>
   );
 }

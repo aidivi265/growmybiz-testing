@@ -41,19 +41,16 @@ export default function ProcessPage() {
             </p>
           </div>
           {/* Quality principles */}
-          <div className="mt-7 flex flex-wrap gap-2">
+          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-white/65">
             {[
               'Transparent communication',
               'Documented scope',
               'Realistic timelines',
               'Honest reporting',
             ].map((p) => (
-              <span
-                key={p}
-                className="text-xs px-3 py-1.5 rounded-full text-white/50"
-                style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
-              >
-                {p}
+              <span key={p} className="inline-flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#32A88A]" />
+                <span>{p}</span>
               </span>
             ))}
           </div>
@@ -146,34 +143,7 @@ export default function ProcessPage() {
         </div>
       </Section>
 
-      {/* CTA */}
-      <Section subtle>
-        <div className="max-w-2xl mx-auto text-center">
-          <h2
-            style={{
-              fontFamily: SYNE_FONT,
-              fontSize: 'clamp(1.75rem, 3vw, 2.25rem)',
-              fontWeight: 800,
-              color: '#0F1C31',
-              letterSpacing: '-0.025em',
-              marginBottom: '0.75rem',
-            }}
-          >
-            Ready to start?
-          </h2>
-          <p className="text-[#6B7E95] mb-8">
-            Tell us about your project. We will define scope, deliverables and timelines before any commitment.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link href="/contact" className="btn btn-primary btn-lg">
-              Start a Project <ArrowRight size={15} />
-            </Link>
-            <Link href="/services" className="btn btn-outline btn-lg">
-              Explore Services
-            </Link>
-          </div>
-        </div>
-      </Section>
+      
     </>
   );
 }

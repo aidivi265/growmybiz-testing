@@ -9,7 +9,6 @@ import {
   Palette,
   Zap,
   Shield,
-  Sparkles,
   ArrowUpRight,
 } from 'lucide-react';
 import { SYNE_FONT } from '@/lib/fonts';
@@ -242,16 +241,12 @@ export default function InteractiveGrowthOrbit() {
             </div>
 
             {/* Core Label */}
-            <div className="mt-2.5 text-center">
+            <div className="mt-2 text-center">
               <span
                 className="text-white font-extrabold text-xs tracking-wider uppercase block"
                 style={{ fontFamily: SYNE_FONT }}
               >
                 Growmybizz
-              </span>
-              <span className="text-[10px] text-cyan-400/90 font-mono flex items-center justify-center gap-1 mt-0.5">
-                <Sparkles size={9} />
-                <span>Interactive Orbit</span>
               </span>
             </div>
           </div>
@@ -367,14 +362,6 @@ export default function InteractiveGrowthOrbit() {
               transform: `translate3d(${cursorPos.x * -0.25 - 120}px, ${cursorPos.y * -0.25 + 100}px, 20px)`,
             }}
           />
-        </div>
-
-        {/* Floating Hint below the orbit */}
-        <div className="absolute -bottom-2 inset-x-0 text-center pointer-events-none">
-          <span className="text-[11px] text-white/35 font-mono inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.06]">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
-            Hover nodes &amp; tilt with cursor · Click to explore
-          </span>
         </div>
       </div>
 

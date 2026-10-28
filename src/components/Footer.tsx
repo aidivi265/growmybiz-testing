@@ -84,7 +84,7 @@ export default function Footer() {
             {/* Brand col */}
             <div className="col-span-2 md:col-span-4">
               <div className="mb-5">
-                <BrandLogo theme="dark" size="lg" asLink={true} />
+                <BrandLogo theme="dark" size="2xl" showTagline={false} asLink={true} />
               </div>
               <p className="text-[#8BA5C8] text-sm leading-relaxed mb-6 max-w-[280px]">
                 {siteConfig.description}
@@ -172,11 +172,7 @@ export default function Footer() {
                   </li>
                 ))}
               </ul>
-              {/* Tagline pill */}
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#32A88A]/30 bg-[#32A88A]/10">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#32A88A]" />
-                <span className="text-[#32A88A] text-xs font-medium">{siteConfig.tagline}</span>
-              </div>
+              
             </div>
 
           </div>

@@ -7,7 +7,7 @@ import { SYNE_FONT } from '@/lib/fonts';
 
 interface BrandLogoProps {
   variant?: 'full' | 'icon' | 'stacked';
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
   theme?: 'dark' | 'light' | 'auto';
   showTagline?: boolean;
   centered?: boolean;
@@ -25,7 +25,7 @@ export default function BrandLogo({
   variant = 'full',
   size = 'md',
   theme = 'auto',
-  showTagline = true,
+  showTagline = false,
   centered = false,
   className = '',
   asLink = true,
@@ -58,6 +58,13 @@ export default function BrandLogo({
       title: 'text-[1.95rem]',
       tagline: 'text-[11.5px] tracking-[0.2em]',
       gap: 'gap-4',
+    },
+    '2xl': {
+      badge: 68,
+      icon: 50,
+      title: 'text-[2.2rem] sm:text-[2.65rem]',
+      tagline: 'text-[12px] tracking-[0.2em]',
+      gap: 'gap-4 sm:gap-4.5',
     },
   }[size];
 
@@ -105,13 +112,7 @@ export default function BrandLogo({
         </span>
       </div>
 
-      {showTagline && (
-        <span
-          className={`font-extrabold uppercase mt-1 leading-tight ${taglineColor} ${sizeMap.tagline} hidden sm:block`}
-        >
-          Digital Solutions for a Bigger Tomorrow
-        </span>
-      )}
+      
     </div>
   );
 

@@ -207,10 +207,7 @@ export default function AboutPage() {
           ))}
         </div>
         <div className="mt-10 text-center">
-          <p className="text-white/30 text-sm mb-5">Market focus: India first, with delivery designed to support international clients.</p>
-          <Link href="/contact" className="btn btn-primary btn-md">
-            Start a conversation <ArrowRight size={14} />
-          </Link>
+          <p className="text-white/30 text-sm">Market focus: India first, with delivery designed to support international clients.</p>
         </div>
       </Section>
     </>
