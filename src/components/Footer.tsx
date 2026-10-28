@@ -4,6 +4,7 @@ import { siteConfig } from '@/data/siteConfig';
 import { services } from '@/data/services';
 import { SYNE_FONT } from '@/lib/fonts';
 import ScheduleCallButton from '@/components/ScheduleCallButton';
+import BrandLogo from '@/components/BrandLogo';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -82,17 +83,10 @@ export default function Footer() {
 
             {/* Brand col */}
             <div className="col-span-2 md:col-span-4">
-              <Link href="/" prefetch={false} className="flex items-center gap-2.5 mb-5">
-                <div className="relative w-9 h-9 rounded-xl flex items-center justify-center"
-                  style={{ background: 'linear-gradient(135deg,#477BDB,#6477C8)' }}>
-                  <span className="text-white font-black text-base">G</span>
-                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#32A88A] border-2 border-[#0F1E36]" />
-                </div>
-                <span className="text-white font-bold text-lg tracking-tight">
-                  {siteConfig.siteName}
-                </span>
-              </Link>
-              <p className="text-[#8BA5C8] text-sm leading-relaxed mb-6 max-w-[260px]">
+              <div className="mb-5">
+                <BrandLogo theme="dark" size="lg" showTagline={true} asLink={true} />
+              </div>
+              <p className="text-[#8BA5C8] text-sm leading-relaxed mb-6 max-w-[280px]">
                 {siteConfig.description}
               </p>
               {/* Contact micro-list */}

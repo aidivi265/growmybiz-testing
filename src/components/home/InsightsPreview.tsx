@@ -35,7 +35,7 @@ export default function InsightsPreview() {
       <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
 
         {/* ── Header ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] items-end gap-6 mb-12">
+        <div className="reveal-on-scroll grid grid-cols-1 lg:grid-cols-[1fr_auto] items-end gap-6 mb-12">
           <div>
             <span className="eyebrow block mb-4">Insights</span>
             <h2
@@ -74,7 +74,7 @@ export default function InsightsPreview() {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
 
           {/* Feature post — large card */}
-          <Link href={`/insights/${featured.slug}`} className="group block">
+          <Link href={`/insights/${featured.slug}`} className="reveal-on-scroll stagger-1 group block">
             <article
               className="h-full rounded-[20px] overflow-hidden border transition-all duration-200 group-hover:shadow-[0_12px_48px_rgba(15,28,49,0.12)] group-hover:-translate-y-1"
               style={{ background: '#fff', borderColor: '#DDE3EC' }}

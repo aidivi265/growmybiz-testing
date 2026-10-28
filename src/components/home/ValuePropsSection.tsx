@@ -31,7 +31,7 @@ export default function ValuePropsSection() {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-12 lg:gap-16 items-start">
 
           {/* ── Left — statement ── */}
-          <div className="lg:sticky lg:top-28">
+          <div className="reveal-on-scroll lg:sticky lg:top-28">
             <span className="eyebrow eyebrow-teal block mb-6">Why Growmybizz</span>
 
             <h2
@@ -78,7 +78,7 @@ export default function ValuePropsSection() {
               return (
                 <div
                   key={vp.id}
-                  className="group flex items-start gap-5 p-6 rounded-2xl transition-all duration-200"
+                  className={`reveal-on-scroll stagger-${i + 1} interactive-glow-card group flex items-start gap-5 p-6 rounded-2xl transition-all duration-300`}
                   style={{
                     background: 'rgba(255,255,255,0.04)',
                     border: '1px solid rgba(255,255,255,0.07)',

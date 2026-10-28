@@ -27,6 +27,7 @@ import {
   Check,
 } from 'lucide-react';
 import type { InquiryRecord } from '@/lib/supabase';
+import BrandLogo from '@/components/BrandLogo';
 
 // ─── Admin Nav Items ──────────────────────────────────────────────────────────
 const adminNav = [
@@ -88,15 +89,7 @@ export default function AdminDashboardClient() {
       >
         {/* Brand */}
         <div className="flex items-center justify-between px-5 h-14 border-b border-white/[0.06]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#3b82d4] to-[#7c5cd8] flex items-center justify-center">
-              <span className="text-white text-xs font-bold">G</span>
-            </div>
-            <div>
-              <span className="text-white text-sm font-semibold block leading-tight">Growmybizz</span>
-              <span className="text-[10px] text-emerald-400 font-mono">Supabase Live</span>
-            </div>
-          </div>
+          <BrandLogo size="sm" theme="dark" asLink={false} />
           <button
             onClick={() => setSidebarOpen(false)}
             className="lg:hidden text-white/40 hover:text-white p-1"

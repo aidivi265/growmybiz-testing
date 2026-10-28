@@ -23,7 +23,7 @@ export default function TestimonialsSection() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
         {/* Header */}
-        <div className="max-w-2xl mb-14">
+        <div className="reveal-on-scroll max-w-2xl mb-14">
           <span className="eyebrow eyebrow-teal block mb-4">Client Feedback</span>
           <h2
             style={{
@@ -54,10 +54,10 @@ export default function TestimonialsSection() {
 
         {/* Testimonials Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {testimonials.map((t) => (
+          {testimonials.map((t, idx) => (
             <div
               key={t.id}
-              className="rounded-2xl p-7 flex flex-col justify-between relative transition-all duration-300 hover:border-white/20 hover:-translate-y-1"
+              className={`reveal-on-scroll stagger-${idx + 1} interactive-glow-card rounded-2xl p-7 flex flex-col justify-between relative transition-all duration-300 hover:border-white/20 hover:-translate-y-1`}
               style={{
                 background: 'linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)',
                 border: '1px solid rgba(255,255,255,0.08)',

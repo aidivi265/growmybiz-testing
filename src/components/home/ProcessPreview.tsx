@@ -37,7 +37,7 @@ export default function ProcessPreview() {
       <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
 
         {/* ── Header ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 items-end mb-16">
+        <div className="reveal-on-scroll grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 items-end mb-16">
           <div>
             <span
               className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest mb-4"
@@ -93,7 +93,7 @@ export default function ProcessPreview() {
             return (
               <div
                 key={step.id}
-                className="group relative flex flex-col rounded-2xl p-4 transition-all duration-250"
+                className={`reveal-on-scroll stagger-${i + 1} interactive-glow-card group relative flex flex-col rounded-2xl p-4 transition-all duration-300`}
                 style={{
                   background: 'rgba(255,255,255,0.035)',
                   border: `1px solid rgba(255,255,255,0.07)`,

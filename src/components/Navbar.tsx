@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown, ArrowRight } from 'lucide-react';
 import { navItems } from '@/data/navigation';
 import { siteConfig } from '@/data/siteConfig';
+import BrandLogo from '@/components/BrandLogo';
 import type { NavItem } from '@/types';
 
 export default function Navbar() {
@@ -64,21 +65,8 @@ export default function Navbar() {
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
 
-            {/* ── Logo ── */}
-            <Link href="/" className="flex items-center gap-2.5 group shrink-0" aria-label="GrowMyBizz home">
-              <div
-                className="relative w-9 h-9 rounded-xl flex items-center justify-center shadow-[0_2px_10px_rgba(71,123,219,0.30)]"
-                style={{ background: 'linear-gradient(135deg, #477BDB 0%, #6477C8 100%)' }}
-              >
-                <span className="text-white font-black text-base leading-none tracking-tight">G</span>
-                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#32A88A] border-2 border-white" />
-              </div>
-              <div className="leading-none">
-                <span className="text-[#0F1C31] font-bold text-[1.05rem] tracking-tight">
-                  {siteConfig.siteName.charAt(0).toUpperCase() + siteConfig.siteName.slice(1).toLowerCase()}
-                </span>
-              </div>
-            </Link>
+            {/* ── Official Brand Logo ── */}
+            <BrandLogo theme="light" size="md" asLink={true} />
 
             {/* ── Desktop Nav ── */}
             <div className="hidden lg:flex items-center gap-0.5">

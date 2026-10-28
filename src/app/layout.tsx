@@ -20,6 +20,10 @@ export const metadata: Metadata = {
   authors: [{ name: siteConfig.siteName }],
   creator: siteConfig.siteName,
   metadataBase: new URL('https://growmybizz.vercel.app'),
+  icons: {
+    icon: '/growmybizz-app-icon.png',
+    apple: '/icon-192.png',
+  },
   openGraph: {
     type: 'website',
     siteName: siteConfig.siteName,

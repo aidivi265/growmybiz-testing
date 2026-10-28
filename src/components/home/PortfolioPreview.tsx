@@ -18,7 +18,7 @@ export default function PortfolioPreview() {
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
 
         {/* ── Header ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] items-end gap-6 mb-12">
+        <div className="reveal-on-scroll grid grid-cols-1 lg:grid-cols-[1fr_auto] items-end gap-6 mb-12">
           <div>
             <span className="eyebrow block mb-4">Our work</span>
             <h2
@@ -50,7 +50,7 @@ export default function PortfolioPreview() {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
 
           {/* Main large card */}
-          <Link href={`/portfolio/${main.slug}`} prefetch={false} className="group block">
+          <Link href={`/portfolio/${main.slug}`} prefetch={false} className="reveal-on-scroll stagger-1 group block">
             <article
               className="rounded-[22px] overflow-hidden relative border border-[#DDE3EC] bg-[#0A1320]"
               style={{
@@ -134,7 +134,7 @@ export default function PortfolioPreview() {
             {rest.map((item, i) => {
               const ac = ACCENT_COLORS[(i + 1) % ACCENT_COLORS.length];
               return (
-                <Link key={item.id} href={`/portfolio/${item.slug}`} className="group block flex-1">
+                <Link key={item.id} href={`/portfolio/${item.slug}`} className={`reveal-on-scroll stagger-${i + 2} group block flex-1`}>
                   <article
                     className="h-full rounded-[22px] overflow-hidden relative border border-[#DDE3EC] bg-[#0A1320]"
                     style={{

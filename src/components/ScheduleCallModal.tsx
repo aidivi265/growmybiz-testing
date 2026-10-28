@@ -192,3 +192,5 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
     </div>
   );
 }
+
+export default ScheduleCallModal;

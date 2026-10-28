@@ -20,7 +20,7 @@ export default function ServicesSection() {
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
 
         {/* ── Header ── */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+        <div className="reveal-on-scroll flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
           <div className="max-w-xl">
             <span className="eyebrow block mb-4">What we do</span>
             <h2
@@ -60,7 +60,7 @@ export default function ServicesSection() {
               <Link prefetch={false}
                 key={svc.id}
                 href={`/services/${svc.slug}`}
-                className={`group relative flex flex-col rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-1 ${cs.span}`}
+                className={`reveal-on-scroll stagger-${(i % 3) + 1} group relative flex flex-col rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1.5 ${cs.span}`}
                 style={{
                   background: '#FAFBFD',
                   border: '1px solid #E8EDF4',

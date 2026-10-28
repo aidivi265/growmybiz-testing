@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Eye, EyeOff, Lock, User, AlertCircle } from 'lucide-react';
+import BrandLogo from '@/components/BrandLogo';
 
 export default function AdminLoginPage() {
   const [form, setForm] = useState({ username: '', password: '' });
@@ -64,8 +65,8 @@ export default function AdminLoginPage() {
       <div className="relative z-10 w-full max-w-sm">
         {/* Brand header */}
         <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#3b82d4] to-[#7c5cd8] flex items-center justify-center mx-auto mb-3 shadow-xl shadow-blue-500/20">
-            <Lock size={18} className="text-white" />
+          <div className="flex justify-center mb-4">
+            <BrandLogo size="lg" theme="dark" asLink={false} />
           </div>
           <h1 className="text-xl font-bold text-white">Admin Access</h1>
           <p className="text-white/40 text-sm mt-1">Growmybizz CMS</p>
