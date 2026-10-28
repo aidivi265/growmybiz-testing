@@ -6,7 +6,7 @@ import { ArrowRight } from 'lucide-react';
 import { heroSlides } from '@/data/hero';
 import { SYNE_FONT } from '@/lib/fonts';
 import ScheduleCallButton from '@/components/ScheduleCallButton';
-import InteractiveCapabilityDeck from './InteractiveCapabilityDeck';
+import InteractiveGrowthOrbit from './InteractiveGrowthOrbit';
 
 export default function HeroSection() {
   const [slide, setSlide] = useState(0);
@@ -213,9 +213,9 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* ── RIGHT — Interactive Capability Deck & Project Simulator ── */}
+          {/* ── RIGHT — Fun Boxless Interactive 3D Growth Orbit ── */}
           <div className="flex flex-col justify-center items-center lg:items-end flex-1 shrink-0 py-8 lg:py-12 z-20">
-            <InteractiveCapabilityDeck />
+            <InteractiveGrowthOrbit />
           </div>
 
         </div>
