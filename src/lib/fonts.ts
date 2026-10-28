@@ -2,13 +2,12 @@
  * Shared next/font instances — import SYNE_FONT / INTER_FONT anywhere
  * you need the resolved font-family string in an inline style prop.
  *
- * Usage in a component:
- *   import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
- *   <h1 style={{ fontFamily: SYNE_FONT }}>…</h1>
+ * Display: Plus Jakarta Sans — sharp, modern, premium editorial feel
+ * Body:    DM Sans — clean, geometric, highly readable
  */
-import { Inter, Syne } from 'next/font/google';
+import { Plus_Jakarta_Sans, DM_Sans } from 'next/font/google';
 
-export const inter = Inter({
+export const inter = DM_Sans({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700', '800', '900'],
   style: ['normal', 'italic'],
@@ -17,7 +16,7 @@ export const inter = Inter({
   preload: true,
 });
 
-export const syne = Syne({
+export const syne = Plus_Jakarta_Sans({
   subsets: ['latin'],
   weight: ['600', '700', '800'],
   variable: '--font-syne',
@@ -25,7 +24,6 @@ export const syne = Syne({
   preload: true,
 });
 
-// These are the resolved font-family strings (e.g. "__Syne_abc123, __Syne_Fallback_abc123")
-// Safe to use in inline style={{ fontFamily: SYNE_FONT }} — same value on server and client
+// Resolved font-family strings — safe in inline style props (same on server + client)
 export const SYNE_FONT = syne.style.fontFamily;
 export const INTER_FONT = inter.style.fontFamily;
