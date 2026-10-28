@@ -3,75 +3,146 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { SYNE_FONT } from '@/lib/fonts';
 
 interface BrandLogoProps {
-  variant?: 'full' | 'icon';
+  variant?: 'full' | 'icon' | 'stacked';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   theme?: 'dark' | 'light' | 'auto';
+  showTagline?: boolean;
+  centered?: boolean;
   className?: string;
   asLink?: boolean;
 }
 
 /**
  * Official Growmybizz Brand Logo
- * Renders the exact official brand identity asset uploaded by the founder.
- * - 'light' / 'auto': Full horizontal logo with black 'Growmy' for light surfaces.
- * - 'dark': High-contrast light version with white 'Growmy' for navy/dark backgrounds.
- * - 'icon': Emblem monogram only.
+ * - Uses ONLY the official circular 3D growth arrow emblem on a pure WHITE background.
+ * - Icon is perfectly centered inside the white background badge.
+ * - Typography is cleanly coded: "Growmy" + gradient "bizz" + "DIGITAL SOLUTIONS FOR A BIGGER TOMORROW".
  */
 export default function BrandLogo({
   variant = 'full',
   size = 'md',
   theme = 'auto',
+  showTagline = true,
+  centered = false,
   className = '',
   asLink = true,
 }: BrandLogoProps) {
-  // Dimension definitions with 3.155:1 aspect ratio for full logo
   const sizeMap = {
-    sm: { height: 28, width: 88, iconSize: 28 },
-    md: { height: 36, width: 114, iconSize: 36 },
-    lg: { height: 46, width: 145, iconSize: 46 },
-    xl: { height: 58, width: 183, iconSize: 58 },
+    sm: {
+      badge: 34,
+      icon: 24,
+      title: 'text-[1.05rem]',
+      tagline: 'text-[7.5px] tracking-[0.14em]',
+      gap: 'gap-2.5',
+    },
+    md: {
+      badge: 40,
+      icon: 28,
+      title: 'text-[1.25rem]',
+      tagline: 'text-[8.5px] tracking-[0.16em]',
+      gap: 'gap-3',
+    },
+    lg: {
+      badge: 48,
+      icon: 34,
+      title: 'text-[1.5rem]',
+      tagline: 'text-[10px] tracking-[0.18em]',
+      gap: 'gap-3.5',
+    },
+    xl: {
+      badge: 64,
+      icon: 46,
+      title: 'text-[1.95rem]',
+      tagline: 'text-[11.5px] tracking-[0.2em]',
+      gap: 'gap-4',
+    },
   }[size];
 
   const isDarkSurface = theme === 'dark';
-  const logoSrc = isDarkSurface
-    ? '/growmybizz-logo-light.png'
-    : '/growmybizz-logo.png';
+  const textPrimaryColor = isDarkSurface ? 'text-white' : 'text-[#0F1C31]';
+  const taglineColor = isDarkSurface ? 'text-white/60' : 'text-[#506680]';
 
-  const logoContent = (
-    <div className={`inline-flex items-center select-none group transition-opacity hover:opacity-95 ${className}`}>
-      {variant === 'icon' ? (
-        <div
-          className="relative shrink-0 flex items-center justify-center transition-transform duration-300 group-hover:scale-105"
-          style={{ width: sizeMap.iconSize, height: sizeMap.iconSize }}
+  // ─── Center-aligned Icon with Solid White Background ──────────────────────
+  const iconBadge = (
+    <div
+      className="relative shrink-0 flex items-center justify-center bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.08)] border border-black/[0.08] p-1 transition-transform duration-300 group-hover:scale-105"
+      style={{
+        width: sizeMap.badge,
+        height: sizeMap.badge,
+      }}
+    >
+      <div className="relative flex items-center justify-center w-full h-full">
+        <Image
+          src="/brand-logo-mark.png"
+          alt="Growmybizz Mark"
+          width={sizeMap.icon}
+          height={sizeMap.icon}
+          priority
+          className="object-contain drop-shadow-[0_1px_4px_rgba(59,130,246,0.25)]"
+        />
+      </div>
+    </div>
+  );
+
+  // ─── Pure Coded Typography (Growmy + Gradient bizz + Tagline) ─────────────
+  const textContent = (
+    <div className={`flex flex-col ${centered || variant === 'stacked' ? 'items-center text-center' : 'items-start text-left'}`}>
+      <div className="flex items-baseline leading-none tracking-tight">
+        <span
+          className={`font-black tracking-tight ${textPrimaryColor} ${sizeMap.title}`}
+          style={{ fontFamily: SYNE_FONT, letterSpacing: '-0.035em' }}
         >
-          <Image
-            src="/brand-logo-mark.png"
-            alt="Growmybizz"
-            width={sizeMap.iconSize}
-            height={sizeMap.iconSize}
-            priority
-            className="w-full h-full object-contain rounded-xl drop-shadow-[0_2px_12px_rgba(59,130,246,0.35)]"
-          />
-        </div>
-      ) : (
-        <div
-          className="relative shrink-0 flex items-center transition-transform duration-300 group-hover:scale-102"
-          style={{ height: sizeMap.height, width: sizeMap.width }}
+          Growmy
+        </span>
+        <span
+          className={`font-black ${sizeMap.title} bg-gradient-to-r from-[#00b4d8] via-[#3b82f6] to-[#8b5cf6] bg-clip-text text-transparent`}
+          style={{ fontFamily: SYNE_FONT, letterSpacing: '-0.025em' }}
         >
-          <Image
-            src={logoSrc}
-            alt="Growmybizz — Digital Solutions for a Bigger Tomorrow"
-            width={sizeMap.width}
-            height={sizeMap.height}
-            priority
-            className="w-full h-full object-contain"
-          />
-        </div>
+          bizz
+        </span>
+      </div>
+
+      {showTagline && (
+        <span
+          className={`font-extrabold uppercase mt-1 leading-tight ${taglineColor} ${sizeMap.tagline} hidden sm:block`}
+        >
+          Digital Solutions for a Bigger Tomorrow
+        </span>
       )}
     </div>
   );
+
+  let logoContent: React.ReactNode;
+
+  if (variant === 'icon') {
+    logoContent = (
+      <div className={`inline-flex items-center justify-center select-none group ${className}`}>
+        {iconBadge}
+      </div>
+    );
+  } else if (variant === 'stacked') {
+    logoContent = (
+      <div className={`inline-flex flex-col items-center justify-center gap-2 select-none group ${className}`}>
+        {iconBadge}
+        {textContent}
+      </div>
+    );
+  } else {
+    // Full horizontal lockup
+    logoContent = (
+      <div
+        className={`inline-flex items-center ${sizeMap.gap} select-none group ${
+          centered ? 'justify-center' : ''
+        } ${className}`}
+      >
+        {iconBadge}
+        {textContent}
+      </div>
+    );
+  }
 
   if (asLink) {
     return (

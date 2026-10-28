@@ -221,26 +221,24 @@ export default function InteractiveGrowthOrbit() {
             }}
             title="Click to schedule discovery"
           >
-            {/* Core Orb Container */}
+            {/* Core Orb Container — Centered with Pure White Background */}
             <div
-              className="relative w-24 h-24 rounded-3xl p-1.5 flex items-center justify-center shadow-2xl transition-all duration-300 group-hover:shadow-[0_0_50px_rgba(59,130,246,0.6)]"
-              style={{
-                background: 'linear-gradient(135deg, rgba(15,28,49,0.95), rgba(8,15,28,0.98))',
-                border: '1.5px solid rgba(255,255,255,0.15)',
-              }}
+              className="relative w-20 h-20 rounded-2xl p-1.5 flex items-center justify-center bg-white shadow-2xl transition-all duration-300 group-hover:shadow-[0_0_40px_rgba(255,255,255,0.7)]"
             >
               {/* Outer Pulsing Glow */}
-              <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-cyan-400 to-purple-600 opacity-40 blur-md group-hover:opacity-80 transition-opacity animate-pulse-dot" />
+              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-cyan-400 to-purple-600 opacity-40 blur-md group-hover:opacity-80 transition-opacity animate-pulse-dot" />
 
-              {/* Exact Brand Logo Emblem */}
-              <Image
-                src="/brand-logo-mark.png"
-                alt="Growmybizz Core"
-                width={84}
-                height={84}
-                priority
-                className="relative z-10 w-full h-full object-contain rounded-2xl drop-shadow-[0_4px_16px_rgba(59,130,246,0.5)]"
-              />
+              {/* Exact Brand Logo Emblem Centered on White */}
+              <div className="relative z-10 w-full h-full flex items-center justify-center bg-white rounded-xl">
+                <Image
+                  src="/brand-logo-mark.png"
+                  alt="Growmybizz Core"
+                  width={60}
+                  height={60}
+                  priority
+                  className="w-full h-full object-contain"
+                />
+              </div>
             </div>
 
             {/* Core Label */}

@@ -89,7 +89,7 @@ export default function AdminDashboardClient() {
       >
         {/* Brand */}
         <div className="flex items-center justify-between px-5 h-14 border-b border-white/[0.06]">
-          <BrandLogo size="sm" theme="dark" asLink={false} />
+          <BrandLogo size="sm" theme="dark" showTagline={false} asLink={false} />
           <button
             onClick={() => setSidebarOpen(false)}
             className="lg:hidden text-white/40 hover:text-white p-1"

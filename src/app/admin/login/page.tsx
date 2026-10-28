@@ -65,8 +65,8 @@ export default function AdminLoginPage() {
       <div className="relative z-10 w-full max-w-sm">
         {/* Brand header */}
         <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <BrandLogo size="lg" theme="dark" asLink={false} />
+          <div className="flex justify-center mb-6">
+            <BrandLogo size="lg" theme="dark" variant="stacked" centered={true} asLink={false} />
           </div>
           <h1 className="text-xl font-bold text-white">Admin Access</h1>
           <p className="text-white/40 text-sm mt-1">Growmybizz CMS</p>
