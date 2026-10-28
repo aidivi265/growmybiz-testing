@@ -2,9 +2,11 @@ import { supabaseAdmin } from '@/lib/supabaseServer';
 import { services as staticServices } from '@/data/services';
 import { portfolioItems as staticPortfolio } from '@/data/portfolio';
 import { blogPosts as staticInsights } from '@/data/insights';
-import { testimonials as staticTestimonials } from '@/data/company';
+import { testimonials as staticTestimonials, teamMembers as staticTeamMembers, valueProps as staticValueProps, stats as staticStats } from '@/data/company';
+import { heroSlides as staticHeroSlides } from '@/data/hero';
+import { processSteps as staticProcessSteps } from '@/data/process';
 import { siteConfig as staticSiteConfig } from '@/data/siteConfig';
-import type { Service, PortfolioItem, BlogPost, Testimonial, SiteConfig } from '@/types';
+import type { Service, PortfolioItem, BlogPost, Testimonial, SiteConfig, HeroSlide, ProcessStep, TeamMember, ValueProp, StatItem } from '@/types';
 
 /**
  * ─────────────────────────────────────────────────────────────────────────────
@@ -273,4 +275,137 @@ export async function fetchSiteSettings(): Promise<
   }
 
   return staticSiteConfig;
+}
+
+// ── 7. Hero Slides ───────────────────────────────────────────────────────────
+export async function fetchHeroSlides(): Promise<HeroSlide[]> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('page_content')
+      .select('data')
+      .eq('id', 'hero_slides')
+      .maybeSingle();
+
+    if (!error && data && Array.isArray(data.data) && data.data.length > 0) {
+      return data.data as HeroSlide[];
+    }
+  } catch (err) {
+    console.warn('[DAL Notice] Hero slides fetch fallback:', err);
+  }
+
+  return staticHeroSlides;
+}
+
+// ── 8. Process Steps ─────────────────────────────────────────────────────────
+export async function fetchProcessSteps(): Promise<ProcessStep[]> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('page_content')
+      .select('data')
+      .eq('id', 'process_steps')
+      .maybeSingle();
+
+    if (!error && data && Array.isArray(data.data) && data.data.length > 0) {
+      return data.data as ProcessStep[];
+    }
+  } catch (err) {
+    console.warn('[DAL Notice] Process steps fetch fallback:', err);
+  }
+
+  return staticProcessSteps;
+}
+
+// ── 9. Team Members ──────────────────────────────────────────────────────────
+export async function fetchTeamMembers(): Promise<TeamMember[]> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('page_content')
+      .select('data')
+      .eq('id', 'team_members')
+      .maybeSingle();
+
+    if (!error && data && Array.isArray(data.data) && data.data.length > 0) {
+      return data.data as TeamMember[];
+    }
+  } catch (err) {
+    console.warn('[DAL Notice] Team members fetch fallback:', err);
+  }
+
+  return staticTeamMembers;
+}
+
+// ── 10. Value Propositions & Pillars ─────────────────────────────────────────
+export async function fetchValueProps(): Promise<ValueProp[]> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('page_content')
+      .select('data')
+      .eq('id', 'value_props')
+      .maybeSingle();
+
+    if (!error && data && Array.isArray(data.data) && data.data.length > 0) {
+      return data.data as ValueProp[];
+    }
+  } catch (err) {
+    console.warn('[DAL Notice] Value props fetch fallback:', err);
+  }
+
+  return staticValueProps;
+}
+
+// ── 11. Key Agency Stats ─────────────────────────────────────────────────────
+export async function fetchStats(): Promise<StatItem[]> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('page_content')
+      .select('data')
+      .eq('id', 'stats')
+      .maybeSingle();
+
+    if (!error && data && Array.isArray(data.data) && data.data.length > 0) {
+      return data.data as StatItem[];
+    }
+  } catch (err) {
+    console.warn('[DAL Notice] Stats fetch fallback:', err);
+  }
+
+  return staticStats;
+}
+
+// ── 12. Page Copy / Custom Block ─────────────────────────────────────────────
+export async function fetchPageCopy<T>(sectionId: string, fallback: T): Promise<T> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('page_content')
+      .select('data')
+      .eq('id', sectionId)
+      .maybeSingle();
+
+    if (!error && data?.data) {
+      return data.data as T;
+    }
+  } catch (err) {
+    console.warn(`[DAL Notice] Page copy fetch fallback for ${sectionId}:`, err);
+  }
+
+  return fallback;
+}
+
+// ── 13. Legal Policy Document ────────────────────────────────────────────────
+export async function fetchLegalDoc(slug: string, fallback: string): Promise<string> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('page_content')
+      .select('data')
+      .eq('id', `legal_${slug}`)
+      .maybeSingle();
+
+    if (!error && data?.data && typeof data.data.content === 'string') {
+      return data.data.content;
+    }
+  } catch (err) {
+    console.warn(`[DAL Notice] Legal doc fetch fallback for ${slug}:`, err);
+  }
+
+  return fallback;
 }

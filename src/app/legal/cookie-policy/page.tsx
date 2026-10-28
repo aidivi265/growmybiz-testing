@@ -1,3 +1,4 @@
+import LegalDocView from '@/components/LegalDocView';
 import type { Metadata } from 'next';
 import { Breadcrumb } from '@/components/ui';
 import { siteConfig } from '@/data';
@@ -27,6 +28,7 @@ export default function CookiePolicyPage() {
       </div>
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <LegalDocView slug="cookie-policy" defaultTitle="Cookie Policy">
         <div className="prose-legal space-y-8">
           <LegalSection title="1. What Are Cookies?">
             <p>
@@ -90,6 +92,7 @@ export default function CookiePolicyPage() {
             </p>
           </LegalSection>
         </div>
+        </LegalDocView>
       </div>
     </>
   );

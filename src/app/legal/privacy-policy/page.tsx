@@ -1,3 +1,4 @@
+import LegalDocView from '@/components/LegalDocView';
 import type { Metadata } from 'next';
 import { Breadcrumb } from '@/components/ui';
 import { siteConfig } from '@/data';
@@ -24,6 +25,7 @@ export default function PrivacyPolicyPage() {
       </div>
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <LegalDocView slug="privacy-policy" defaultTitle="Privacy Policy">
         <div className="prose-legal space-y-8">
           <LegalSection title="1. Who we are">
             <p>{siteConfig.siteName} (&ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;) is a digital agency. Our contact address is: <a href={`mailto:${siteConfig.email}`} className="text-[#477BDB] hover:underline">{siteConfig.email}</a>.</p>
@@ -95,8 +97,8 @@ export default function PrivacyPolicyPage() {
             <p>For questions, concerns or requests related to this policy, contact us at: <a href={`mailto:${siteConfig.email}`} className="text-[#477BDB] hover:underline">{siteConfig.email}</a>.</p>
           </LegalSection>
         </div>
+        </LegalDocView>
       </div>
-
     </>
   );
 }

@@ -26,6 +26,7 @@ import {
   Database,
   Check,
   Share2,
+  FileText,
 } from 'lucide-react';
 import type { InquiryRecord } from '@/lib/supabase';
 import BrandLogo from '@/components/BrandLogo';
@@ -35,6 +36,10 @@ import BlogPanel from '@/components/admin/BlogPanel';
 import TestimonialsPanel from '@/components/admin/TestimonialsPanel';
 import HeroPanel from '@/components/admin/HeroPanel';
 import SeoPanel from '@/components/admin/SeoPanel';
+import ProcessPanel from '@/components/admin/ProcessPanel';
+import TeamPanel from '@/components/admin/TeamPanel';
+import PageCopyPanel from '@/components/admin/PageCopyPanel';
+import LegalPanel from '@/components/admin/LegalPanel';
 
 // ─── Admin Nav Items ──────────────────────────────────────────────────────────
 const adminNav = [
@@ -49,6 +54,7 @@ const adminNav = [
   { id: 'process', label: 'Process Steps', icon: ChevronRight },
   { id: 'team', label: 'Team Members', icon: Users },
   { id: 'testimonials', label: 'Testimonials', icon: MessageSquare },
+  { id: 'page-copy', label: 'Website Copy & Blocks', icon: FileText },
   { id: 'legal', label: 'Legal Pages', icon: Shield },
 ];
 
@@ -181,6 +187,7 @@ export default function AdminDashboardClient() {
           {activeSection === 'process' && <ProcessPanel />}
           {activeSection === 'team' && <TeamPanel />}
           {activeSection === 'testimonials' && <TestimonialsPanel />}
+          {activeSection === 'page-copy' && <PageCopyPanel />}
           {activeSection === 'legal' && <LegalPanel />}
         </main>
       </div>
@@ -657,10 +664,17 @@ function SiteConfigPanel() {
   const [data, setData] = useState({
     siteName: siteConfig.siteName,
     tagline: siteConfig.tagline,
+    description: siteConfig.description,
     email: siteConfig.email,
     phone: siteConfig.phone,
     address: siteConfig.address,
     whatsappNumber: siteConfig.whatsappNumber,
+    social: {
+      linkedin: siteConfig.social.linkedin || '',
+      instagram: siteConfig.social.instagram || '',
+      twitter: siteConfig.social.twitter || '',
+      youtube: siteConfig.social.youtube || '',
+    },
   });
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -731,115 +745,52 @@ function SiteConfigPanel() {
             <label className="block text-xs font-medium text-white/60 mb-1">{f.label}</label>
             <input
               type="text"
-              value={data[f.key]}
+              value={(data as any)[f.key] || ''}
               onChange={(e) => setData({ ...data, [f.key]: e.target.value })}
               className="w-full px-3 py-2 rounded-lg bg-[#0d0d14] border border-white/[0.08] text-white text-xs focus:outline-none focus:border-[#3b82d4]"
             />
           </div>
         ))}
+
+        <div>
+          <label className="block text-xs font-medium text-white/60 mb-1">Company Description</label>
+          <textarea
+            rows={2}
+            value={data.description || ''}
+            onChange={(e) => setData({ ...data, description: e.target.value })}
+            className="w-full px-3 py-2 rounded-lg bg-[#0d0d14] border border-white/[0.08] text-white text-xs focus:outline-none focus:border-[#3b82d4]"
+          />
+        </div>
+
+        <div className="pt-2 border-t border-white/5 space-y-3">
+          <div className="text-xs font-semibold text-white/80">Social Media Channels</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {[
+              { label: 'LinkedIn URL', key: 'linkedin' as const },
+              { label: 'Instagram URL', key: 'instagram' as const },
+              { label: 'Twitter / X URL', key: 'twitter' as const },
+              { label: 'YouTube URL', key: 'youtube' as const },
+            ].map((s) => (
+              <div key={s.key}>
+                <label className="block text-[11px] text-white/50 mb-1">{s.label}</label>
+                <input
+                  type="text"
+                  value={(data.social as any)?.[s.key] || ''}
+                  onChange={(e) =>
+                    setData({
+                      ...data,
+                      social: { ...(data.social || {}), [s.key]: e.target.value },
+                    })
+                  }
+                  className="w-full px-2.5 py-1.5 rounded-lg bg-[#0d0d14] border border-white/[0.08] text-white text-xs outline-none"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </PanelWrapper>
   );
 }
 
 // ─── Hero Panel ───────────────────────────────────────────────────────────────
-
-
-// ─── Process Panel ────────────────────────────────────────────────────────────
-function ProcessPanel() {
-  return (
-    <PanelWrapper
-      title="Process Steps"
-      subtitle="6-stage delivery framework managed in src/data/process.ts."
-    >
-      <CMSTable
-        headers={['Stage', 'Title', 'Description', 'Checkpoints', 'Status']}
-        rows={processSteps.map((p) => [
-          p.number,
-          p.title,
-          p.description.slice(0, 50) + '...',
-          `${p.details.length} points`,
-          <span key="st" className="px-2 py-0.5 rounded text-[11px] font-mono text-emerald-400 bg-emerald-400/10">Stage {p.number}</span>,
-        ])}
-      />
-    </PanelWrapper>
-  );
-}
-
-// ─── Team Panel ───────────────────────────────────────────────────────────────
-function TeamPanel() {
-  return (
-    <PanelWrapper
-      title="Team Members"
-      subtitle="Agency leadership profiles managed in src/data/company.ts."
-      action={
-        <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/10 text-white/50">
-          File-Driven Module
-        </span>
-      }
-    >
-      <CMSTable
-        headers={['Name', 'Role', 'Profile']}
-        rows={teamMembers.map((t) => [
-          t.name,
-          t.role,
-          t.linkedin ? (
-            <a
-              key={t.id}
-              href={t.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-[#3b82d4] hover:underline inline-flex items-center gap-1"
-            >
-              LinkedIn ↗
-            </a>
-          ) : (
-            <span key={t.id} className="text-white/40">–</span>
-          ),
-        ])}
-      />
-    </PanelWrapper>
-  );
-}
-
-// ─── Legal Panel ─────────────────────────────────────────────────────────────
-function LegalPanel() {
-  return (
-    <PanelWrapper
-      title="Legal Pages"
-      subtitle="Statutory policies compliant with digital consumer protection laws."
-      action={
-        <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/10 text-white/50">
-          6 Live Pages
-        </span>
-      }
-    >
-      <div className="space-y-3">
-        {[
-          { title: 'Privacy Policy', path: '/legal/privacy-policy', status: 'Live & Production Ready' },
-          { title: 'Terms of Service', path: '/legal/terms-of-service', status: 'Live & Production Ready' },
-          { title: 'Cookie Policy', path: '/legal/cookie-policy', status: 'Live & Production Ready' },
-          { title: 'Refund Policy', path: '/legal/refund-policy', status: 'Live & Production Ready' },
-          { title: 'Disclaimer', path: '/legal/disclaimer', status: 'Live & Production Ready' },
-          { title: 'Accessibility Statement', path: '/legal/accessibility', status: 'Live & Production Ready' },
-        ].map((page) => (
-          <div key={page.path} className="flex items-center justify-between p-5 rounded-xl bg-[#0d0d14] border border-white/[0.06]">
-            <div>
-              <p className="text-white text-sm font-medium mb-0.5">{page.title}</p>
-              <p className="text-emerald-400 text-xs">{page.status}</p>
-            </div>
-            <a
-              href={page.path}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.08] text-white/60 hover:text-[#3b82d4] hover:border-[#3b82d4]/30 hover:bg-white/[0.04] transition-colors text-xs"
-            >
-              <Eye size={12} />
-              <span>Preview ↗</span>
-            </a>
-          </div>
-        ))}
-      </div>
-    </PanelWrapper>
-  );
-}

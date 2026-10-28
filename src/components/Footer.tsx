@@ -1,6 +1,9 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Mail, Phone, MapPin, MessageCircle } from 'lucide-react';
-import { siteConfig } from '@/data/siteConfig';
+import { siteConfig as defaultSiteConfig } from '@/data/siteConfig';
 import { services } from '@/data/services';
 import { SYNE_FONT } from '@/lib/fonts';
 import ScheduleCallButton from '@/components/ScheduleCallButton';
@@ -9,11 +12,24 @@ import BrandLogo from '@/components/BrandLogo';
 const CURRENT_YEAR = new Date().getFullYear();
 
 export default function Footer() {
+  const [config, setConfig] = useState(defaultSiteConfig);
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.settings) {
+          setConfig(data.settings);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const socialLinks: { label: string; abbr: string; href: string }[] = [
-    { label: 'LinkedIn',  abbr: 'Li', href: siteConfig.social.linkedin  ?? 'https://linkedin.com/company/growmybizz' },
-    { label: 'Instagram', abbr: 'IG', href: siteConfig.social.instagram ?? 'https://instagram.com/growmybizz' },
-    { label: 'Twitter/X', abbr: 'X',  href: siteConfig.social.twitter   ?? 'https://x.com/growmybizz' },
-    { label: 'YouTube',   abbr: 'YT', href: siteConfig.social.youtube   ?? 'https://youtube.com/@growmybizz' },
+    { label: 'LinkedIn',  abbr: 'Li', href: config.social?.linkedin  ?? 'https://linkedin.com/company/growmybizz' },
+    { label: 'Instagram', abbr: 'IG', href: config.social?.instagram ?? 'https://instagram.com/growmybizz' },
+    { label: 'Twitter/X', abbr: 'X',  href: config.social?.twitter   ?? 'https://x.com/growmybizz' },
+    { label: 'YouTube',   abbr: 'YT', href: config.social?.youtube   ?? 'https://youtube.com/@growmybizz' },
   ];
 
   return (
@@ -60,7 +76,7 @@ export default function Footer() {
               </Link>
               <ScheduleCallButton />
               <a
-                href={siteConfig.whatsappUrl}
+                href={config.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-sm text-white/90 border border-[#25D366]/40 bg-[#25D366]/10 hover:bg-[#25D366]/20 hover:text-white transition-all"
@@ -87,14 +103,14 @@ export default function Footer() {
                 <BrandLogo theme="dark" size="3xl" showTagline={false} asLink={true} />
               </div>
               <p className="text-[#8BA5C8] text-sm leading-relaxed mb-6 max-w-sm">
-                {siteConfig.description}
+                {config.description}
               </p>
               {/* Contact micro-list */}
               <ul className="space-y-2.5">
                 {[
-                  { Icon: Mail,    val: siteConfig.email, href: `mailto:${siteConfig.email}` },
-                  { Icon: Phone,   val: siteConfig.phone, href: `tel:${siteConfig.phone}` },
-                  { Icon: MapPin,  val: siteConfig.address, href: undefined },
+                  { Icon: Mail,    val: config.email, href: `mailto:${config.email}` },
+                  { Icon: Phone,   val: config.phone, href: `tel:${config.phone}` },
+                  { Icon: MapPin,  val: config.address, href: undefined },
                 ].map(({ Icon, val, href }) => (
                   <li key={val} className="flex items-start gap-2">
                     <Icon size={13} className="text-[#477BDB] mt-0.5 shrink-0" />
@@ -172,7 +188,6 @@ export default function Footer() {
                   </li>
                 ))}
               </ul>
-              
             </div>
 
           </div>
@@ -182,7 +197,7 @@ export default function Footer() {
         <div className="border-t border-white/[0.07]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
             <p className="text-[#5A7090] text-xs">
-              © {CURRENT_YEAR} {siteConfig.siteName}. All rights reserved.
+              © {CURRENT_YEAR} {config.siteName}. All rights reserved.
             </p>
             <p className="text-[#5A7090] text-xs">
               India · Worldwide delivery

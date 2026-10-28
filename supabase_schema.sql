@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS public.testimonials (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- 6. Page Content & Copy Table (Hero, About, Process, etc.)
+-- 6. Page Content & Copy Table (Hero, Process, Team, Value Props, Stats, Legal)
 CREATE TABLE IF NOT EXISTS public.page_content (
     id TEXT PRIMARY KEY,
     data JSONB NOT NULL,
@@ -488,6 +488,26 @@ ON CONFLICT (slug) DO UPDATE SET
 
 INSERT INTO public.page_content (id, data)
 VALUES ('hero_slides', '[{"id":"h1","badge":"Full-Service Digital Agency","heading":"We turn digital ideas\ninto growth.","subheading":"Web, design, marketing, content and AI — built around one goal: your business growing online.","ctaPrimary":{"label":"Start a Project","href":"/contact"},"ctaSecondary":{"label":"View Our Work","href":"/portfolio"}},{"id":"h2","badge":"Connected Digital Services","heading":"One partner.\nEvery digital need.","subheading":"Stop coordinating separate vendors. Get a single team that plans, builds and grows your digital presence.","ctaPrimary":{"label":"Explore Services","href":"/services"},"ctaSecondary":{"label":"Our Process","href":"/process"}},{"id":"h3","badge":"AI & Automation Ready","heading":"Future-proof your\nbusiness today.","subheading":"From intelligent chatbots to workflow automation — we integrate AI where it creates real value.","ctaPrimary":{"label":"See AI Services","href":"/services/ai-automation"},"ctaSecondary":{"label":"Read Insights","href":"/insights"}}]'::jsonb)
+ON CONFLICT (id) DO UPDATE SET
+  data = EXCLUDED.data;
+
+INSERT INTO public.page_content (id, data)
+VALUES ('process_steps', '[{"id":"ps-1","number":"01","title":"Discover","description":"We start by understanding your business goals, audience, competitive context and technical requirements before any solution is proposed.","icon":"Search","details":["Stakeholder interviews","Goals and KPI alignment","Competitor and market context","Technical requirements gathering"]},{"id":"ps-2","number":"02","title":"Plan","description":"Every engagement gets a clear scope document — deliverables, assumptions, milestones, timeline and payment terms agreed before work begins.","icon":"ClipboardList","details":["Scope of work document","Milestone and payment schedule","Deliverable definitions","Change-request process agreed"]},{"id":"ps-3","number":"03","title":"Design","description":"Structure, visual direction and content brought together in a reviewable format before production begins. Fewer surprises at build stage.","icon":"Figma","details":["Wireframes and information architecture","Visual design and brand alignment","Prototype review and sign-off","Content planning"]},{"id":"ps-4","number":"04","title":"Build","description":"Development, content production or campaign setup executed against the agreed specification with regular progress updates.","icon":"Code2","details":["Development against approved designs","Regular progress updates","Integrations and configuration","Internal QA and testing"]},{"id":"ps-5","number":"05","title":"Review","description":"Structured review rounds with clear feedback channels. We refine until the deliverable meets the agreed acceptance criteria.","icon":"CheckCircle","details":["Structured feedback process","Revision rounds as agreed in scope","Client sign-off on each deliverable","Pre-launch checklist"]},{"id":"ps-6","number":"06","title":"Handover","description":"Clean delivery with all assets, documentation, credentials and training needed to operate what we have built.","icon":"PackageCheck","details":["All files delivered in agreed formats","Handover documentation","Credentials and access transferred","Support arrangements confirmed"]}]'::jsonb)
+ON CONFLICT (id) DO UPDATE SET
+  data = EXCLUDED.data;
+
+INSERT INTO public.page_content (id, data)
+VALUES ('team_members', '[{"id":"tm-1","name":"Divyansh Gupta","role":"Founder & Developer","bio":"Passionate about building digital solutions, helping businesses grow and turning ideas into reality. Specialized in full-stack web platforms, conversion funnels, and modern AI automation.","avatar":"/team/placeholder-founder.jpg","linkedin":"https://linkedin.com/in/growmybizz"},{"id":"tm-2","name":"Sanya Malhotra","role":"Lead UI/UX & Brand Architect","bio":"Specialist in modern design systems, conversion-driven landing pages, and intuitive user experiences for B2B SaaS and D2C brands.","avatar":"/team/placeholder-sanya.jpg","linkedin":"https://linkedin.com/in/growmybizz"}]'::jsonb)
+ON CONFLICT (id) DO UPDATE SET
+  data = EXCLUDED.data;
+
+INSERT INTO public.page_content (id, data)
+VALUES ('value_props', '[{"id":"vp-1","title":"Connected Delivery","description":"Technical, creative and growth services coordinated around one goal — not handed off between separate vendors.","icon":"GitMerge"},{"id":"vp-2","title":"Clear Scopes","description":"Documented deliverables, assumptions, timelines and review points before any work begins.","icon":"ClipboardCheck"},{"id":"vp-3","title":"Practical Choices","description":"Recommendations matched to your stage, budget and capacity — not the solution that suits us best.","icon":"Scale"},{"id":"vp-4","title":"Long-Term Mindset","description":"We build for your future, not just the brief. Support beyond launch when included in the engagement.","icon":"TrendingUp"}]'::jsonb)
+ON CONFLICT (id) DO UPDATE SET
+  data = EXCLUDED.data;
+
+INSERT INTO public.page_content (id, data)
+VALUES ('stats', '[{"id":"stat-1","label":"Services Offered","value":"6","suffix":"+","description":"Disciplines across web, design, marketing, content, AI and operations"},{"id":"stat-2","label":"Service Offerings","value":"30","suffix":"+","description":"Specific service items across all six disciplines"},{"id":"stat-3","label":"Process Steps","value":"6","description":"Clear discovery-to-handover stages for every project"},{"id":"stat-4","label":"Average ROAS Delivered","value":"4.2","suffix":"x","description":"Measured across performance marketing client sprints"}]'::jsonb)
 ON CONFLICT (id) DO UPDATE SET
   data = EXCLUDED.data;
 

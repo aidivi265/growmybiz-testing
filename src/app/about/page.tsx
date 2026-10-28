@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, Users, Target, Compass } from 'lucide-react';
-import { teamMembers, valueProps, siteConfig } from '@/data';
+import { siteConfig } from '@/data';
+import { fetchTeamMembers, fetchValueProps, fetchSiteSettings } from '@/lib/dal';
 import { Section, SectionHeader, Card, Breadcrumb } from '@/components/ui';
 import { Icon } from '@/components/Icon';
 import { SYNE_FONT } from '@/lib/fonts';
@@ -11,7 +12,12 @@ export const metadata: Metadata = {
   description: 'Who we are, what we believe, and how we work. Growmybizz — your digital growth partner.',
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const [members, values, settings] = await Promise.all([
+    fetchTeamMembers(),
+    fetchValueProps(),
+    fetchSiteSettings(),
+  ]);
   return (
     <>
       {/* ── Page Header ── */}
@@ -108,7 +114,7 @@ export default function AboutPage() {
           subtitle="These are not aspirational statements. They are operational commitments we hold ourselves to on every project."
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {valueProps.map((vp) => (
+          {values.map((vp) => (
             <Card key={vp.id} dark className="p-6 hover:border-white/[0.1] transition-colors">
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-xl bg-white/[0.04] flex items-center justify-center shrink-0">
@@ -132,7 +138,7 @@ export default function AboutPage() {
           subtitle="Founder profile and team details will be added as the agency grows. Our work is the best introduction."
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {teamMembers.map((member) => (
+          {members.map((member) => (
             <div
               key={member.id}
               className="p-6 rounded-2xl border border-[#E8EDF4] hover:shadow-lg hover:shadow-black/[0.06] transition-all duration-200"

@@ -1,3 +1,4 @@
+import LegalDocView from '@/components/LegalDocView';
 import type { Metadata } from 'next';
 import { Breadcrumb } from '@/components/ui';
 import { siteConfig } from '@/data';
@@ -27,6 +28,7 @@ export default function DisclaimerPage() {
       </div>
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <LegalDocView slug="disclaimer" defaultTitle="Disclaimer">
         <div className="prose-legal space-y-8">
           <LegalSection title="1. Informational & Educational Purposes Only">
             <p>
@@ -78,6 +80,7 @@ export default function DisclaimerPage() {
             </p>
           </LegalSection>
         </div>
+        </LegalDocView>
       </div>
     </>
   );

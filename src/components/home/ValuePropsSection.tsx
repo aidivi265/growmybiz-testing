@@ -1,4 +1,5 @@
 import { valueProps } from '@/data/company';
+import type { ValueProp } from '@/types';
 import { Icon } from '@/components/Icon';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
@@ -11,7 +12,8 @@ const ACCENT = [
   { color: '#0EA5C8', bg: 'rgba(14,165,200,0.15)',  border: 'rgba(14,165,200,0.22)'  },
 ];
 
-export default function ValuePropsSection() {
+export default function ValuePropsSection({ items }: { items?: ValueProp[] }) {
+  const activeProps = items && items.length > 0 ? items : valueProps;
   return (
     <section
       className="section-pad relative overflow-hidden"
@@ -73,7 +75,7 @@ export default function ValuePropsSection() {
 
           {/* ── Right — 4 principle cards ── */}
           <div className="space-y-3">
-            {valueProps.map((vp, i) => {
+            {activeProps.map((vp, i) => {
               const a = ACCENT[i % ACCENT.length];
               return (
                 <div

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { processSteps } from '@/data/process';
+import type { ProcessStep } from '@/types';
 import { Icon } from '@/components/Icon';
 import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
 
@@ -13,7 +14,8 @@ const STEP_COLORS = [
   { accent: '#52D9B8', dimAccent: '#32A88A', border: 'rgba(50,168,138,0.30)', glow: 'rgba(50,168,138,0.15)' },
 ];
 
-export default function ProcessPreview() {
+export default function ProcessPreview({ steps }: { steps?: ProcessStep[] }) {
+  const activeSteps = steps && steps.length > 0 ? steps : processSteps;
   return (
     <section
       className="section-pad-lg relative overflow-hidden"
@@ -88,7 +90,7 @@ export default function ProcessPreview() {
 
         {/* ── Steps grid ── */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          {processSteps.map((step, i) => {
+          {activeSteps.map((step, i) => {
             const c = STEP_COLORS[i % STEP_COLORS.length];
             return (
               <div

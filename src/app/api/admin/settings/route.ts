@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { revalidatePath } from 'next/cache';
 import { verifySessionToken, ADMIN_COOKIE_NAME } from '@/lib/adminAuth';
 import { supabaseAdmin } from '@/lib/supabaseServer';
 import { siteConfig } from '@/data/siteConfig';
@@ -36,6 +37,7 @@ export async function GET() {
           address: data.address || siteConfig.address,
           whatsappNumber: data.whatsapp_number || siteConfig.whatsappNumber,
           whatsappUrl: data.whatsapp_url || siteConfig.whatsappUrl,
+          social: data.social || siteConfig.social,
         },
         source: 'supabase',
       });
@@ -56,6 +58,7 @@ export async function GET() {
       address: siteConfig.address,
       whatsappNumber: siteConfig.whatsappNumber,
       whatsappUrl: siteConfig.whatsappUrl,
+      social: siteConfig.social,
     },
     source: 'siteConfig',
   });
@@ -78,6 +81,7 @@ export async function POST(request: Request) {
       phone,
       address,
       whatsappNumber,
+      social,
     } = body;
 
     const cleanWhatsapp = (whatsappNumber || '').replace(/[^0-9]/g, '');
@@ -97,6 +101,7 @@ export async function POST(request: Request) {
       phone: phone,
       address: address,
       whatsapp_number: whatsappNumber,
+      social: social || siteConfig.social,
       ...(cleanWhatsappUrl ? { whatsapp_url: cleanWhatsappUrl } : {}),
     };
 
@@ -113,6 +118,10 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
+
+    revalidatePath('/');
+    revalidatePath('/about');
+    revalidatePath('/contact');
 
     return NextResponse.json({
       success: true,

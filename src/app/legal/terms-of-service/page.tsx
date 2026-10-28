@@ -1,3 +1,4 @@
+import LegalDocView from '@/components/LegalDocView';
 import type { Metadata } from 'next';
 import { Breadcrumb } from '@/components/ui';
 import { siteConfig } from '@/data';
@@ -24,6 +25,7 @@ export default function TermsOfServicePage() {
       </div>
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <LegalDocView slug="terms-of-service" defaultTitle="Terms of Service">
         <div className="space-y-8">
           <LegalSection title="1. Agreement to terms">
             <p>By accessing or using the {siteConfig.siteName} website and engaging our services, you agree to be bound by these Terms of Service. If you do not agree to these terms, do not use this website or engage our services.</p>
@@ -78,8 +80,8 @@ export default function TermsOfServicePage() {
             <p>For questions about these terms, contact us at: <a href={`mailto:${siteConfig.email}`} className="text-[#477BDB] hover:underline">{siteConfig.email}</a>.</p>
           </LegalSection>
         </div>
+        </LegalDocView>
       </div>
-
     </>
   );
 }

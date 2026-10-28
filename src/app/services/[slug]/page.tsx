@@ -146,7 +146,26 @@ export default async function ServicePage({ params }: Props) {
                       {String(i + 1).padStart(2, '0')}
                     </span>
                   </div>
-                  <p className="text-[#3D4F63] pt-1.5 text-[0.9375rem] leading-relaxed">{step}</p>
+                  <div className="pt-1.5 text-[0.9375rem] leading-relaxed">
+                    {typeof step === 'string' ? (
+                      <p className="text-[#3D4F63]">{step}</p>
+                    ) : typeof step === 'object' && step !== null ? (
+                      <div>
+                        {(step as any).title && (
+                          <span className="font-semibold text-[#0F1C31] block">
+                            {(step as any).title}
+                          </span>
+                        )}
+                        {(step as any).description && (
+                          <span className="text-[#475467] text-sm block mt-0.5">
+                            {(step as any).description}
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-[#3D4F63]">{String(step)}</p>
+                    )}
+                  </div>
                 </li>
               ))}
             </ol>

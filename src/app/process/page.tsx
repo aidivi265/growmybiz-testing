@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { processSteps } from '@/data';
+import { fetchProcessSteps } from '@/lib/dal';
 import { Section, SectionHeader, Breadcrumb } from '@/components/ui';
 import { Icon } from '@/components/Icon';
 import { SYNE_FONT } from '@/lib/fonts';
@@ -11,7 +11,8 @@ export const metadata: Metadata = {
   description: 'How we work — a clear, repeatable six-step process from discovery to handover.',
 };
 
-export default function ProcessPage() {
+export default async function ProcessPage() {
+  const steps = await fetchProcessSteps();
   return (
     <>
       {/* ── Page Header ── */}
@@ -60,13 +61,13 @@ export default function ProcessPage() {
       {/* Steps */}
       <Section dark>
         <div className="max-w-3xl mx-auto space-y-1">
-          {processSteps.map((step, i) => (
+          {steps.map((step, i) => (
             <div
               key={step.id}
               className="group relative"
             >
               {/* Connector */}
-              {i < processSteps.length - 1 && (
+              {i < steps.length - 1 && (
                 <div className="absolute left-6 top-[72px] bottom-0 w-px bg-gradient-to-b from-white/[0.08] to-transparent h-8" />
               )}
 

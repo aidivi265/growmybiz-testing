@@ -4,11 +4,13 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { heroSlides } from '@/data/hero';
+import type { HeroSlide } from '@/types';
 import { SYNE_FONT } from '@/lib/fonts';
 import ScheduleCallButton from '@/components/ScheduleCallButton';
 import InteractiveGrowthOrbit from './InteractiveGrowthOrbit';
 
-export default function HeroSection() {
+export default function HeroSection({ initialSlides }: { initialSlides?: HeroSlide[] }) {
+  const slides = (initialSlides && initialSlides.length > 0) ? initialSlides : heroSlides;
   const [slide, setSlide] = useState(0);
   const [fading, setFading] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -23,20 +25,20 @@ export default function HeroSection() {
     timerRef.current = setInterval(() => {
       if (document.hidden) return;
       setSlide(s => {
-        const next = (s + 1) % heroSlides.length;
+        const next = (s + 1) % slides.length;
         setFading(true);
         setTimeout(() => setFading(false), 300);
         return next;
       });
     }, 6500);
-  }, []);
+  }, [slides.length]);
 
   useEffect(() => {
     resetTimer();
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [resetTimer]);
 
-  const cur = heroSlides[slide];
+  const cur = slides[slide] || slides[0];
 
   return (
     <section
@@ -177,7 +179,7 @@ export default function HeroSection() {
             {/* Slide indicators */}
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1.5">
-                {heroSlides.map((_, i) => (
+                {slides.map((_, i) => (
                   <button
                     key={i}
                     onClick={() => { advance(i); resetTimer(); }}
@@ -201,7 +203,7 @@ export default function HeroSection() {
                 color: 'rgba(255,255,255,0.3)',
                 letterSpacing: '0.1em',
               }}>
-                {String(slide + 1).padStart(2, '0')} / {String(heroSlides.length).padStart(2, '0')}
+                {String(slide + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
               </span>
             </div>
           </div>

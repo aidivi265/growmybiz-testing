@@ -1,3 +1,4 @@
+import LegalDocView from '@/components/LegalDocView';
 import type { Metadata } from 'next';
 import { Breadcrumb } from '@/components/ui';
 import { siteConfig } from '@/data';
@@ -27,6 +28,7 @@ export default function RefundPolicyPage() {
       </div>
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <LegalDocView slug="refund-policy" defaultTitle="Refund Policy">
         <div className="prose-legal space-y-8">
           <LegalSection title="1. Commercial Overview">
             <p>
@@ -84,6 +86,7 @@ export default function RefundPolicyPage() {
             </p>
           </LegalSection>
         </div>
+        </LegalDocView>
       </div>
     </>
   );
