@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { services } from '@/data';
+import { fetchServiceBySlug } from '@/lib/dal';
 import { Section, SectionHeader, Card, Breadcrumb } from '@/components/ui';
 import { Icon } from '@/components/Icon';
 import { SYNE_FONT } from '@/lib/fonts';
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ServicePage({ params }: Props) {
   const { slug } = await params;
-  const service = services.find((s) => s.slug === slug);
+  const service = (await fetchServiceBySlug(slug)) || services.find((s) => s.slug === slug);
   if (!service) notFound();
 
   const otherServices = services.filter((s) => s.id !== service.id);

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { services } from '@/data';
+import { fetchServices } from '@/lib/dal';
 import { Section, Card, Breadcrumb } from '@/components/ui';
 import { Icon } from '@/components/Icon';
 import { SYNE_FONT } from '@/lib/fonts';
@@ -12,7 +12,8 @@ export const metadata: Metadata = {
     'Six disciplines, one connected team. Web, design, marketing, content, AI and more — built around your goals.',
 };
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const services = await fetchServices();
   return (
     <>
       {/* ── Page Header ── */}

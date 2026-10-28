@@ -28,6 +28,10 @@ import {
 } from 'lucide-react';
 import type { InquiryRecord } from '@/lib/supabase';
 import BrandLogo from '@/components/BrandLogo';
+import ServicesPanel from '@/components/admin/ServicesPanel';
+import PortfolioPanel from '@/components/admin/PortfolioPanel';
+import BlogPanel from '@/components/admin/BlogPanel';
+import TestimonialsPanel from '@/components/admin/TestimonialsPanel';
 
 // ─── Admin Nav Items ──────────────────────────────────────────────────────────
 const adminNav = [
@@ -758,116 +762,6 @@ function HeroPanel() {
   );
 }
 
-// ─── Services Panel ───────────────────────────────────────────────────────────
-function ServicesPanel() {
-  return (
-    <PanelWrapper
-      title="Services"
-      subtitle="Core disciplines, deliverables, and service scopes managed in src/data/services.ts."
-      action={
-        <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/10 text-white/50">
-          File-Driven Module
-        </span>
-      }
-    >
-      <CMSTable
-        headers={['Title', 'Slug', 'Offerings', 'Featured', 'Preview']}
-        rows={services.map((s) => [
-          s.title,
-          s.slug,
-          `${s.offerings.length} items`,
-          s.featured ? 'Yes' : 'No',
-          <a
-            key={s.slug}
-            href={`/services/${s.slug}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-xs text-[#3b82d4] hover:underline"
-          >
-            <Eye size={12} /> View Page ↗
-          </a>,
-        ])}
-      />
-    </PanelWrapper>
-  );
-}
-
-// ─── Portfolio Panel ──────────────────────────────────────────────────────────
-function PortfolioPanel() {
-  return (
-    <PanelWrapper
-      title="Portfolio & Case Studies"
-      subtitle="Case studies, prototypes, and impact metrics managed in src/data/portfolio.ts."
-      action={
-        <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/10 text-white/50">
-          File-Driven Module
-        </span>
-      }
-    >
-      <CMSTable
-        headers={['Client', 'Project Title', 'Category', 'Type', 'Preview']}
-        rows={portfolioItems.map((p) => [
-          p.client,
-          p.title,
-          p.category,
-          p.isConcept ? (
-            <span key="type" className="px-2 py-0.5 rounded text-[10px] font-bold text-amber-300 bg-amber-400/15 border border-amber-400/30">
-              Concept Demo
-            </span>
-          ) : (
-            <span key="type" className="px-2 py-0.5 rounded text-[10px] font-bold text-emerald-300 bg-emerald-400/15">
-              Client Work
-            </span>
-          ),
-          <a
-            key={p.slug}
-            href={`/portfolio/${p.slug}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-xs text-[#3b82d4] hover:underline"
-          >
-            <Eye size={12} /> View Case Study ↗
-          </a>,
-        ])}
-      />
-    </PanelWrapper>
-  );
-}
-
-// ─── Blog Panel ───────────────────────────────────────────────────────────────
-function BlogPanel() {
-  return (
-    <PanelWrapper
-      title="Blog & Insights"
-      subtitle="Strategic growth articles and guides managed in src/data/insights.ts."
-      action={
-        <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/10 text-white/50">
-          File-Driven Module
-        </span>
-      }
-    >
-      <CMSTable
-        headers={['Title', 'Category', 'Read Time', 'Published', 'Preview']}
-        rows={blogPosts.map((b) => [
-          b.title,
-          b.category,
-          `${b.readTime} min`,
-          b.publishedAt,
-          <a
-            key={b.slug}
-            href={`/insights/${b.slug}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-xs text-[#3b82d4] hover:underline"
-          >
-            <Eye size={12} /> View Article ↗
-          </a>,
-        ])}
-      />
-    </PanelWrapper>
-  );
-}
-
 // ─── Process Panel ────────────────────────────────────────────────────────────
 function ProcessPanel() {
   return (
@@ -919,31 +813,6 @@ function TeamPanel() {
           ) : (
             <span key={t.id} className="text-white/40">–</span>
           ),
-        ])}
-      />
-    </PanelWrapper>
-  );
-}
-
-// ─── Testimonials Panel ───────────────────────────────────────────────────────
-function TestimonialsPanel() {
-  return (
-    <PanelWrapper
-      title="Testimonials & Social Proof"
-      subtitle="Client testimonials managed in src/data/company.ts & seeded in Supabase testimonials."
-      action={
-        <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/10 text-white/50">
-          File-Driven Module
-        </span>
-      }
-    >
-      <CMSTable
-        headers={['Author', 'Company', 'Rating', 'Verified']}
-        rows={testimonials.map((t) => [
-          t.author,
-          t.company,
-          `${t.rating}/5`,
-          t.verified ? <span key="v" className="text-emerald-400 font-bold">✓ Verified</span> : '–',
         ])}
       />
     </PanelWrapper>

@@ -23,13 +23,14 @@ function formatDate(dateStr: string) {
   });
 }
 
-export default function InsightsPageClient() {
+export default function InsightsPageClient({ initialArticles }: { initialArticles?: typeof blogPosts }) {
+  const articles = initialArticles || blogPosts;
   const [active, setActive] = useState('All');
 
   const filtered =
     active === 'All'
-      ? blogPosts.filter((p) => p.published)
-      : blogPosts.filter((p) => p.published && p.category === active);
+      ? articles.filter((p) => p.published)
+      : articles.filter((p) => p.published && p.category === active);
 
   const featured = filtered.find((p) => p.featured) ?? filtered[0];
   const rest = filtered.filter((p) => p.id !== featured?.id);

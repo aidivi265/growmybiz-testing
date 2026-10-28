@@ -10,13 +10,14 @@ import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
 
 const THUMB_ACCENTS = ['#477BDB', '#32A88A', '#6477C8', '#8B5CF6', '#0EA5E9', '#F43F5E'];
 
-export default function PortfolioPageClient() {
+export default function PortfolioPageClient({ initialItems }: { initialItems?: typeof portfolioItems }) {
+  const items = initialItems || portfolioItems;
   const [active, setActive] = useState('All');
 
   const filtered =
     active === 'All'
-      ? portfolioItems.filter((p) => p.published)
-      : portfolioItems.filter((p) => p.published && p.category === active);
+      ? items.filter((p) => p.published)
+      : items.filter((p) => p.published && p.category === active);
 
   return (
     <>

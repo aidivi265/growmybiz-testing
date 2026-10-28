@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { portfolioItems } from '@/data';
+import { fetchPortfolioBySlug } from '@/lib/dal';
 import { Breadcrumb } from '@/components/ui';
 import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
 
@@ -24,7 +25,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const item = portfolioItems.find((p) => p.slug === slug);
+  const item = (await fetchPortfolioBySlug(slug)) || portfolioItems.find((p) => p.slug === slug);
   if (!item) return {};
   return { title: item.title, description: item.challenge };
 }

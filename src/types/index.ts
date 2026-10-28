@@ -39,6 +39,7 @@ export interface Service {
   icon: string;
   color: string;
   offerings: ServiceOffering[];
+  deliverables?: string[];
   process?: string[];
   faqs?: FAQ[];
   featured: boolean;
