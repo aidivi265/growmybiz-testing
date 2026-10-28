@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { processSteps } from '@/data';
 import { Section, SectionHeader, Breadcrumb } from '@/components/ui';
 import { Icon } from '@/components/Icon';
+import { SYNE_FONT } from '@/lib/fonts';
 
 export const metadata: Metadata = {
   title: 'Our Process',
@@ -25,7 +26,7 @@ export default function ProcessPage() {
             <span className="section-label block mb-4">How we work</span>
             <h1
               style={{
-                fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                fontFamily: SYNE_FONT,
                 fontSize: 'clamp(2.2rem, 5vw, 3.4rem)',
                 fontWeight: 800,
                 color: '#fff',
@@ -150,7 +151,7 @@ export default function ProcessPage() {
         <div className="max-w-2xl mx-auto text-center">
           <h2
             style={{
-              fontFamily: "var(--syne), var(--font-syne), sans-serif",
+              fontFamily: SYNE_FONT,
               fontSize: 'clamp(1.75rem, 3vw, 2.25rem)',
               fontWeight: 800,
               color: '#0F1C31',

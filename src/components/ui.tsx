@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, ChevronRight } from 'lucide-react';
 import clsx from 'clsx';
+import { SYNE_FONT } from '@/lib/fonts';
 
 // ─── Button ───────────────────────────────────────────────────────────────────
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -133,7 +134,7 @@ export function SectionHeader({ eyebrow, title, subtitle, dark, navy, centered, 
       )}
       <h2
         className={clsx('leading-tight', isDark ? 'text-white' : 'text-[#0F1C31]')}
-        style={{ fontFamily: "var(--syne), var(--font-syne), sans-serif", fontWeight: 800, fontSize: 'clamp(1.6rem, 2.5vw, 2.25rem)', letterSpacing: '-0.025em' }}
+        style={{ fontFamily: SYNE_FONT, fontWeight: 800, fontSize: 'clamp(1.6rem, 2.5vw, 2.25rem)', letterSpacing: '-0.025em' }}
       >
         {title}
       </h2>

@@ -1,27 +1,9 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Syne } from 'next/font/google';
 import './globals.css';
+import { inter, syne } from '@/lib/fonts';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { siteConfig } from '@/data';
-
-// Load fonts via next/font — auto-optimised, served from same origin
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800', '900'],
-  style: ['normal', 'italic'],
-  variable: '--font-inter',
-  display: 'swap',
-  preload: true,
-});
-
-const syne = Syne({
-  subsets: ['latin'],
-  weight: ['600', '700', '800'],
-  variable: '--font-syne',
-  display: 'swap',
-  preload: true,
-});
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -58,22 +40,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
       className={`${inter.variable} ${syne.variable}`}
-      style={
-        // Expose font families as CSS custom properties usable in inline styles too
-        {
-          '--inter': inter.style.fontFamily,
-          '--syne': syne.style.fontFamily,
-        } as React.CSSProperties
-      }
       suppressHydrationWarning
     >
       <body className={inter.className}>

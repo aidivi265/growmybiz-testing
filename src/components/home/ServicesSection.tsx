@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { services } from '@/data';
 import { Icon } from '@/components/Icon';
+import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
 
 // Different card sizes — breaks the boring uniform grid
 const CARD_STYLES = [
@@ -24,7 +25,7 @@ export default function ServicesSection() {
             <span className="eyebrow block mb-4">What we do</span>
             <h2
               style={{
-                fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                fontFamily: SYNE_FONT,
                 fontWeight: 800,
                 fontSize: 'clamp(2rem, 3.5vw, 2.75rem)',
                 lineHeight: 1.08,
@@ -84,7 +85,7 @@ export default function ServicesSection() {
                 <span
                   className="absolute top-3 right-4 select-none pointer-events-none"
                   style={{
-                    fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                    fontFamily: SYNE_FONT,
                     fontWeight: 800,
                     fontSize: '3rem',
                     color: svc.color,
@@ -108,7 +109,7 @@ export default function ServicesSection() {
                 <h3
                   className="font-bold text-[#0F1C31] mb-2 transition-colors"
                   style={{
-                    fontFamily: "var(--inter), var(--font-inter), sans-serif",
+                    fontFamily: INTER_FONT,
                     fontSize: isWide ? '1.0625rem' : '0.9375rem',
                     lineHeight: 1.3,
                   }}

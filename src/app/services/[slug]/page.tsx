@@ -5,6 +5,7 @@ import { ArrowRight, CheckCircle, ChevronDown } from 'lucide-react';
 import { services } from '@/data';
 import { Section, SectionHeader, Card, Badge, Breadcrumb } from '@/components/ui';
 import { Icon } from '@/components/Icon';
+import { SYNE_FONT } from '@/lib/fonts';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -63,7 +64,7 @@ export default async function ServicePage({ params }: Props) {
               <span className="section-label block mb-3">{service.title}</span>
               <h1
                 style={{
-                  fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                  fontFamily: SYNE_FONT,
                   fontSize: 'clamp(2rem, 4.5vw, 3rem)',
                   fontWeight: 800,
                   color: '#fff',
@@ -130,7 +131,7 @@ export default async function ServicePage({ params }: Props) {
                   >
                     <span
                       style={{
-                        fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                        fontFamily: SYNE_FONT,
                         fontWeight: 800,
                         fontSize: '0.7rem',
                         color: service.color,
@@ -183,7 +184,7 @@ export default async function ServicePage({ params }: Props) {
           <div>
             <h2
               style={{
-                fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                fontFamily: SYNE_FONT,
                 fontSize: '1.5rem',
                 fontWeight: 800,
                 color: '#fff',

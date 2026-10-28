@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { heroSlides, services } from '@/data';
+import { SYNE_FONT } from '@/lib/fonts';
 
 const svcColors = ['#477BDB', '#32A88A', '#6477C8', '#E8912A', '#0EA5C8', '#B04EC4'];
 
@@ -97,7 +98,7 @@ export default function HeroSection() {
             <h1
               className={`mb-6 transition-all duration-300 ${fading ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}
               style={{
-                fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                fontFamily: SYNE_FONT,
                 fontWeight: 800,
                 fontSize: 'clamp(2.8rem, 5.5vw, 4.4rem)',
                 lineHeight: 1.02,
@@ -166,7 +167,7 @@ export default function HeroSection() {
                 <div key={stat.val} className="flex items-center gap-2">
                   <span
                     style={{
-                      fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                      fontFamily: SYNE_FONT,
                       fontWeight: 800,
                       fontSize: '1.0625rem',
                       color: '#fff',
@@ -199,7 +200,7 @@ export default function HeroSection() {
                 ))}
               </div>
               <span style={{
-                fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                fontFamily: SYNE_FONT,
                 fontSize: '0.65rem',
                 fontWeight: 700,
                 color: 'rgba(255,255,255,0.25)',
@@ -241,7 +242,7 @@ export default function HeroSection() {
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-xl flex items-center justify-center"
                         style={{ background: 'linear-gradient(135deg,#477BDB,#5C6FCC)', boxShadow: '0 4px 12px rgba(71,123,219,0.50)' }}>
-                        <span style={{ fontFamily: "var(--syne), var(--font-syne), sans-serif", fontWeight: 800, fontSize: '1rem', color: '#fff' }}>G</span>
+                        <span style={{ fontFamily: SYNE_FONT, fontWeight: 800, fontSize: '1rem', color: '#fff' }}>G</span>
                       </div>
                       <div>
                         <p className="text-white font-semibold text-sm leading-none">Growmybizz</p>
@@ -299,7 +300,7 @@ export default function HeroSection() {
                     border: '1px solid rgba(255,255,255,0.9)',
                   }}>
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#EBF1FB' }}>
-                    <span style={{ fontFamily: "var(--syne), var(--font-syne), sans-serif", fontWeight: 800, fontSize: '0.875rem', color: '#477BDB' }}>6</span>
+                    <span style={{ fontFamily: SYNE_FONT, fontWeight: 800, fontSize: '0.875rem', color: '#477BDB' }}>6</span>
                   </div>
                   <div>
                     <p className="text-[#0F1C31] font-bold text-xs leading-tight">Disciplines</p>
@@ -318,7 +319,7 @@ export default function HeroSection() {
                     border: '1px solid rgba(255,255,255,0.9)',
                   }}>
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#E6F5F1' }}>
-                    <span style={{ fontFamily: "var(--syne), var(--font-syne), sans-serif", fontWeight: 800, fontSize: '0.875rem', color: '#32A88A' }}>30+</span>
+                    <span style={{ fontFamily: SYNE_FONT, fontWeight: 800, fontSize: '0.875rem', color: '#32A88A' }}>30+</span>
                   </div>
                   <div>
                     <p className="text-[#0F1C31] font-bold text-xs leading-tight">Services</p>

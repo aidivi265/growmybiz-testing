@@ -5,6 +5,7 @@ import { ArrowRight, CheckCircle, Mail, Phone, MapPin, MessageSquare } from 'luc
 import { services, budgetRanges, timelineOptions, siteConfig } from '@/data';
 import { Input, Textarea, Select, Breadcrumb } from '@/components/ui';
 import type { EnquiryFormData } from '@/types';
+import { SYNE_FONT } from '@/lib/fonts';
 
 const INITIAL: EnquiryFormData = {
   name: '',
@@ -74,7 +75,7 @@ export default function ContactPageClient() {
             <span className="section-label block mb-4">Get in touch</span>
             <h1
               style={{
-                fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                fontFamily: SYNE_FONT,
                 fontSize: 'clamp(2.2rem, 5vw, 3.4rem)',
                 fontWeight: 800,
                 color: '#fff',

@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { services } from '@/data';
 import { Section, SectionHeader, Card, Badge, Breadcrumb } from '@/components/ui';
 import { Icon } from '@/components/Icon';
+import { SYNE_FONT } from '@/lib/fonts';
 
 export const metadata: Metadata = {
   title: 'Services',
@@ -26,7 +27,7 @@ export default function ServicesPage() {
             <span className="section-label block mb-4">What we do</span>
             <h1
               style={{
-                fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                fontFamily: SYNE_FONT,
                 fontSize: 'clamp(2.2rem, 5vw, 3.4rem)',
                 fontWeight: 800,
                 color: '#fff',
@@ -116,7 +117,7 @@ export default function ServicesPage() {
           <div>
             <h2
               style={{
-                fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                fontFamily: SYNE_FONT,
                 fontSize: '1.4rem',
                 fontWeight: 800,
                 color: '#fff',

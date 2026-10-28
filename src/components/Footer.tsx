@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, Mail, Phone, MapPin } from 'lucide-react';
 import { siteConfig, services } from '@/data';
+import { SYNE_FONT } from '@/lib/fonts';
 
 const CURRENT_YEAR = 2025;
 
@@ -31,7 +32,7 @@ export default function Footer() {
               </p>
               <h2
                 style={{
-                  fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                  fontFamily: SYNE_FONT,
                   fontWeight: 800,
                   fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
                   lineHeight: 1.1,

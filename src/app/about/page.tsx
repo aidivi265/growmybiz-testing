@@ -4,6 +4,7 @@ import { ArrowRight, Users, Target, Compass } from 'lucide-react';
 import { teamMembers, valueProps, siteConfig } from '@/data';
 import { Section, SectionHeader, Card, Breadcrumb } from '@/components/ui';
 import { Icon } from '@/components/Icon';
+import { SYNE_FONT } from '@/lib/fonts';
 
 export const metadata: Metadata = {
   title: 'About Us',
@@ -25,7 +26,7 @@ export default function AboutPage() {
             <span className="section-label block mb-4">About us</span>
             <h1
               style={{
-                fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                fontFamily: SYNE_FONT,
                 fontSize: 'clamp(2.2rem, 5vw, 3.4rem)',
                 fontWeight: 800,
                 color: '#fff',
@@ -49,7 +50,7 @@ export default function AboutPage() {
             <span className="eyebrow block mb-3">Our story</span>
             <h2
               style={{
-                fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                fontFamily: SYNE_FONT,
                 fontWeight: 800,
                 fontSize: 'clamp(1.5rem, 2.5vw, 2rem)',
                 letterSpacing: '-0.025em',

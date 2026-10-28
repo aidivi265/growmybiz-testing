@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { processSteps } from '@/data';
 import { Icon } from '@/components/Icon';
+import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
 
 const STEP_COLORS = [
   { accent: '#6AADFF', dimAccent: '#477BDB', border: 'rgba(71,123,219,0.30)', glow: 'rgba(71,123,219,0.15)' },
@@ -47,7 +48,7 @@ export default function ProcessPreview() {
             </span>
             <h2
               style={{
-                fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                fontFamily: SYNE_FONT,
                 fontWeight: 800,
                 fontSize: 'clamp(1.9rem, 3vw, 2.7rem)',
                 lineHeight: 1.08,
@@ -111,7 +112,7 @@ export default function ProcessPreview() {
                     style={{ background: c.glow, border: `1px solid ${c.border}` }}
                   >
                     <span style={{
-                      fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                      fontFamily: SYNE_FONT,
                       fontWeight: 800,
                       fontSize: '0.8125rem',
                       color: c.accent,
@@ -130,7 +131,7 @@ export default function ProcessPreview() {
 
                 <h3
                   className="font-bold text-white text-sm mb-2 leading-snug"
-                  style={{ fontFamily: "var(--inter), var(--font-inter), sans-serif" }}
+                  style={{ fontFamily: INTER_FONT }}
                 >
                   {step.title}
                 </h3>

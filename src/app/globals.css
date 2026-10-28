@@ -37,21 +37,22 @@
   body {
     background: var(--bg-white);
     color: var(--text-body);
-    font-family: var(--inter), var(--font-inter), -apple-system, "Segoe UI", system-ui, sans-serif;
+    /* var(--font-inter) is injected by next/font's .variable class on <html> */
+    font-family: var(--font-inter), -apple-system, "Segoe UI", system-ui, sans-serif;
     line-height: 1.65;
     font-size: 15px;
   }
 
   /* ── Global heading defaults — Syne for display impact ── */
   h1, h2 {
-    font-family: var(--syne), var(--font-syne), sans-serif;
+    font-family: var(--font-syne), sans-serif;
     font-weight: 800;
     letter-spacing: -0.025em;
     line-height: 1.1;
     color: var(--text-heading);
   }
   h3, h4, h5, h6 {
-    font-family: var(--inter), var(--font-inter), sans-serif;
+    font-family: var(--font-inter), sans-serif;
     font-weight: 700;
     color: var(--text-heading);
   }

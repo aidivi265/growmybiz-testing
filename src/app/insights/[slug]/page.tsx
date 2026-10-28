@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowLeft, Clock, ArrowRight } from 'lucide-react';
 import { blogPosts } from '@/data';
 import { Breadcrumb } from '@/components/ui';
+import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -40,14 +41,14 @@ function renderContent(content: string) {
   return content.split('\n\n').map((block, i) => {
     if (block.startsWith('# ')) {
       return (
-        <h1 key={i} style={{ fontFamily: "var(--syne), var(--font-syne), sans-serif", fontWeight: 800, fontSize: '1.75rem', letterSpacing: '-0.025em', color: '#0F1C31', marginTop: '2.5rem', marginBottom: '0.875rem' }}>
+        <h1 key={i} style={{ fontFamily: SYNE_FONT, fontWeight: 800, fontSize: '1.75rem', letterSpacing: '-0.025em', color: '#0F1C31', marginTop: '2.5rem', marginBottom: '0.875rem' }}>
           {block.slice(2)}
         </h1>
       );
     }
     if (block.startsWith('## ')) {
       return (
-        <h2 key={i} style={{ fontFamily: "var(--syne), var(--font-syne), sans-serif", fontWeight: 800, fontSize: '1.3rem', letterSpacing: '-0.02em', color: '#0F1C31', marginTop: '2.2rem', marginBottom: '0.75rem' }}>
+        <h2 key={i} style={{ fontFamily: SYNE_FONT, fontWeight: 800, fontSize: '1.3rem', letterSpacing: '-0.02em', color: '#0F1C31', marginTop: '2.2rem', marginBottom: '0.75rem' }}>
           {block.slice(3)}
         </h2>
       );
@@ -78,7 +79,7 @@ function renderContent(content: string) {
         <ol key={i} style={{ listStyle: 'none', padding: 0, margin: '0.75rem 0 1rem 0' }}>
           {items.map((item, j) => (
             <li key={j} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', color: '#3D4F63', fontSize: '0.9375rem', marginBottom: '0.5rem', lineHeight: 1.7 }}>
-              <span style={{ fontFamily: "var(--syne), var(--font-syne), sans-serif", fontWeight: 800, color: '#477BDB', fontSize: '0.875rem', flexShrink: 0, minWidth: '1.25rem' }}>{j + 1}.</span>
+              <span style={{ fontFamily: SYNE_FONT, fontWeight: 800, color: '#477BDB', fontSize: '0.875rem', flexShrink: 0, minWidth: '1.25rem' }}>{j + 1}.</span>
               {item}
             </li>
           ))}
@@ -139,7 +140,7 @@ export default async function BlogPostPage({ params }: Props) {
             </div>
             <h1
               style={{
-                fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                fontFamily: SYNE_FONT,
                 fontSize: 'clamp(1.9rem, 4vw, 2.75rem)',
                 fontWeight: 800,
                 color: '#fff',
@@ -184,7 +185,7 @@ export default async function BlogPostPage({ params }: Props) {
                   className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                   style={{ background: 'linear-gradient(135deg, #477BDB, #6477C8)' }}
                 >
-                  <span style={{ fontFamily: "var(--syne), var(--font-syne), sans-serif", fontWeight: 800, color: '#fff', fontSize: '0.9rem' }}>G</span>
+                  <span style={{ fontFamily: SYNE_FONT, fontWeight: 800, color: '#fff', fontSize: '0.9rem' }}>G</span>
                 </div>
                 <div>
                   <p className="font-semibold text-[#0F1C31] text-sm">{post.author}</p>
@@ -208,7 +209,7 @@ export default async function BlogPostPage({ params }: Props) {
                 <div>
                   <h3
                     className="text-xs font-bold text-[#0F1C31] tracking-widest uppercase mb-4"
-                    style={{ fontFamily: "var(--inter), var(--font-inter), sans-serif" }}
+                    style={{ fontFamily: INTER_FONT }}
                   >
                     Related articles
                   </h3>
@@ -251,7 +252,7 @@ export default async function BlogPostPage({ params }: Props) {
               >
                 <p
                   className="text-white font-bold mb-1.5 leading-snug"
-                  style={{ fontFamily: "var(--syne), var(--font-syne), sans-serif", fontSize: '0.9375rem' }}
+                  style={{ fontFamily: SYNE_FONT, fontSize: '0.9375rem' }}
                 >
                   Ready to apply this?
                 </p>

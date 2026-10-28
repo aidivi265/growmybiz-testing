@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { portfolioItems } from '@/data';
+import { SYNE_FONT } from '@/lib/fonts';
 
 const GRADIENTS = [
   'linear-gradient(145deg, #0F1C31 0%, #1A2B4A 60%, #243B66 100%)',
@@ -29,7 +30,7 @@ export default function PortfolioPreview() {
             <span className="eyebrow block mb-4">Our work</span>
             <h2
               style={{
-                fontFamily: "var(--syne), var(--font-syne), sans-serif",
+                fontFamily: SYNE_FONT,
                 fontWeight: 800,
                 fontSize: 'clamp(1.9rem, 3vw, 2.6rem)',
                 lineHeight: 1.1,
@@ -111,7 +112,7 @@ export default function PortfolioPreview() {
                 <p className="text-white/40 text-xs mb-1">{main.client}</p>
                 <h3
                   className="text-white font-bold text-xl leading-snug mb-2 group-hover:text-[#477BDB] transition-colors"
-                  style={{ fontFamily: "var(--syne), var(--font-syne), sans-serif" }}
+                  style={{ fontFamily: SYNE_FONT }}
                 >
                   {main.title}
                 </h3>
@@ -188,7 +189,7 @@ export default function PortfolioPreview() {
                       <p className="text-white/35 text-[10px] mb-0.5">{item.client}</p>
                       <h3
                         className="text-white font-bold text-[0.9375rem] leading-snug group-hover:text-white transition-colors"
-                        style={{ fontFamily: "var(--syne), var(--font-syne), sans-serif" }}
+                        style={{ fontFamily: SYNE_FONT }}
                       >
                         {item.title}
                       </h3>
