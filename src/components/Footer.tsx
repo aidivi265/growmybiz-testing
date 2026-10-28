@@ -82,11 +82,11 @@ export default function Footer() {
           <div className="grid grid-cols-2 md:grid-cols-12 gap-8 lg:gap-10">
 
             {/* Brand col */}
-            <div className="col-span-2 md:col-span-4">
+            <div className="col-span-2 md:col-span-5">
               <div className="mb-5">
-                <BrandLogo theme="dark" size="2xl" showTagline={false} asLink={true} />
+                <BrandLogo theme="dark" size="3xl" showTagline={false} asLink={true} />
               </div>
-              <p className="text-[#8BA5C8] text-sm leading-relaxed mb-6 max-w-[280px]">
+              <p className="text-[#8BA5C8] text-sm leading-relaxed mb-6 max-w-sm">
                 {siteConfig.description}
               </p>
               {/* Contact micro-list */}
@@ -156,7 +156,7 @@ export default function Footer() {
             </div>
 
             {/* Legal */}
-            <div className="col-span-1 md:col-span-3">
+            <div className="col-span-1 md:col-span-2">
               <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-4">Legal</h4>
               <ul className="space-y-2 mb-6">
                 {[

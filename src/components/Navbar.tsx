@@ -65,7 +65,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-16">
 
             {/* ── Official Brand Logo ── */}
-            <BrandLogo theme="light" size="md" asLink={true} />
+            <BrandLogo theme="light" size="lg" asLink={true} />
 
             {/* ── Desktop Nav ── */}
             <div className="hidden lg:flex items-center gap-0.5">
@@ -116,7 +116,7 @@ export default function Navbar() {
         }`}>
           {/* Drawer header */}
           <div className="flex items-center justify-between px-5 h-16 border-b border-[#E8EDF4]">
-            <BrandLogo theme="light" size="sm" asLink={false} />
+            <BrandLogo theme="light" size="md" asLink={false} />
             <button
               onClick={() => setMobileOpen(false)}
               className="w-8 h-8 flex items-center justify-center rounded-lg text-[#6B7E95] hover:text-[#0F1C31] hover:bg-[#F7F9FC]"

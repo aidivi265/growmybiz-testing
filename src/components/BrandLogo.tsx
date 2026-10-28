@@ -7,7 +7,7 @@ import { SYNE_FONT } from '@/lib/fonts';
 
 interface BrandLogoProps {
   variant?: 'full' | 'icon' | 'stacked';
-  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
   theme?: 'dark' | 'light' | 'auto';
   showTagline?: boolean;
   centered?: boolean;
@@ -39,18 +39,18 @@ export default function BrandLogo({
       gap: 'gap-2.5',
     },
     md: {
-      badge: 40,
-      icon: 28,
-      title: 'text-[1.25rem]',
+      badge: 44,
+      icon: 32,
+      title: 'text-[1.4rem] sm:text-[1.55rem]',
       tagline: 'text-[8.5px] tracking-[0.16em]',
       gap: 'gap-3',
     },
     lg: {
       badge: 48,
-      icon: 34,
-      title: 'text-[1.5rem]',
+      icon: 36,
+      title: 'text-[1.65rem] sm:text-[1.95rem]',
       tagline: 'text-[10px] tracking-[0.18em]',
-      gap: 'gap-3.5',
+      gap: 'gap-3 sm:gap-3.5',
     },
     xl: {
       badge: 64,
@@ -60,11 +60,18 @@ export default function BrandLogo({
       gap: 'gap-4',
     },
     '2xl': {
-      badge: 68,
-      icon: 50,
-      title: 'text-[2.2rem] sm:text-[2.65rem]',
+      badge: 76,
+      icon: 56,
+      title: 'text-[2.5rem] sm:text-[3.2rem]',
       tagline: 'text-[12px] tracking-[0.2em]',
       gap: 'gap-4 sm:gap-4.5',
+    },
+    '3xl': {
+      badge: 88,
+      icon: 66,
+      title: 'text-[2.75rem] xs:text-[3.2rem] sm:text-[3.85rem] md:text-[4.25rem]',
+      tagline: 'text-[13px] tracking-[0.2em]',
+      gap: 'gap-4 sm:gap-5',
     },
   }[size];
 
