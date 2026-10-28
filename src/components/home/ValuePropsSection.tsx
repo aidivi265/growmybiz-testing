@@ -35,7 +35,7 @@ export default function ValuePropsSection() {
 
             <h2
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "var(--syne), var(--font-syne), sans-serif",
                 fontWeight: 800,
                 fontSize: 'clamp(2.2rem, 3.5vw, 3rem)',
                 lineHeight: 1.06,
@@ -93,7 +93,7 @@ export default function ValuePropsSection() {
                       <Icon name={vp.icon} size={18} style={{ color: a.color }} />
                     </div>
                     <span style={{
-                      fontFamily: "'Syne', sans-serif",
+                      fontFamily: "var(--syne), var(--font-syne), sans-serif",
                       fontSize: '0.58rem',
                       fontWeight: 800,
                       color: 'rgba(255,255,255,0.18)',
@@ -106,7 +106,7 @@ export default function ValuePropsSection() {
                   <div>
                     <h3
                       className="font-bold text-white mb-1.5"
-                      style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.9375rem', lineHeight: 1.3 }}
+                      style={{ fontFamily: "var(--inter), var(--font-inter), sans-serif", fontSize: '0.9375rem', lineHeight: 1.3 }}
                     >
                       {vp.title}
                     </h3>

@@ -74,7 +74,7 @@ export default async function PortfolioItemPage({ params }: Props) {
             </div>
             <h1
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "var(--syne), var(--font-syne), sans-serif",
                 fontSize: 'clamp(2rem, 4.5vw, 3rem)',
                 fontWeight: 800,
                 color: '#fff',
@@ -108,7 +108,7 @@ export default async function PortfolioItemPage({ params }: Props) {
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
           <span
             style={{
-              fontFamily: "'Syne', sans-serif",
+              fontFamily: "var(--syne), var(--font-syne), sans-serif",
               fontWeight: 800,
               fontSize: 'clamp(6rem, 18vw, 14rem)',
               color: `${accent}12`,
@@ -133,7 +133,7 @@ export default async function PortfolioItemPage({ params }: Props) {
                 <span className="section-label block mb-4">Challenge</span>
                 <p
                   className="text-[#3D4F63] leading-relaxed text-[1.05rem]"
-                  style={{ fontFamily: "'Inter', sans-serif" }}
+                  style={{ fontFamily: "var(--inter), var(--font-inter), sans-serif" }}
                 >
                   {item.challenge}
                 </p>
@@ -144,7 +144,7 @@ export default async function PortfolioItemPage({ params }: Props) {
                 <span className="section-label block mb-4">Approach</span>
                 <p
                   className="text-[#3D4F63] leading-relaxed text-[1.05rem]"
-                  style={{ fontFamily: "'Inter', sans-serif" }}
+                  style={{ fontFamily: "var(--inter), var(--font-inter), sans-serif" }}
                 >
                   {item.approach}
                 </p>
@@ -222,7 +222,7 @@ export default async function PortfolioItemPage({ params }: Props) {
               >
                 <p
                   className="text-white font-bold mb-1.5"
-                  style={{ fontFamily: "'Syne', sans-serif", fontSize: '1rem' }}
+                  style={{ fontFamily: "var(--syne), var(--font-syne), sans-serif", fontSize: '1rem' }}
                 >
                   Start a similar project
                 </p>
@@ -248,7 +248,7 @@ export default async function PortfolioItemPage({ params }: Props) {
                           >
                             <span
                               style={{
-                                fontFamily: "'Syne', sans-serif",
+                                fontFamily: "var(--syne), var(--font-syne), sans-serif",
                                 fontWeight: 800,
                                 fontSize: '0.8rem',
                                 color: 'rgba(255,255,255,0.5)',

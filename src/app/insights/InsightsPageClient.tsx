@@ -47,7 +47,7 @@ export default function InsightsPageClient() {
             <span className="section-label block mb-4">Insights</span>
             <h1
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "var(--syne), var(--font-syne), sans-serif",
                 fontSize: 'clamp(2.2rem, 5vw, 3.4rem)',
                 fontWeight: 800,
                 color: '#fff',
@@ -112,7 +112,7 @@ export default function InsightsPageClient() {
                         <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none">
                           <span
                             style={{
-                              fontFamily: "'Syne', sans-serif",
+                              fontFamily: "var(--syne), var(--font-syne), sans-serif",
                               fontWeight: 800,
                               fontSize: 'clamp(80px, 12vw, 130px)',
                               color: cat.dot,
@@ -148,7 +148,7 @@ export default function InsightsPageClient() {
                         </div>
                         <h2
                           className="text-xl lg:text-2xl font-bold text-[#0F1C31] mb-3 group-hover:text-[#477BDB] transition-colors leading-snug"
-                          style={{ fontFamily: "'Syne', sans-serif", letterSpacing: '-0.02em' }}
+                          style={{ fontFamily: "var(--syne), var(--font-syne), sans-serif", letterSpacing: '-0.02em' }}
                         >
                           {featured.title}
                         </h2>
@@ -178,7 +178,7 @@ export default function InsightsPageClient() {
                             <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none">
                               <span
                                 style={{
-                                  fontFamily: "'Syne', sans-serif",
+                                  fontFamily: "var(--syne), var(--font-syne), sans-serif",
                                   fontWeight: 800,
                                   fontSize: '5rem',
                                   color: cat.dot,
@@ -208,7 +208,7 @@ export default function InsightsPageClient() {
                             </div>
                             <h3
                               className="font-bold text-[#0F1C31] text-[0.9375rem] leading-snug mb-2 group-hover:text-[#477BDB] transition-colors line-clamp-2"
-                              style={{ fontFamily: "'Inter', sans-serif" }}
+                              style={{ fontFamily: "var(--inter), var(--font-inter), sans-serif" }}
                             >
                               {post.title}
                             </h3>

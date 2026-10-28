@@ -39,7 +39,7 @@ export default function InsightsPreview() {
             <span className="eyebrow block mb-4">Insights</span>
             <h2
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "var(--syne), var(--font-syne), sans-serif",
                 fontWeight: 800,
                 fontSize: 'clamp(1.9rem, 3vw, 2.6rem)',
                 lineHeight: 1.1,
@@ -90,7 +90,7 @@ export default function InsightsPreview() {
                 <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none">
                   <span
                     style={{
-                      fontFamily: "'Syne', sans-serif",
+                      fontFamily: "var(--syne), var(--font-syne), sans-serif",
                       fontWeight: 800,
                       fontSize: 'clamp(80px, 14vw, 140px)',
                       lineHeight: 1,
@@ -131,7 +131,7 @@ export default function InsightsPreview() {
                 <h3
                   className="font-bold text-[#0F1C31] leading-snug mb-3 group-hover:text-[#477BDB] transition-colors"
                   style={{
-                    fontFamily: "'Syne', sans-serif",
+                    fontFamily: "var(--syne), var(--font-syne), sans-serif",
                     fontSize: 'clamp(1.1rem, 2vw, 1.4rem)',
                   }}
                 >
@@ -219,7 +219,7 @@ export default function InsightsPreview() {
                 </span>
                 <p
                   style={{
-                    fontFamily: "'Syne', sans-serif",
+                    fontFamily: "var(--syne), var(--font-syne), sans-serif",
                     fontWeight: 700,
                     fontSize: '0.9375rem',
                     color: '#FFFFFF',

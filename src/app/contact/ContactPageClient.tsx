@@ -74,7 +74,7 @@ export default function ContactPageClient() {
             <span className="section-label block mb-4">Get in touch</span>
             <h1
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "var(--syne), var(--font-syne), sans-serif",
                 fontSize: 'clamp(2.2rem, 5vw, 3.4rem)',
                 fontWeight: 800,
                 color: '#fff',

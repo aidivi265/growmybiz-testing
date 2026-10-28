@@ -63,7 +63,7 @@ export default async function ServicePage({ params }: Props) {
               <span className="section-label block mb-3">{service.title}</span>
               <h1
                 style={{
-                  fontFamily: "'Syne', sans-serif",
+                  fontFamily: "var(--syne), var(--font-syne), sans-serif",
                   fontSize: 'clamp(2rem, 4.5vw, 3rem)',
                   fontWeight: 800,
                   color: '#fff',
@@ -130,7 +130,7 @@ export default async function ServicePage({ params }: Props) {
                   >
                     <span
                       style={{
-                        fontFamily: "'Syne', sans-serif",
+                        fontFamily: "var(--syne), var(--font-syne), sans-serif",
                         fontWeight: 800,
                         fontSize: '0.7rem',
                         color: service.color,
@@ -183,7 +183,7 @@ export default async function ServicePage({ params }: Props) {
           <div>
             <h2
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "var(--syne), var(--font-syne), sans-serif",
                 fontSize: '1.5rem',
                 fontWeight: 800,
                 color: '#fff',

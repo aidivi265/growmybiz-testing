@@ -47,7 +47,7 @@ export default function ProcessPreview() {
             </span>
             <h2
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "var(--syne), var(--font-syne), sans-serif",
                 fontWeight: 800,
                 fontSize: 'clamp(1.9rem, 3vw, 2.7rem)',
                 lineHeight: 1.08,
@@ -111,7 +111,7 @@ export default function ProcessPreview() {
                     style={{ background: c.glow, border: `1px solid ${c.border}` }}
                   >
                     <span style={{
-                      fontFamily: "'Syne', sans-serif",
+                      fontFamily: "var(--syne), var(--font-syne), sans-serif",
                       fontWeight: 800,
                       fontSize: '0.8125rem',
                       color: c.accent,
@@ -130,7 +130,7 @@ export default function ProcessPreview() {
 
                 <h3
                   className="font-bold text-white text-sm mb-2 leading-snug"
-                  style={{ fontFamily: "'Inter', sans-serif" }}
+                  style={{ fontFamily: "var(--inter), var(--font-inter), sans-serif" }}
                 >
                   {step.title}
                 </h3>

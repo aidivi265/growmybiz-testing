@@ -133,7 +133,7 @@ export function SectionHeader({ eyebrow, title, subtitle, dark, navy, centered, 
       )}
       <h2
         className={clsx('leading-tight', isDark ? 'text-white' : 'text-[#0F1C31]')}
-        style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 'clamp(1.6rem, 2.5vw, 2.25rem)', letterSpacing: '-0.025em' }}
+        style={{ fontFamily: "var(--syne), var(--font-syne), sans-serif", fontWeight: 800, fontSize: 'clamp(1.6rem, 2.5vw, 2.25rem)', letterSpacing: '-0.025em' }}
       >
         {title}
       </h2>

@@ -31,7 +31,7 @@ export default function Footer() {
               </p>
               <h2
                 style={{
-                  fontFamily: "'Syne', sans-serif",
+                  fontFamily: "var(--syne), var(--font-syne), sans-serif",
                   fontWeight: 800,
                   fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
                   lineHeight: 1.1,

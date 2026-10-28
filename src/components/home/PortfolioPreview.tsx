@@ -29,7 +29,7 @@ export default function PortfolioPreview() {
             <span className="eyebrow block mb-4">Our work</span>
             <h2
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "var(--syne), var(--font-syne), sans-serif",
                 fontWeight: 800,
                 fontSize: 'clamp(1.9rem, 3vw, 2.6rem)',
                 lineHeight: 1.1,
@@ -111,7 +111,7 @@ export default function PortfolioPreview() {
                 <p className="text-white/40 text-xs mb-1">{main.client}</p>
                 <h3
                   className="text-white font-bold text-xl leading-snug mb-2 group-hover:text-[#477BDB] transition-colors"
-                  style={{ fontFamily: "'Syne', sans-serif" }}
+                  style={{ fontFamily: "var(--syne), var(--font-syne), sans-serif" }}
                 >
                   {main.title}
                 </h3>
@@ -188,7 +188,7 @@ export default function PortfolioPreview() {
                       <p className="text-white/35 text-[10px] mb-0.5">{item.client}</p>
                       <h3
                         className="text-white font-bold text-[0.9375rem] leading-snug group-hover:text-white transition-colors"
-                        style={{ fontFamily: "'Syne', sans-serif" }}
+                        style={{ fontFamily: "var(--syne), var(--font-syne), sans-serif" }}
                       >
                         {item.title}
                       </h3>

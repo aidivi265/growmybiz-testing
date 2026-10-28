@@ -38,7 +38,7 @@ export default function PortfolioPageClient() {
             <span className="section-label block mb-4">Our work</span>
             <h1
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "var(--syne), var(--font-syne), sans-serif",
                 fontSize: 'clamp(2.2rem, 5vw, 3.4rem)',
                 fontWeight: 800,
                 color: '#fff',
@@ -117,7 +117,7 @@ export default function PortfolioPageClient() {
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
                           <span
                             style={{
-                              fontFamily: "'Syne', sans-serif",
+                              fontFamily: "var(--syne), var(--font-syne), sans-serif",
                               fontWeight: 800,
                               fontSize: '5rem',
                               color: `${accent}20`,
@@ -164,7 +164,7 @@ export default function PortfolioPageClient() {
                         <p className="text-[#A4B3C4] text-xs mb-1 font-medium">{item.client}</p>
                         <h2
                           className="text-[#0F1C31] font-bold text-[0.9375rem] mb-2 group-hover:text-[#477BDB] transition-colors leading-snug"
-                          style={{ fontFamily: "'Inter', sans-serif" }}
+                          style={{ fontFamily: "var(--inter), var(--font-inter), sans-serif" }}
                         >
                           {item.title}
                         </h2>
