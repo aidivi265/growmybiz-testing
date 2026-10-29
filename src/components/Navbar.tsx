@@ -15,6 +15,53 @@ export default function Navbar() {
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const pathname = usePathname();
 
+  const [pageVisibility, setPageVisibility] = useState<Record<string, boolean>>({
+    about: true,
+    services: true,
+    portfolio: true,
+    process: true,
+    insights: true,
+    contact: true,
+  });
+  const [activeServices, setActiveServices] = useState<{ id: string; title: string; slug: string }[]>([]);
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.pageVisibility) {
+          setPageVisibility(data.pageVisibility);
+        }
+        if (data?.services && Array.isArray(data.services)) {
+          setActiveServices(data.services);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const displayedNavItems: NavItem[] = navItems
+    .filter((item) => {
+      if (item.href === '/services' && pageVisibility.services === false) return false;
+      if (item.href === '/portfolio' && pageVisibility.portfolio === false) return false;
+      if (item.href === '/about' && pageVisibility.about === false) return false;
+      if (item.href === '/process' && pageVisibility.process === false) return false;
+      if (item.href === '/insights' && pageVisibility.insights === false) return false;
+      if (item.href === '/contact' && pageVisibility.contact === false) return false;
+      return true;
+    })
+    .map((item) => {
+      if (item.href === '/services' && activeServices.length > 0) {
+        return {
+          ...item,
+          children: activeServices.map((s) => ({
+            label: s.title,
+            href: `/services/${s.slug}`,
+          })),
+        };
+      }
+      return item;
+    });
+
   useEffect(() => {
     let ticking = false;
     let lastScrolled = false;
@@ -69,7 +116,7 @@ export default function Navbar() {
 
             {/* ── Desktop Nav ── */}
             <div className="hidden lg:flex items-center gap-0.5">
-              {navItems.map((item) => (
+              {displayedNavItems.map((item) => (
                 <NavItemComponent
                   key={item.href}
                   item={item}
@@ -127,7 +174,7 @@ export default function Navbar() {
 
           {/* Drawer nav */}
           <nav className="flex-1 overflow-y-auto py-3 px-3">
-            {navItems.map((item) => (
+            {displayedNavItems.map((item) => (
               <div key={item.href} className="mb-0.5">
                 {item.children ? (
                   <>

@@ -23,14 +23,14 @@ export async function GET() {
       .select('*')
       .order('order_index', { ascending: true });
 
-    if (!error && data && data.length > 0) {
+    if (!error && Array.isArray(data)) {
       return NextResponse.json({ success: true, testimonials: data, source: 'supabase' });
     }
   } catch (err) {
     console.warn('Admin testimonials fetch fallback:', err);
   }
 
-  return NextResponse.json({ success: true, testimonials: staticTestimonials, source: 'static' });
+  return NextResponse.json({ success: true, testimonials: [], source: 'static' });
 }
 
 // POST /api/admin/testimonials - Create testimonial

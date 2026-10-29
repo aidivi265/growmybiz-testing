@@ -15,6 +15,7 @@ import {
   fetchProcessSteps,
   fetchValueProps,
   fetchInsights,
+  fetchPageVisibility,
 } from '@/lib/dal';
 
 export const dynamic = 'force-dynamic';
@@ -36,6 +37,7 @@ export default async function HomePage() {
     processSteps,
     valueProps,
     insights,
+    visibility,
   ] = await Promise.all([
     fetchHeroSlides(),
     fetchOrbitConfig(),
@@ -45,29 +47,56 @@ export default async function HomePage() {
     fetchProcessSteps(),
     fetchValueProps(),
     fetchInsights(),
+    fetchPageVisibility(),
   ]);
 
   return (
     <>
       <HeroSection initialSlides={heroSlides} orbitConfig={orbitConfig} />
-      {/* Dark → White transition strip */}
-      <div style={{ height: '2px', background: 'linear-gradient(90deg, #1A2B4A, #243B66, #1A2B4A)' }} />
-      <ServicesSection services={services} />
-      {/* White → Dark transition */}
+
+      {/* Services Section */}
+      {visibility.services !== false && services.length > 0 && (
+        <>
+          <div style={{ height: '2px', background: 'linear-gradient(90deg, #1A2B4A, #243B66, #1A2B4A)' }} />
+          <ServicesSection services={services} />
+        </>
+      )}
+
+      {/* Value Propositions / Why Us */}
       <div style={{ height: '2px', background: 'linear-gradient(90deg, #0F1C31, #1A2B4A, #0F1C31)' }} />
       <ValuePropsSection items={valueProps} />
-      {/* Dark → White transition */}
-      <div style={{ height: '2px', background: 'linear-gradient(90deg, #1A2B4A, #243B66, #1A2B4A)' }} />
-      <PortfolioPreview projects={portfolio} />
-      {/* White → Dark transition */}
-      <div style={{ height: '2px', background: 'linear-gradient(90deg, #0F1C31, #1A2B4A, #0F1C31)' }} />
-      <TestimonialsSection testimonials={testimonials} />
-      {/* Dark → Dark transition */}
-      <div style={{ height: '2px', background: 'linear-gradient(90deg, #0A1525, #152744, #0A1525)' }} />
-      <ProcessPreview steps={processSteps} />
-      {/* Dark → Light transition */}
-      <div style={{ height: '2px', background: 'linear-gradient(90deg, #0F1C31, #1A2B4A, #0F1C31)' }} />
-      <InsightsPreview posts={insights} />
+
+      {/* Portfolio Preview */}
+      {visibility.portfolio !== false && portfolio.length > 0 && (
+        <>
+          <div style={{ height: '2px', background: 'linear-gradient(90deg, #1A2B4A, #243B66, #1A2B4A)' }} />
+          <PortfolioPreview projects={portfolio} />
+        </>
+      )}
+
+      {/* Testimonials (Only rendered if enabled and has at least 1 real testimonial) */}
+      {visibility.testimonials !== false && testimonials && testimonials.length > 0 && (
+        <>
+          <div style={{ height: '2px', background: 'linear-gradient(90deg, #0F1C31, #1A2B4A, #0F1C31)' }} />
+          <TestimonialsSection testimonials={testimonials} />
+        </>
+      )}
+
+      {/* Process Preview */}
+      {visibility.process !== false && processSteps.length > 0 && (
+        <>
+          <div style={{ height: '2px', background: 'linear-gradient(90deg, #0A1525, #152744, #0A1525)' }} />
+          <ProcessPreview steps={processSteps} />
+        </>
+      )}
+
+      {/* Insights / Articles Preview */}
+      {visibility.insights !== false && insights.length > 0 && (
+        <>
+          <div style={{ height: '2px', background: 'linear-gradient(90deg, #0F1C31, #1A2B4A, #0F1C31)' }} />
+          <InsightsPreview posts={insights} />
+        </>
+      )}
     </>
   );
 }

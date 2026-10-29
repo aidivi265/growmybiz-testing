@@ -19,13 +19,23 @@ export async function GET() {
   }
 
   try {
-    const { data, error } = await supabaseAdmin
-      .from('site_settings')
-      .select('*')
-      .eq('id', 'global')
-      .maybeSingle();
+    const [settingsRes, visibilityRes] = await Promise.all([
+      supabaseAdmin.from('site_settings').select('*').eq('id', 'global').maybeSingle(),
+      supabaseAdmin.from('page_content').select('data').eq('id', 'page_visibility').maybeSingle(),
+    ]);
 
-    if (!error && data) {
+    const data = settingsRes.data;
+    const pageVisibility = visibilityRes.data?.data || {
+      about: true,
+      services: true,
+      portfolio: true,
+      process: true,
+      insights: true,
+      contact: true,
+      testimonials: true,
+    };
+
+    if (!settingsRes.error && data) {
       const rawSocial = data.social || siteConfig.social;
       const socialVisibility = rawSocial?._visibility || {
         linkedin: true,
@@ -50,6 +60,7 @@ export async function GET() {
           social: cleanSocial,
           socialVisibility,
         },
+        pageVisibility,
         source: 'supabase',
       });
     }
@@ -70,6 +81,15 @@ export async function GET() {
       whatsappNumber: siteConfig.whatsappNumber,
       whatsappUrl: siteConfig.whatsappUrl,
       social: siteConfig.social,
+    },
+    pageVisibility: {
+      about: true,
+      services: true,
+      portfolio: true,
+      process: true,
+      insights: true,
+      contact: true,
+      testimonials: true,
     },
     source: 'siteConfig',
   });
@@ -133,14 +153,34 @@ export async function POST(request: Request) {
       );
     }
 
+    // Save page visibility if provided
+    if (body.pageVisibility && typeof body.pageVisibility === 'object') {
+      try {
+        await supabaseAdmin
+          .from('page_content')
+          .upsert({
+            id: 'page_visibility',
+            data: body.pageVisibility,
+            updated_at: new Date().toISOString(),
+          });
+      } catch (visErr) {
+        console.warn('Page visibility upsert notice:', visErr);
+      }
+    }
+
     revalidatePath('/');
     revalidatePath('/about');
+    revalidatePath('/services');
+    revalidatePath('/portfolio');
+    revalidatePath('/process');
+    revalidatePath('/insights');
     revalidatePath('/contact');
 
     return NextResponse.json({
       success: true,
-      message: 'Site settings updated successfully in Supabase.',
+      message: 'Site settings and page visibility updated successfully in Supabase.',
       settings: data,
+      pageVisibility: body.pageVisibility,
     });
   } catch (err) {
     console.error('Error saving site settings:', err);

@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { services as defaultServices } from '@/data';
-import { fetchServices, fetchServiceBySlug, fetchPortfolio, fetchServiceCategories } from '@/lib/dal';
+import { fetchServices, fetchServiceBySlug, fetchPortfolio, fetchServiceCategories, fetchPageVisibility } from '@/lib/dal';
 import { Section, SectionHeader, Card, Breadcrumb } from '@/components/ui';
 import { Icon } from '@/components/Icon';
 import { SYNE_FONT } from '@/lib/fonts';
@@ -37,15 +37,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ServicePage({ params }: Props) {
   const { slug } = await params;
-  const [serviceData, allServices, allProjects, allCategories] = await Promise.all([
+  const [serviceData, allServices, allProjects, allCategories, visibility] = await Promise.all([
     fetchServiceBySlug(slug),
     fetchServices(),
     fetchPortfolio(),
     fetchServiceCategories(),
+    fetchPageVisibility(),
   ]);
 
-  const service = serviceData || defaultServices.find((s) => s.slug === slug);
-  if (!service) notFound();
+  if (visibility.services === false || !serviceData) {
+    notFound();
+  }
+
+  const service = serviceData;
 
   const servicesList = allServices && allServices.length > 0 ? allServices : defaultServices;
   const otherServices = servicesList.filter((s) => s.id !== service.id);

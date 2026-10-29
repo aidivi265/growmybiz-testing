@@ -3,18 +3,28 @@ import { supabaseAdmin } from '@/lib/supabaseServer';
 import { siteConfig } from '@/data/siteConfig';
 import { services as defaultServices } from '@/data/services';
 
-// GET /api/settings - Public site settings, CTA content, and active service links (cached, edge friendly)
+// GET /api/settings - Public site settings, CTA content, active service links, and page visibility (cached, edge friendly)
 export async function GET() {
   try {
-    const [settingsRes, ctaRes, servicesRes] = await Promise.all([
+    const [settingsRes, ctaRes, servicesRes, visibilityRes] = await Promise.all([
       supabaseAdmin.from('site_settings').select('*').eq('id', 'global').maybeSingle(),
       supabaseAdmin.from('page_content').select('data').eq('id', 'cta_content').maybeSingle(),
       supabaseAdmin.from('services').select('id, title, slug').eq('is_published', true).order('order_index', { ascending: true }),
+      supabaseAdmin.from('page_content').select('data').eq('id', 'page_visibility').maybeSingle(),
     ]);
 
     const settingsData = settingsRes.data;
     const ctaData = ctaRes.data?.data;
     const servicesData = servicesRes.data;
+    const visibilityData = visibilityRes.data?.data || {
+      about: true,
+      services: true,
+      portfolio: true,
+      process: true,
+      insights: true,
+      contact: true,
+      testimonials: true,
+    };
 
     const rawSocial = settingsData?.social || siteConfig.social;
     const socialVisibility = rawSocial?._visibility || {};
@@ -36,6 +46,7 @@ export async function GET() {
           social: cleanSocial,
           socialVisibility,
         },
+        pageVisibility: visibilityData,
         ctaContent: ctaData || {
           heading: "Let's build something worth growing.",
           subheading: 'Ready to grow?',

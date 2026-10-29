@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { fetchServices } from '@/lib/dal';
+import { notFound } from 'next/navigation';
+import { fetchServices, fetchPageVisibility } from '@/lib/dal';
 import { Section, Card, Breadcrumb } from '@/components/ui';
 import { Icon } from '@/components/Icon';
 import { SYNE_FONT } from '@/lib/fonts';
@@ -16,7 +17,14 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function ServicesPage() {
-  const services = await fetchServices();
+  const [services, visibility] = await Promise.all([
+    fetchServices(),
+    fetchPageVisibility(),
+  ]);
+
+  if (visibility.services === false) {
+    notFound();
+  }
   return (
     <>
       {/* ── Page Header ── */}

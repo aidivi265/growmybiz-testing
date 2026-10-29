@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { portfolioItems as defaultPortfolioItems } from '@/data';
-import { fetchPortfolio, fetchPortfolioBySlug } from '@/lib/dal';
+import { fetchPortfolio, fetchPortfolioBySlug, fetchPageVisibility } from '@/lib/dal';
 import { Breadcrumb } from '@/components/ui';
 import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
 
@@ -37,10 +37,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PortfolioItemPage({ params }: Props) {
   const { slug } = await params;
-  const [fetchedItem, allItems] = await Promise.all([
+  const [fetchedItem, allItems, visibility] = await Promise.all([
     fetchPortfolioBySlug(slug),
     fetchPortfolio(),
+    fetchPageVisibility(),
   ]);
+
+  if (visibility.portfolio === false) notFound();
 
   const item = fetchedItem || defaultPortfolioItems.find((p) => p.slug === slug);
   if (!item || !item.published) notFound();

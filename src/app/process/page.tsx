@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { fetchProcessSteps } from '@/lib/dal';
+import { notFound } from 'next/navigation';
+import { fetchProcessSteps, fetchPageVisibility } from '@/lib/dal';
 import { Section, SectionHeader, Breadcrumb } from '@/components/ui';
 import { Icon } from '@/components/Icon';
 import { SYNE_FONT } from '@/lib/fonts';
@@ -15,7 +16,14 @@ export const metadata: Metadata = {
 };
 
 export default async function ProcessPage() {
-  const steps = await fetchProcessSteps();
+  const [steps, visibility] = await Promise.all([
+    fetchProcessSteps(),
+    fetchPageVisibility(),
+  ]);
+
+  if (visibility.process === false) {
+    notFound();
+  }
   return (
     <>
       {/* ── Page Header ── */}

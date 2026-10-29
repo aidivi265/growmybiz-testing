@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import InsightsPageClient from './InsightsPageClient';
-import { fetchInsights } from '@/lib/dal';
+import { fetchInsights, fetchPageVisibility } from '@/lib/dal';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -11,6 +12,14 @@ export const metadata: Metadata = {
 };
 
 export default async function InsightsPage() {
-  const articles = await fetchInsights();
+  const [articles, visibility] = await Promise.all([
+    fetchInsights(),
+    fetchPageVisibility(),
+  ]);
+
+  if (visibility.insights === false) {
+    notFound();
+  }
+
   return <InsightsPageClient initialArticles={articles} />;
 }

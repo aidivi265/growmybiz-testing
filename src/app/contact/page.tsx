@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import ContactPageClient from './ContactPageClient';
-import { fetchServices, fetchSiteSettings } from '@/lib/dal';
+import { fetchServices, fetchSiteSettings, fetchPageVisibility } from '@/lib/dal';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -11,9 +12,15 @@ export const metadata: Metadata = {
 };
 
 export default async function ContactPage() {
-  const [services, settings] = await Promise.all([
+  const [services, settings, visibility] = await Promise.all([
     fetchServices(),
     fetchSiteSettings(),
+    fetchPageVisibility(),
   ]);
+
+  if (visibility.contact === false) {
+    notFound();
+  }
+
   return <ContactPageClient initialServices={services} initialSettings={settings} />;
 }

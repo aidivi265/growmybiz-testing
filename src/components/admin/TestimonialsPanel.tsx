@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Star, Loader2, MessageSquare, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, Star, Loader2, MessageSquare, X, Check } from 'lucide-react';
 import type { Testimonial } from '@/types';
 
 interface TestimonialFormState {
@@ -179,8 +179,23 @@ export default function TestimonialsPanel() {
           <span>Loading client reviews...</span>
         </div>
       ) : testimonials.length === 0 ? (
-        <div className="py-12 text-center text-white/40 text-xs">
-          No testimonials added yet. Click &quot;Add Testimonial&quot; to showcase client reviews.
+        <div className="py-12 px-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-center space-y-3">
+          <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-400 mx-auto flex items-center justify-center">
+            <Check size={18} />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-white">No active testimonials (Section safely hidden)</p>
+            <p className="text-xs text-white/40 mt-1 max-w-md mx-auto">
+              You have currently cleared all testimonials. Because you have no reviews right now, the Testimonials section is automatically hidden from your live homepage so visitors never see empty sections or placeholder data.
+            </p>
+          </div>
+          <button
+            onClick={openCreateModal}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-white bg-[#3b82d4] hover:bg-[#2563eb] transition-all cursor-pointer"
+          >
+            <Plus size={13} />
+            <span>Add Your First Testimonial</span>
+          </button>
         </div>
       ) : (
         <div className="overflow-x-auto">

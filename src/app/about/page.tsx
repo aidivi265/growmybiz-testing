@@ -3,7 +3,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Users, Target, Compass, Sparkles } from 'lucide-react';
 import { siteConfig } from '@/data';
-import { fetchTeamMembers, fetchValueProps, fetchSiteSettings, fetchPageCopy } from '@/lib/dal';
+import { notFound } from 'next/navigation';
+import { fetchTeamMembers, fetchValueProps, fetchSiteSettings, fetchPageCopy, fetchPageVisibility } from '@/lib/dal';
 import { Section, SectionHeader, Card, Breadcrumb } from '@/components/ui';
 import { Icon } from '@/components/Icon';
 import { SYNE_FONT } from '@/lib/fonts';
@@ -24,12 +25,17 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function AboutPage() {
-  const [members, values, settings, aboutCopy] = await Promise.all([
+  const [members, values, settings, aboutCopy, visibility] = await Promise.all([
     fetchTeamMembers(),
     fetchValueProps(),
     fetchSiteSettings(),
     fetchPageCopy('about_content', DEFAULT_ABOUT),
+    fetchPageVisibility(),
   ]);
+
+  if (visibility.about === false) {
+    notFound();
+  }
 
   const storyParagraphs = (aboutCopy.story_body || DEFAULT_ABOUT.story_body)
     .split('\n\n')

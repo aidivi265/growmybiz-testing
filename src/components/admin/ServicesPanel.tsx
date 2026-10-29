@@ -14,6 +14,7 @@ interface ServiceFormState {
   icon_name: string;
   color: string;
   featured: boolean;
+  is_published: boolean;
   deliverables_text: string;
 }
 
@@ -26,6 +27,7 @@ export default function ServicesPanel() {
   const [source, setSource] = useState<string>('loading');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
   const [categoriesSaving, setCategoriesSaving] = useState(false);
   const [categoriesSaved, setCategoriesSaved] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -42,6 +44,7 @@ export default function ServicesPanel() {
     icon_name: 'Code2',
     color: '#477BDB',
     featured: true,
+    is_published: true,
     deliverables_text: '',
   });
 
@@ -77,6 +80,38 @@ export default function ServicesPanel() {
     loadData();
   }, []);
 
+  const toggleServiceVisibility = async (s: any) => {
+    const currentStatus = s.is_published !== false;
+    const nextStatus = !currentStatus;
+    setTogglingId(s.id || s.slug);
+    try {
+      const res = await fetch('/api/admin/services', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: s.id,
+          is_published: nextStatus,
+        }),
+      });
+      if (res.ok) {
+        setServices((prev) =>
+          prev.map((item) =>
+            item.id === s.id || item.slug === s.slug
+              ? ({ ...item, is_published: nextStatus } as any)
+              : item
+          )
+        );
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to update visibility');
+      }
+    } catch {
+      alert('Error updating service visibility');
+    } finally {
+      setTogglingId(null);
+    }
+  };
+
   const openCreateModal = () => {
     setEditingId(null);
     setForm({
@@ -87,6 +122,7 @@ export default function ServicesPanel() {
       icon_name: 'Code2',
       color: '#477BDB',
       featured: true,
+      is_published: true,
       deliverables_text: '',
     });
     setIsModalOpen(true);
@@ -106,6 +142,7 @@ export default function ServicesPanel() {
       icon_name: s.icon || 'Code2',
       color: s.color || '#477BDB',
       featured: s.featured ?? true,
+      is_published: (s as any).is_published !== false,
       deliverables_text: deliverables,
     });
     setIsModalOpen(true);
@@ -148,6 +185,7 @@ export default function ServicesPanel() {
         icon_name: form.icon_name,
         color: form.color,
         featured: form.featured,
+        is_published: form.is_published,
         offerings,
       };
 
@@ -345,6 +383,7 @@ export default function ServicesPanel() {
                   <tr className="border-b border-white/[0.06] text-white/40">
                     <th className="py-2.5 px-3">Service</th>
                     <th className="py-2.5 px-3">Slug</th>
+                    <th className="py-2.5 px-3">Status</th>
                     <th className="py-2.5 px-3">Offerings</th>
                     <th className="py-2.5 px-3">Active Verticals</th>
                     <th className="py-2.5 px-3">Featured</th>
@@ -371,6 +410,31 @@ export default function ServicesPanel() {
                           </div>
                         </td>
                         <td className="py-3 px-3 font-mono text-white/50">{s.slug}</td>
+                        <td className="py-3 px-3">
+                          <button
+                            type="button"
+                            onClick={() => toggleServiceVisibility(s)}
+                            disabled={togglingId === (s.id || s.slug)}
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold border transition-all cursor-pointer ${
+                              (s as any).is_published !== false
+                                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
+                                : 'bg-amber-500/10 text-amber-400 border-amber-500/30 hover:bg-amber-500/20'
+                            }`}
+                            title="Click to toggle Show/Hide on website"
+                          >
+                            {(s as any).is_published !== false ? (
+                              <>
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                <span>Live &amp; Visible</span>
+                              </>
+                            ) : (
+                              <>
+                                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                                <span>Hidden (Draft)</span>
+                              </>
+                            )}
+                          </button>
+                        </td>
                         <td className="py-3 px-3 text-white/70">
                           {Array.isArray(s.offerings) ? `${s.offerings.length} deliverables` : '–'}
                         </td>
@@ -603,7 +667,7 @@ export default function ServicesPanel() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-white/70 mb-1">Icon Name</label>
                   <input
@@ -641,6 +705,18 @@ export default function ServicesPanel() {
                       className="w-4 h-4 rounded text-blue-600 focus:ring-0 cursor-pointer"
                     />
                     <span className="text-xs text-white/70">Show on Home</span>
+                  </label>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-white/70 mb-1">Visibility</label>
+                  <label className="flex items-center gap-2 mt-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={form.is_published}
+                      onChange={(e) => setForm({ ...form, is_published: e.target.checked })}
+                      className="w-4 h-4 rounded text-emerald-500 focus:ring-0 cursor-pointer"
+                    />
+                    <span className="text-xs text-emerald-400 font-medium">Live &amp; Visible</span>
                   </label>
                 </div>
               </div>

@@ -8,7 +8,7 @@ interface TestimonialsSectionProps {
 }
 
 export default function TestimonialsSection({ testimonials: propTestimonials }: TestimonialsSectionProps) {
-  const pool = propTestimonials && propTestimonials.length > 0 ? propTestimonials : defaultTestimonials;
+  const pool = Array.isArray(propTestimonials) ? propTestimonials : defaultTestimonials;
   const activeTestimonials = pool.filter((t) => (t as any).is_published ?? (t as any).published ?? true);
 
   if (!activeTestimonials || activeTestimonials.length === 0) return null;

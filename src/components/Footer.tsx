@@ -22,6 +22,14 @@ export default function Footer() {
   const [servicesList, setServicesList] = useState<{ id: string; title: string; slug: string }[]>(
     defaultServices.map((s) => ({ id: s.id, title: s.title, slug: s.slug }))
   );
+  const [pageVisibility, setPageVisibility] = useState<Record<string, boolean>>({
+    about: true,
+    services: true,
+    portfolio: true,
+    process: true,
+    insights: true,
+    contact: true,
+  });
 
   useEffect(() => {
     fetch('/api/settings')
@@ -35,6 +43,9 @@ export default function Footer() {
         }
         if (data?.services && data.services.length > 0) {
           setServicesList(data.services);
+        }
+        if (data?.pageVisibility) {
+          setPageVisibility(data.pageVisibility);
         }
       })
       .catch(() => {});
@@ -154,39 +165,43 @@ export default function Footer() {
             </div>
 
             {/* Services */}
-            <div className="col-span-1 md:col-span-3">
-              <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-4">Services</h4>
-              <ul className="space-y-2">
-                {servicesList.map((s) => (
-                  <li key={s.id}>
-                    <Link href={`/services/${s.slug}`} prefetch={false}
-                      className="text-[#8BA5C8] text-sm hover:text-white transition-colors flex items-center gap-1.5 group">
-                      <span className="w-1 h-1 rounded-full bg-[#477BDB]/40 group-hover:bg-[#477BDB] transition-colors flex-shrink-0" />
-                      {s.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {pageVisibility.services !== false && (
+              <div className="col-span-1 md:col-span-3">
+                <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-4">Services</h4>
+                <ul className="space-y-2">
+                  {servicesList.map((s) => (
+                    <li key={s.id}>
+                      <Link href={`/services/${s.slug}`} prefetch={false}
+                        className="text-[#8BA5C8] text-sm hover:text-white transition-colors flex items-center gap-1.5 group">
+                        <span className="w-1 h-1 rounded-full bg-[#477BDB]/40 group-hover:bg-[#477BDB] transition-colors flex-shrink-0" />
+                        {s.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {/* Company */}
             <div className="col-span-1 md:col-span-2">
               <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-4">Company</h4>
               <ul className="space-y-2">
                 {[
-                  { label: 'About Us',  href: '/about' },
-                  { label: 'Portfolio', href: '/portfolio' },
-                  { label: 'Process',   href: '/process' },
-                  { label: 'Insights',  href: '/insights' },
-                  { label: 'Contact',   href: '/contact' },
-                ].map((l) => (
-                  <li key={l.href}>
-                    <Link href={l.href} prefetch={false}
-                      className="text-[#8BA5C8] text-sm hover:text-white transition-colors">
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
+                  { label: 'About Us',  href: '/about',     key: 'about' },
+                  { label: 'Portfolio', href: '/portfolio', key: 'portfolio' },
+                  { label: 'Process',   href: '/process',   key: 'process' },
+                  { label: 'Insights',  href: '/insights',  key: 'insights' },
+                  { label: 'Contact',   href: '/contact',   key: 'contact' },
+                ]
+                  .filter((l) => (pageVisibility as any)[l.key] !== false)
+                  .map((l) => (
+                    <li key={l.href}>
+                      <Link href={l.href} prefetch={false}
+                        className="text-[#8BA5C8] text-sm hover:text-white transition-colors">
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
               </ul>
             </div>
 

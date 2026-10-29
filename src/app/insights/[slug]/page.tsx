@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Clock, ArrowRight } from 'lucide-react';
 import { blogPosts as defaultBlogPosts } from '@/data';
-import { fetchInsights, fetchInsightBySlug } from '@/lib/dal';
+import { fetchInsights, fetchInsightBySlug, fetchPageVisibility } from '@/lib/dal';
 import { Breadcrumb } from '@/components/ui';
 import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
 
@@ -177,10 +177,13 @@ function renderContent(content: string) {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const [fetchedPost, allPosts] = await Promise.all([
+  const [fetchedPost, allPosts, visibility] = await Promise.all([
     fetchInsightBySlug(slug),
     fetchInsights(),
+    fetchPageVisibility(),
   ]);
+
+  if (visibility.insights === false) notFound();
 
   const post = fetchedPost || defaultBlogPosts.find((p) => p.slug === slug);
   if (!post || !post.published) notFound();

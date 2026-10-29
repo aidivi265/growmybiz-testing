@@ -681,6 +681,15 @@ function SiteConfigPanel() {
       twitter: true,
       youtube: true,
     },
+    pageVisibility: {
+      services: true,
+      portfolio: true,
+      about: true,
+      process: true,
+      insights: true,
+      contact: true,
+      testimonials: true,
+    },
   });
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -691,8 +700,14 @@ function SiteConfigPanel() {
     fetch('/api/admin/settings')
       .then((res) => (res.ok ? res.json() : null))
       .then((json) => {
-        if (!ignore && json?.settings) {
-          setData((prev) => ({ ...prev, ...json.settings }));
+        if (!ignore && json) {
+          if (json.settings) {
+            setData((prev) => ({
+              ...prev,
+              ...json.settings,
+              pageVisibility: json.pageVisibility || prev.pageVisibility,
+            }));
+          }
           if (json.source) setSource(json.source);
         }
       })
@@ -819,6 +834,58 @@ function SiteConfigPanel() {
                     }
                     className="w-full px-2.5 py-1.5 rounded-lg bg-black/40 border border-white/[0.08] text-white text-xs outline-none focus:border-[#3b82d4]"
                   />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="pt-4 border-t border-white/5 space-y-4">
+          <div>
+            <div className="text-xs font-semibold text-white">Website Pages &amp; Navigation Visibility</div>
+            <p className="text-[11px] text-white/40">
+              Control the visibility of any core section or page. When toggled to &quot;Hidden&quot;, that page will automatically disappear from the Header navigation and Footer links, its homepage preview section will be hidden, and direct visitors will see a 404 until you are ready to launch it.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {[
+              { key: 'services', label: 'Services Page & Catalog', path: '/services', desc: 'Main service listings and category filters' },
+              { key: 'portfolio', label: 'Portfolio & Case Studies', path: '/portfolio', desc: 'Showcase of projects and client work' },
+              { key: 'about', label: 'About Us & Team', path: '/about', desc: 'Company story, values and team members' },
+              { key: 'process', label: 'Our Process Page', path: '/process', desc: 'Six-step project delivery methodology' },
+              { key: 'insights', label: 'Insights & Blog Articles', path: '/insights', desc: 'Industry guides and knowledge base' },
+              { key: 'testimonials', label: 'Testimonials Section', path: 'Homepage', desc: 'Client reviews and feedback carousel' },
+              { key: 'contact', label: 'Contact Page & CTA', path: '/contact', desc: 'Lead inquiry form and direct booking' },
+            ].map((p) => {
+              const isVisible = (data.pageVisibility as any)?.[p.key] !== false;
+              return (
+                <div key={p.key} className="p-3 rounded-xl bg-[#0d0d14] border border-white/[0.06] flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-semibold text-white truncate">{p.label}</span>
+                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/5 text-white/40">{p.path}</span>
+                    </div>
+                    <p className="text-[10px] text-white/40 mt-0.5 line-clamp-1">{p.desc}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setData({
+                        ...data,
+                        pageVisibility: {
+                          ...(data.pageVisibility || {}),
+                          [p.key]: !isVisible,
+                        },
+                      })
+                    }
+                    className={`px-3 py-1.5 rounded-lg text-[10px] font-semibold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                      isVisible
+                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20'
+                        : 'bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/20'
+                    }`}
+                  >
+                    <span>{isVisible ? '✓ Live & Visible' : '✕ Hidden (Draft)'}</span>
+                  </button>
                 </div>
               );
             })}

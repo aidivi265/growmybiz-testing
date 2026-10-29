@@ -55,6 +55,7 @@ export async function fetchServiceBySlug(slug: string): Promise<Service | null> 
       .from('services')
       .select('*')
       .eq('slug', slug)
+      .eq('is_published', true)
       .maybeSingle();
 
     if (!error && data) {
@@ -135,6 +136,7 @@ export async function fetchPortfolioBySlug(slug: string): Promise<PortfolioItem 
       .from('portfolio_projects')
       .select('*')
       .eq('slug', slug)
+      .eq('is_published', true)
       .maybeSingle();
 
     if (!error && data) {
@@ -214,6 +216,7 @@ export async function fetchInsightBySlug(slug: string): Promise<BlogPost | null>
       .from('articles')
       .select('*')
       .eq('slug', slug)
+      .eq('is_published', true)
       .maybeSingle();
 
     if (!error && data) {
@@ -248,7 +251,7 @@ export async function fetchTestimonials(): Promise<Testimonial[]> {
       .select('*')
       .order('order_index', { ascending: true });
 
-    if (!error && data && data.length > 0) {
+    if (!error && Array.isArray(data)) {
       return data.map((t) => ({
         id: t.id,
         author: t.name || t.author || 'Client',
@@ -265,7 +268,7 @@ export async function fetchTestimonials(): Promise<Testimonial[]> {
     console.warn('[DAL Notice] Supabase testimonials fetch fallback:', err);
   }
 
-  return staticTestimonials;
+  return [];
 }
 
 // ── 5. Site Settings ─────────────────────────────────────────────────────────
@@ -481,4 +484,53 @@ export async function fetchOrbitConfig(): Promise<OrbitConfig> {
 
   return defaultOrbitConfig;
 }
+
+// ── 16. Global Page & Navigation Visibility ───────────────────────────────────
+export interface PageVisibility {
+  about: boolean;
+  services: boolean;
+  portfolio: boolean;
+  process: boolean;
+  insights: boolean;
+  contact: boolean;
+  testimonials: boolean;
+}
+
+export const defaultPageVisibility: PageVisibility = {
+  about: true,
+  services: true,
+  portfolio: true,
+  process: true,
+  insights: true,
+  contact: true,
+  testimonials: true,
+};
+
+export async function fetchPageVisibility(): Promise<PageVisibility> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('page_content')
+      .select('data')
+      .eq('id', 'page_visibility')
+      .maybeSingle();
+
+    if (!error && data?.data && typeof data.data === 'object') {
+      const d = data.data as any;
+      return {
+        about: d.about ?? true,
+        services: d.services ?? true,
+        portfolio: d.portfolio ?? true,
+        process: d.process ?? true,
+        insights: d.insights ?? true,
+        contact: d.contact ?? true,
+        testimonials: d.testimonials ?? true,
+      };
+    }
+  } catch (err) {
+    console.warn('[DAL Notice] Page visibility fetch fallback:', err);
+  }
+
+  return defaultPageVisibility;
+}
+
 
