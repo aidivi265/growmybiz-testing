@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Calendar, MessageSquare, Phone, X, CheckCircle } from 'lucide-react';
 import { siteConfig } from '@/data/siteConfig';
 
@@ -15,11 +16,16 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
   const [preferredTime, setPreferredTime] = useState('Morning (10 AM - 1 PM)');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [whatsappUrl, setWhatsappUrl] = useState(
     `https://wa.me/${(siteConfig.whatsappNumber || '917290884480').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
       'Hi! I would like to schedule a 15-minute discovery call for my business.'
     )}`
   );
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     fetch('/api/settings')
@@ -37,17 +43,25 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
       .catch(() => {});
   }, []);
 
-  // Listen for Escape key
+  // Lock body scroll and listen for Escape key
   useEffect(() => {
     if (!isOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const handleCallbackRequest = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,9 +97,9 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
     }
   };
 
-  return (
+  const modalContent = (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md animate-fadeIn"
+      className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md animate-fadeIn"
       onClick={onClose}
     >
       <div
@@ -111,7 +125,7 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
           <div className="w-8 h-8 rounded-lg bg-[#477BDB]/20 border border-[#477BDB]/40 flex items-center justify-center text-[#477BDB]">
             <Calendar size={16} />
           </div>
-          <span className="text-xs uppercase tracking-wider font-semibold text-[#477BDB]">
+          <span className="text-[11px] font-bold uppercase tracking-widest text-[#7AA2FF]">
             Direct Strategy Call
           </span>
         </div>
@@ -119,65 +133,61 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
         <h3 className="text-xl sm:text-2xl font-black mb-2 text-white tracking-tight">
           Schedule a 15-Min Discovery Call
         </h3>
-        <p className="text-white/70 text-xs sm:text-sm mb-5 leading-relaxed">
+        <p className="text-white/70 text-xs sm:text-sm mb-6 leading-relaxed">
           Skip lengthy back-and-forths. We will review your current website, digital bottlenecks, and business growth roadmap.
         </p>
 
         {submitted ? (
-          <div className="py-6 text-center space-y-4">
-            <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center mx-auto">
+          <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-center space-y-3">
+            <div className="w-12 h-12 rounded-full bg-[#32A88A]/20 border border-[#32A88A]/40 text-[#32A88A] flex items-center justify-center mx-auto">
               <CheckCircle size={24} />
             </div>
-            <div>
-              <h4 className="text-lg font-bold text-white">Call Request Logged!</h4>
-              <p className="text-xs text-white/70 mt-1 max-w-sm mx-auto">
-                Our founders have received your slot request for <strong className="text-white">{preferredTime}</strong> and will reach out shortly.
-              </p>
+            <h4 className="text-lg font-bold text-white mb-1">Call Request Logged!</h4>
+            <p className="text-white/60 text-xs leading-relaxed max-w-sm mx-auto">
+              Our growth strategist will reach out at your requested window: <strong className="text-white">{preferredTime}</strong>.
+            </p>
+            <div className="pt-2">
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs text-white bg-[#25D366] hover:bg-[#20ba59] transition-all cursor-pointer shadow-md"
+              >
+                <MessageSquare size={14} />
+                Open WhatsApp for Immediate Chat
+              </a>
             </div>
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl text-sm font-semibold bg-[#25D366] hover:bg-[#20ba59] text-white transition-colors cursor-pointer"
-            >
-              <MessageSquare size={16} />
-              Confirm Immediately on WhatsApp
-            </a>
           </div>
         ) : (
-          <div className="space-y-4 sm:space-y-5">
-            {/* Direct WhatsApp Call Out */}
-            <div className="p-3.5 sm:p-4 rounded-xl bg-gradient-to-r from-[#25D366]/15 to-[#25D366]/5 border border-[#25D366]/30">
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-full bg-[#25D366] flex items-center justify-center text-white shrink-0 shadow-sm">
-                    <MessageSquare size={16} />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-white">Instant WhatsApp Connect</p>
-                    <p className="text-[11px] text-white/60">Fastest response directly with our team</p>
-                  </div>
+          <div className="space-y-5">
+            {/* Direct WhatsApp Option */}
+            <div className="p-3.5 rounded-xl bg-gradient-to-r from-[#25D366]/15 to-transparent border border-[#25D366]/30 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-[#25D366] text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <MessageSquare size={16} />
                 </div>
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-[#25D366] hover:bg-[#20ba59] text-white transition-all shrink-0 cursor-pointer shadow-sm"
-                >
-                  Chat Now
-                </a>
+                <div>
+                  <p className="text-xs font-bold text-white">Instant WhatsApp Connect</p>
+                  <p className="text-[11px] text-white/60">Fastest response directly with our team</p>
+                </div>
               </div>
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-[#25D366] hover:bg-[#20ba59] text-white transition-all shrink-0 cursor-pointer shadow-sm"
+              >
+                Chat Now
+              </a>
             </div>
 
             <div className="relative flex items-center justify-center">
-              <div className="border-t border-white/10 w-full" />
-              <span className="bg-[#0E1726] px-3 text-[10px] uppercase font-bold text-white/40 tracking-widest shrink-0">
-                Or Request A Call Back
+              <div className="w-full border-t border-white/10" />
+              <span className="absolute bg-[#0E1726] px-3 text-[10px] uppercase font-bold text-white/40 tracking-wider">
+                Or Request a Call Back
               </span>
-              <div className="border-t border-white/10 w-full" />
             </div>
 
-            {/* Request Callback Form */}
             <form onSubmit={handleCallbackRequest} className="space-y-3.5">
               <div>
                 <label className="block text-xs font-medium text-white/80 mb-1">
@@ -253,6 +263,8 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined' ? createPortal(modalContent, document.body) : null;
 }
 
 export default ScheduleCallModal;

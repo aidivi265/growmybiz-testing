@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Plus, Edit2, Trash2, Star, Loader2, MessageSquare, X, Check } from 'lucide-react';
 import type { Testimonial } from '@/types';
 
@@ -267,9 +268,9 @@ export default function TestimonialsPanel() {
       )}
 
       {/* Create / Edit Modal */}
-      {isModalOpen && (
+      {isModalOpen && typeof document !== 'undefined' && createPortal(
         <div
-          className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn"
+          className="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn"
           onClick={() => setIsModalOpen(false)}
         >
           <div
@@ -382,7 +383,8 @@ export default function TestimonialsPanel() {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

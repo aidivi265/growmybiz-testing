@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Plus, Edit2, Trash2, Eye, Loader2, Check, X, Briefcase, Sparkles, Layers, ShieldCheck, AlertCircle, Save } from 'lucide-react';
 import type { Service, PortfolioItem } from '@/types';
 import { defaultServiceCategories } from '@/data/serviceCategories';
@@ -613,9 +614,9 @@ export default function ServicesPanel() {
       )}
 
       {/* ── Edit/Create Service Modal ── */}
-      {isModalOpen && (
+      {isModalOpen && typeof document !== 'undefined' && createPortal(
         <div
-          className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn"
+          className="fixed inset-0 bg-black/80 backdrop-blur-md z-[99999] flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn"
           onClick={() => setIsModalOpen(false)}
         >
           <div
@@ -768,7 +769,8 @@ export default function ServicesPanel() {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
