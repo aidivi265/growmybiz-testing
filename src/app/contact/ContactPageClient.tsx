@@ -48,11 +48,23 @@ export default function ContactPageClient({
 
   const validate = () => {
     const e: Partial<EnquiryFormData> = {};
-    if (!form.name.trim()) e.name = 'Name is required';
-    if (!form.email.trim()) e.email = 'Email is required';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Enter a valid email';
-    if (!form.service) e.service = 'Please select a service';
-    if (!form.message.trim()) e.message = 'Please describe your project';
+    if (!form.name.trim()) e.name = 'Full name is required';
+    if (!form.email.trim()) e.email = 'Email address is required';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Enter a valid email address';
+
+    const cleanPhone = (form.phone || '').replace(/[^0-9]/g, '');
+    if (!form.phone?.trim()) e.phone = 'Phone / WhatsApp number is required';
+    else if (cleanPhone.length < 8) e.phone = 'Enter a valid phone number (at least 8-10 digits)';
+
+    if (!form.company?.trim()) e.company = 'Company or project name is required';
+    if (!form.service) e.service = 'Please select a primary service';
+    if (!form.budget) e.budget = 'Please select an estimated budget range';
+    if (!form.timeline) e.timeline = 'Please select a target timeline';
+    if (!form.message.trim()) {
+      e.message = 'Please provide a project description';
+    } else if (form.message.trim().length < 15) {
+      e.message = 'Please describe your project in at least 15 characters';
+    }
     return e;
   };
 
@@ -212,17 +224,17 @@ export default function ContactPageClient({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <Input
-                    label="Your name"
-                    placeholder="Jane Smith"
+                    label="Your Name *"
+                    placeholder="e.g. Jane Smith"
                     value={form.name}
                     onChange={set('name')}
                     error={errors.name}
                     required
                   />
                   <Input
-                    label="Email address"
+                    label="Email Address *"
                     type="email"
-                    placeholder="jane@company.com"
+                    placeholder="e.g. jane@company.com"
                     value={form.email}
                     onChange={set('email')}
                     error={errors.email}
@@ -231,23 +243,26 @@ export default function ContactPageClient({
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <Input
-                    label="Phone number"
+                    label="Phone / WhatsApp Number *"
                     type="tel"
-                    placeholder="+91 98765 43210"
+                    placeholder="e.g. +91 98765 43210"
                     value={form.phone}
                     onChange={set('phone')}
                     error={errors.phone}
+                    required
                   />
                   <Input
-                    label="Company / Organisation"
-                    placeholder="Acme Corp"
+                    label="Company / Brand Name *"
+                    placeholder="e.g. Acme Studio"
                     value={form.company}
                     onChange={set('company')}
+                    error={errors.company}
+                    required
                   />
                 </div>
 
                 <Select
-                  label="Primary service needed"
+                  label="Primary Service Needed *"
                   options={serviceOptions}
                   value={form.service}
                   onChange={set('service')}
@@ -257,28 +272,32 @@ export default function ContactPageClient({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <Select
-                    label="Estimated budget"
+                    label="Estimated Budget Range *"
                     options={[
                       { value: '', label: 'Select a budget range' },
                       ...budgetRanges.map((b) => ({ value: b.value, label: b.label })),
                     ]}
                     value={form.budget}
                     onChange={set('budget')}
+                    error={errors.budget}
+                    required
                   />
                   <Select
-                    label="Target timeline"
+                    label="Target Timeline *"
                     options={[
                       { value: '', label: 'Select a timeline' },
                       ...timelineOptions.map((t) => ({ value: t.value, label: t.label })),
                     ]}
                     value={form.timeline}
                     onChange={set('timeline')}
+                    error={errors.timeline}
+                    required
                   />
                 </div>
 
                 <Textarea
-                  label="Tell us about your project"
-                  placeholder="Describe your goal, what you have in place today, and any relevant context..."
+                  label="Tell Us About Your Project *"
+                  placeholder="Describe your goals, what you need built, your target audience, and any reference websites..."
                   value={form.message}
                   onChange={set('message')}
                   error={errors.message}

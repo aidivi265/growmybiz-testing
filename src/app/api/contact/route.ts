@@ -335,6 +335,124 @@ export async function POST(request: Request) {
           const resendErr = await resendResponse.text();
           console.warn('Resend API delivery notice:', resendErr);
         }
+
+        // 9. Automated Confirmation Receipt to Client
+        if (sanitizedLead.email && !sanitizedLead.email.endsWith('@phone.growmybiz24.com')) {
+          try {
+            const htmlClientConfirmation = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Application Received — Growmybiz24</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #F4F6F9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #F4F6F9; padding: 30px 15px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(15, 28, 49, 0.08); border: 1px solid #E2E8F0;">
+          <tr>
+            <td style="background: linear-gradient(135deg, #0F1C31 0%, #1A2B4A 50%, #243B66 100%); padding: 36px 30px; text-align: left;">
+              <span style="display: inline-block; background: rgba(50, 168, 138, 0.2); color: #52D9B8; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; padding: 4px 12px; border-radius: 20px; margin-bottom: 12px; border: 1px solid rgba(50, 168, 138, 0.3);">
+                Application Received
+              </span>
+              <h1 style="color: #ffffff; font-size: 24px; font-weight: 800; margin: 4px 0 0 0; letter-spacing: -0.02em;">
+                We're reviewing your project brief.
+              </h1>
+              <p style="color: rgba(255, 255, 255, 0.7); font-size: 13px; margin: 8px 0 0 0;">
+                Growmybiz24 Digital Growth Partner
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 32px 30px;">
+              <p style="color: #0F1C31; font-size: 15px; font-weight: 600; margin: 0 0 16px 0;">
+                Hi ${escapedName},
+              </p>
+              <p style="color: #475569; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
+                Thank you for reaching out to <strong>Growmybiz24</strong>! We have successfully received your project brief and our team is actively reviewing your requirements.
+              </p>
+              <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                <p style="color: #64748B; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 12px 0;">
+                  Summary of Your Submission
+                </p>
+                <table width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px;">
+                  <tr>
+                    <td style="padding: 6px 0; color: #64748B; width: 140px;">Service:</td>
+                    <td style="padding: 6px 0; color: #0F1C31; font-weight: 600;">${escapedService}</td>
+                  </tr>
+                  ${sanitizedLead.company ? `
+                  <tr>
+                    <td style="padding: 6px 0; color: #64748B;">Company / Brand:</td>
+                    <td style="padding: 6px 0; color: #0F1C31; font-weight: 600;">${escapedCompany}</td>
+                  </tr>
+                  ` : ''}
+                  <tr>
+                    <td style="padding: 6px 0; color: #64748B;">Budget Range:</td>
+                    <td style="padding: 6px 0; color: #0F1C31; font-weight: 600;">${escapedBudget}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 6px 0; color: #64748B;">Target Timeline:</td>
+                    <td style="padding: 6px 0; color: #0F1C31; font-weight: 600;">${escapedTimeline}</td>
+                  </tr>
+                </table>
+              </div>
+              <h3 style="color: #0F1C31; font-size: 15px; font-weight: 700; margin: 0 0 10px 0;">
+                What Happens Next?
+              </h3>
+              <ol style="color: #475569; font-size: 13px; line-height: 1.7; padding-left: 20px; margin: 0 0 24px 0;">
+                <li><strong>Initial Assessment:</strong> We analyze your brief, scope, and technical requirements within 24 hours.</li>
+                <li><strong>Discovery & Proposal:</strong> We will reply to this thread with clarifying questions or a clear, milestone-based proposal.</li>
+                <li><strong>Execution:</strong> Once agreed, we start immediately with transparent communication throughout.</li>
+              </ol>
+              <div style="background-color: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 12px; padding: 18px 20px; text-align: center; margin-bottom: 24px;">
+                <p style="color: #166534; font-size: 13px; font-weight: 600; margin: 0 0 10px 0;">
+                  Prefer an instant answer or want to chat directly with our founders?
+                </p>
+                <a href="${clientToAgencyWhatsAppUrl}" target="_blank" style="display: inline-block; background-color: #25D366; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 13px; box-shadow: 0 2px 8px rgba(37, 211, 102, 0.25);">
+                  💬 Chat on WhatsApp (+91 7290884480)
+                </a>
+              </div>
+              <p style="color: #64748B; font-size: 13px; line-height: 1.6; margin: 0;">
+                Warm regards,<br>
+                <strong style="color: #0F1C31;">Divyansh Gupta & The Growmybiz24 Team</strong><br>
+                <a href="https://growmybizz.vercel.app" style="color: #477BDB; text-decoration: none; font-size: 12px;">growmybiz24.com</a>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #F8FAFC; border-top: 1px solid #E2E8F0; padding: 20px 30px; text-align: center;">
+              <p style="margin: 0; color: #94A3B8; font-size: 11px;">
+                Growmybiz24 · New Delhi, India · Global Digital Delivery
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+            await fetch('https://api.resend.com/emails', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${resendApiKey}`,
+              },
+              body: JSON.stringify({
+                from: fromEmail,
+                to: [sanitizedLead.email],
+                reply_to: notificationEmail,
+                subject: `Application Received — We're reviewing your project brief [Growmybiz24]`,
+                html: htmlClientConfirmation,
+              }),
+            });
+            console.log(`✉️ Client confirmation email dispatched to ${sanitizedLead.email}`);
+          } catch (clientErr) {
+            console.warn('Client confirmation email notice:', clientErr);
+          }
+        }
       } catch (emailErr) {
         console.warn('Resend email dispatch exception:', emailErr);
       }

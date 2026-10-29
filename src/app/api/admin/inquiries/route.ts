@@ -113,14 +113,41 @@ export async function PATCH(request: Request) {
     if (status) updates.status = status;
     if (notes !== undefined) updates.notes = notes;
 
-    // Update in Supabase
-    const { error: supaErr } = await supabaseAdmin
-      .from('inquiries')
-      .update(updates)
-      .eq('id', id);
+    const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-    if (supaErr) {
-      console.warn('Supabase lead update error:', supaErr.message);
+    // Update in Supabase if valid UUID
+    if (UUID_REGEX.test(id)) {
+      const { error: supaErr } = await supabaseAdmin
+        .from('inquiries')
+        .update(updates)
+        .eq('id', id);
+
+      if (supaErr) {
+        console.warn('Supabase lead update error:', supaErr.message);
+      }
+    }
+
+    // Also update in local file storage if present
+    try {
+      const leadsFile = path.join(process.cwd(), '.leads', 'inquiries.jsonl');
+      if (fs.existsSync(leadsFile)) {
+        const content = fs.readFileSync(leadsFile, 'utf-8');
+        const lines = content.trim().split('\n').filter(Boolean);
+        const updatedLines = lines.map((line) => {
+          try {
+            const item = JSON.parse(line);
+            if (item.id === id) {
+              return JSON.stringify({ ...item, ...updates });
+            }
+            return line;
+          } catch {
+            return line;
+          }
+        });
+        fs.writeFileSync(leadsFile, updatedLines.join('\n') + (updatedLines.length > 0 ? '\n' : ''), 'utf-8');
+      }
+    } catch {
+      // Non-fatal
     }
 
     return NextResponse.json({ success: true, updated: { id, ...updates } });
@@ -145,7 +172,35 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Lead ID required' }, { status: 400 });
     }
 
-    await supabaseAdmin.from('inquiries').delete().eq('id', id);
+    const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    // Delete from Supabase if valid UUID
+    if (UUID_REGEX.test(id)) {
+      const { error: supaErr } = await supabaseAdmin.from('inquiries').delete().eq('id', id);
+      if (supaErr) {
+        console.warn('Supabase delete notice:', supaErr.message);
+      }
+    }
+
+    // Always delete from local file storage if present
+    try {
+      const leadsFile = path.join(process.cwd(), '.leads', 'inquiries.jsonl');
+      if (fs.existsSync(leadsFile)) {
+        const content = fs.readFileSync(leadsFile, 'utf-8');
+        const lines = content.trim().split('\n').filter(Boolean);
+        const remainingLines = lines.filter((line) => {
+          try {
+            const item = JSON.parse(line);
+            return item.id !== id;
+          } catch {
+            return false;
+          }
+        });
+        fs.writeFileSync(leadsFile, remainingLines.join('\n') + (remainingLines.length > 0 ? '\n' : ''), 'utf-8');
+      }
+    } catch {
+      // Non-fatal
+    }
 
     return NextResponse.json({ success: true, deleted: id });
   } catch (err) {
