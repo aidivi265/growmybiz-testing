@@ -32,46 +32,46 @@ export default function BrandLogo({
 }: BrandLogoProps) {
   const sizeMap = {
     sm: {
-      badge: 34,
-      icon: 24,
+      badge: 32,
+      icon: 22,
       title: 'text-[1.05rem]',
       tagline: 'text-[7.5px] tracking-[0.14em]',
-      gap: 'gap-2.5',
+      gap: 'gap-2',
     },
     md: {
-      badge: 44,
-      icon: 32,
-      title: 'text-[1.4rem] sm:text-[1.55rem]',
+      badge: 42,
+      icon: 30,
+      title: 'text-[1.35rem] sm:text-[1.45rem]',
       tagline: 'text-[8.5px] tracking-[0.16em]',
-      gap: 'gap-3',
+      gap: 'gap-2.5',
     },
     lg: {
-      badge: 48,
-      icon: 36,
-      title: 'text-[1.65rem] sm:text-[1.95rem]',
+      badge: 46,
+      icon: 34,
+      title: 'text-[1.5rem] sm:text-[1.7rem]',
       tagline: 'text-[10px] tracking-[0.18em]',
-      gap: 'gap-3 sm:gap-3.5',
+      gap: 'gap-3',
     },
     xl: {
-      badge: 64,
-      icon: 46,
-      title: 'text-[1.95rem]',
-      tagline: 'text-[11.5px] tracking-[0.2em]',
-      gap: 'gap-4',
+      badge: 52,
+      icon: 38,
+      title: 'text-[1.7rem] sm:text-[1.95rem]',
+      tagline: 'text-[11px] tracking-[0.2em]',
+      gap: 'gap-3.5',
     },
     '2xl': {
-      badge: 76,
-      icon: 56,
-      title: 'text-[2.5rem] sm:text-[3.2rem]',
+      badge: 60,
+      icon: 44,
+      title: 'text-[1.95rem] sm:text-[2.2rem]',
       tagline: 'text-[12px] tracking-[0.2em]',
-      gap: 'gap-4 sm:gap-4.5',
+      gap: 'gap-4',
     },
     '3xl': {
-      badge: 88,
-      icon: 66,
-      title: 'text-[2.75rem] xs:text-[3.2rem] sm:text-[3.85rem] md:text-[4.25rem]',
-      tagline: 'text-[13px] tracking-[0.2em]',
-      gap: 'gap-4 sm:gap-5',
+      badge: 68,
+      icon: 50,
+      title: 'text-[2.15rem] sm:text-[2.45rem]',
+      tagline: 'text-[12.5px] tracking-[0.2em]',
+      gap: 'gap-4',
     },
   }[size];
 
@@ -104,7 +104,7 @@ export default function BrandLogo({
   // ─── Pure Coded Typography (Growmy + Gradient bizz + Tagline) ─────────────
   const textContent = (
     <div className={`flex flex-col ${centered || variant === 'stacked' ? 'items-center text-center' : 'items-start text-left'}`}>
-      <div className="flex items-baseline leading-none tracking-tight">
+      <div className="flex items-baseline leading-none tracking-tight whitespace-nowrap">
         <span
           className={`font-black tracking-tight ${textPrimaryColor} ${sizeMap.title}`}
           style={{ fontFamily: SYNE_FONT, letterSpacing: '-0.035em' }}
