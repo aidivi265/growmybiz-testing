@@ -3,6 +3,7 @@ import './globals.css';
 import { inter, syne } from '@/lib/fonts';
 import LayoutShell from '@/components/LayoutShell';
 import { siteConfig } from '@/data/siteConfig';
+import { Analytics } from '@vercel/analytics/next';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -61,6 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body className={inter.className}>
         <LayoutShell>{children}</LayoutShell>
+        <Analytics />
       </body>
     </html>
   );
