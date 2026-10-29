@@ -193,7 +193,7 @@ export default function SeoPanel() {
                     value={currentRoute.meta_title}
                     onChange={(e) => handleFieldChange('meta_title', e.target.value)}
                     className="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/10 text-white text-xs focus:border-[#477BDB] outline-none"
-                    placeholder="Page Title | Growmybizz"
+                    placeholder="Page Title | Growmybiz24"
                   />
                 </div>
 
@@ -287,10 +287,10 @@ export default function SeoPanel() {
                   <span className="text-[#9aa0a6]">{currentRoute.route_path.replace(/^\//, '') || 'home'}</span>
                 </div>
                 <div className="text-[18px] text-[#8ab4f8] font-medium leading-snug cursor-pointer hover:underline truncate">
-                  {currentRoute.meta_title || 'Growmybizz | Digital Solutions'}
+                  {currentRoute.meta_title || 'Growmybiz24 | Digital Solutions'}
                 </div>
                 <div className="text-[13px] text-[#bdc1c6] leading-relaxed line-clamp-2">
-                  {currentRoute.meta_description || 'Growmybizz is a premier digital agency...'}
+                  {currentRoute.meta_description || 'Growmybiz24 is a premier digital agency...'}
                 </div>
               </div>
 

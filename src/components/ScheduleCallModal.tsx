@@ -56,7 +56,7 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
           name: name.trim(),
           email: isEmail
             ? cleanInput.toLowerCase()
-            : `${digitsOnly || 'callback'}@phone.growmybizz.com`,
+            : `${digitsOnly || 'callback'}@phone.growmybiz24.com`,
           phone: isEmail ? null : cleanInput,
           service: 'Discovery Strategy Call',
           budget: 'Flexible',

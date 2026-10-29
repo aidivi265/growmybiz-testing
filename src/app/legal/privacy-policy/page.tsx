@@ -3,9 +3,12 @@ import type { Metadata } from 'next';
 import { Breadcrumb } from '@/components/ui';
 import { siteConfig } from '@/data';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'How Growmybizz collects, uses and protects your personal information.',
+  description: 'How Growmybiz24 collects, uses and protects your personal information.',
 };
 
 export default function PrivacyPolicyPage() {

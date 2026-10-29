@@ -330,7 +330,7 @@ export default function TestimonialsPanel() {
                   required
                   value={form.quote}
                   onChange={(e) => setForm({ ...form, quote: e.target.value })}
-                  placeholder="What was the client's experience and results working with Growmybizz?"
+                  placeholder="What was the client's experience and results working with Growmybiz24?"
                   className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4]"
                 />
               </div>

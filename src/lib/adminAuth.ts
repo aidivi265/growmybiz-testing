@@ -28,9 +28,10 @@ export function verifyAdminCredentials(username?: string, password?: string): bo
   const userClean = username.trim().toLowerCase();
   const passClean = password.trim();
 
-  // Match either exact username or handle (e.g. "admin" or "admin@growmybizz.com")
+  // Match either exact username or handle (e.g. "admin" or "admin@growmybiz24.com")
   const isUserValid =
     userClean === configuredUser ||
+    userClean === `${configuredUser}@growmybiz24.com` ||
     userClean === `${configuredUser}@growmybizz.com` ||
     (userClean.includes('@') && userClean.split('@')[0] === configuredUser);
 

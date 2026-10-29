@@ -27,7 +27,7 @@ export default function WhatsAppFloatingButton() {
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Chat with Growmybizz on WhatsApp"
+        aria-label="Chat with Growmybiz24 on WhatsApp"
         className="w-13 h-13 rounded-2xl flex items-center justify-center text-white shadow-2xl transition-all duration-300 hover:scale-108 active:scale-95"
         style={{
           background: 'linear-gradient(135deg, #25D366 0%, #128C7E 100%)',

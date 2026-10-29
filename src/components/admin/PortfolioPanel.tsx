@@ -479,7 +479,7 @@ export default function PortfolioPanel() {
                   rows={2}
                   value={form.solution}
                   onChange={(e) => setForm({ ...form, solution: e.target.value })}
-                  placeholder="How did Growmybizz solve it?"
+                  placeholder="How did Growmybiz24 solve it?"
                   className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4]"
                 />
               </div>

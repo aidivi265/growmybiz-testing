@@ -34,7 +34,7 @@ export default function ValuePropsSection({ items }: { items?: ValueProp[] }) {
 
           {/* ── Left — statement ── */}
           <div className="reveal-on-scroll lg:sticky lg:top-28">
-            <span className="eyebrow eyebrow-teal block mb-6">Why Growmybizz</span>
+            <span className="eyebrow eyebrow-teal block mb-6">Why Growmybiz24</span>
 
             <h2
               style={{

@@ -26,7 +26,7 @@ export default function PageCopyPanel() {
     primary_cta_href: '',
   });
   const [orbitConfig, setOrbitConfig] = useState<OrbitConfig>({
-    centerLabel: 'Growmybizz',
+    centerLabel: 'Growmybiz24',
     centerSubtitle: 'Digital Agency OS',
     nodes: [],
   });
@@ -130,7 +130,7 @@ export default function PageCopyPanel() {
       {/* Tabs */}
       <div className="flex flex-wrap items-center gap-2 border-b border-white/5 pb-3">
         {[
-          { id: 'value_props', label: 'Why Growmybizz (Pillars)', icon: Zap },
+          { id: 'value_props', label: 'Why Growmybiz24 (Pillars)', icon: Zap },
           { id: 'stats', label: 'Impact Counters (Stats)', icon: Award },
           { id: 'about', label: 'About Story & Mission', icon: FileText },
           { id: 'cta', label: 'Global CTA Banner', icon: Sparkles },
@@ -383,11 +383,11 @@ export default function PageCopyPanel() {
                 </label>
                 <input
                   type="text"
-                  value={orbitConfig.centerLabel || 'Growmybizz'}
+                  value={orbitConfig.centerLabel || 'Growmybiz24'}
                   onChange={(e) =>
                     setOrbitConfig({ ...orbitConfig, centerLabel: e.target.value })
                   }
-                  placeholder="Growmybizz"
+                  placeholder="Growmybiz24"
                   className="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/10 text-white text-xs outline-none"
                 />
               </div>

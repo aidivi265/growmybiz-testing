@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.siteName}`,
   },
   description: siteConfig.description,
-  keywords: ['digital agency', 'web development', 'design', 'branding', 'digital marketing', 'AI automation', 'India', 'Growmybizz'],
+  keywords: ['digital agency', 'web development', 'design', 'branding', 'digital marketing', 'AI automation', 'India', 'Growmybiz24'],
   authors: [{ name: siteConfig.siteName }],
   creator: siteConfig.siteName,
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://growmybizz.vercel.app'),

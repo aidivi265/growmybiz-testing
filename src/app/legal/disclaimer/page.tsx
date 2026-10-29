@@ -3,9 +3,12 @@ import type { Metadata } from 'next';
 import { Breadcrumb } from '@/components/ui';
 import { siteConfig } from '@/data';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'Disclaimer',
-  description: 'General information, performance disclaimers, and legal notices for Growmybizz.',
+  description: 'General information, performance disclaimers, and legal notices for Growmybiz24.',
 };
 
 export default function DisclaimerPage() {

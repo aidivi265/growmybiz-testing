@@ -3,9 +3,12 @@ import type { Metadata } from 'next';
 import { Breadcrumb } from '@/components/ui';
 import { siteConfig } from '@/data';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'Accessibility Statement',
-  description: 'Our commitment to digital accessibility and inclusive design standards at Growmybizz.',
+  description: 'Our commitment to digital accessibility and inclusive design standards at Growmybiz24.',
 };
 
 export default function AccessibilityStatementPage() {

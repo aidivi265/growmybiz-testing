@@ -1,7 +1,7 @@
 import type { OrbitConfig } from '@/types';
 
 export const defaultOrbitConfig: OrbitConfig = {
-  centerLabel: 'Growmybizz',
+  centerLabel: 'Growmybiz24',
   centerSubtitle: 'Digital Agency OS',
   nodes: [
     {

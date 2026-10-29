@@ -3,9 +3,12 @@ import type { Metadata } from 'next';
 import { Breadcrumb } from '@/components/ui';
 import { siteConfig } from '@/data';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'Cookie Policy',
-  description: 'Learn how Growmybizz uses cookies and tracking technologies to improve your experience.',
+  description: 'Learn how Growmybiz24 uses cookies and tracking technologies to improve your experience.',
 };
 
 export default function CookiePolicyPage() {

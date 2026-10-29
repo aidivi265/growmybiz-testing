@@ -17,7 +17,7 @@ const defaultLegalDocs: Record<string, { title: string; content: string }> = {
   },
   'terms-of-service': {
     title: 'Terms of Service',
-    content: `## 1. Acceptance of Terms\nBy accessing or using the services provided by Growmybizz, you agree to be bound by these Terms of Service.\n\n## 2. Scope of Services\nAll projects, deliverables, milestones, and payment schedules are governed by an individual Statement of Work (SOW) agreed upon between the client and Growmybizz prior to work commencement.\n\n## 3. Intellectual Property\nUpon full payment of all agreed fees, the client owns full commercial rights to all final delivered creative assets, source code, and design files specified in the project scope.`,
+    content: `## 1. Acceptance of Terms\nBy accessing or using the services provided by Growmybiz24, you agree to be bound by these Terms of Service.\n\n## 2. Scope of Services\nAll projects, deliverables, milestones, and payment schedules are governed by an individual Statement of Work (SOW) agreed upon between the client and Growmybiz24 prior to work commencement.\n\n## 3. Intellectual Property\nUpon full payment of all agreed fees, the client owns full commercial rights to all final delivered creative assets, source code, and design files specified in the project scope.`,
   },
   'cookie-policy': {
     title: 'Cookie Policy',
@@ -29,11 +29,11 @@ const defaultLegalDocs: Record<string, { title: string; content: string }> = {
   },
   'disclaimer': {
     title: 'Disclaimer',
-    content: `## General Disclaimer\nThe materials on Growmybizz's website are provided on an 'as is' basis. While we strive to ensure that all information and case study insights are accurate and up-to-date, we make no representations or warranties regarding completeness or suitability for any specific commercial purpose.`,
+    content: `## General Disclaimer\nThe materials on Growmybiz24's website are provided on an 'as is' basis. While we strive to ensure that all information and case study insights are accurate and up-to-date, we make no representations or warranties regarding completeness or suitability for any specific commercial purpose.`,
   },
   'accessibility': {
     title: 'Accessibility Statement',
-    content: `## Our Commitment\nGrowmybizz is committed to ensuring digital accessibility for people with disabilities. We continually improve the user experience for everyone and apply relevant accessibility standards (WCAG 2.1 Level AA) across our design systems and engineering builds.`,
+    content: `## Our Commitment\nGrowmybiz24 is committed to ensuring digital accessibility for people with disabilities. We continually improve the user experience for everyone and apply relevant accessibility standards (WCAG 2.1 Level AA) across our design systems and engineering builds.`,
   },
 };
 

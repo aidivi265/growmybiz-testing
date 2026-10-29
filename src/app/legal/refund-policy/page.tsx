@@ -3,9 +3,12 @@ import type { Metadata } from 'next';
 import { Breadcrumb } from '@/components/ui';
 import { siteConfig } from '@/data';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'Refund & Cancellation Policy',
-  description: 'Clear commercial guidelines on project milestone payments, cancellations, and refunds for Growmybizz clients.',
+  description: 'Clear commercial guidelines on project milestone payments, cancellations, and refunds for Growmybiz24 clients.',
 };
 
 export default function RefundPolicyPage() {

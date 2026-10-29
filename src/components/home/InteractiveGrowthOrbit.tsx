@@ -200,7 +200,7 @@ export function InteractiveGrowthOrbit({ config }: InteractiveGrowthOrbitProps) 
               <div className="relative z-10 w-full h-full flex items-center justify-center bg-white rounded-xl">
                 <Image
                   src="/brand-logo-mark.png"
-                  alt="Growmybizz Core"
+                  alt="Growmybiz24 Core"
                   width={60}
                   height={60}
                   priority
@@ -215,7 +215,7 @@ export function InteractiveGrowthOrbit({ config }: InteractiveGrowthOrbitProps) 
                 className="text-white font-extrabold text-xs tracking-wider uppercase block"
                 style={{ fontFamily: SYNE_FONT }}
               >
-                {config?.centerLabel || 'Growmybizz'}
+                {config?.centerLabel || 'Growmybiz24'}
               </span>
               {config?.centerSubtitle && (
                 <span className="text-white/40 text-[9px] font-medium block mt-0.5">

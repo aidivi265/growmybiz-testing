@@ -16,7 +16,7 @@ interface BrandLogoProps {
 }
 
 /**
- * Official Growmybizz Brand Logo
+ * Official Growmybiz24 Brand Logo
  * - Uses ONLY the official circular 3D growth arrow emblem on a pure WHITE background.
  * - Icon is perfectly centered inside the white background badge.
  * - Typography is cleanly coded: "Growmy" + gradient "bizz" + "DIGITAL SOLUTIONS FOR A BIGGER TOMORROW".
@@ -91,7 +91,7 @@ export default function BrandLogo({
       <div className="relative flex items-center justify-center w-full h-full">
         <Image
           src="/brand-logo-mark.png"
-          alt="Growmybizz Mark"
+          alt="Growmybiz24 Mark"
           width={sizeMap.icon}
           height={sizeMap.icon}
           priority
@@ -115,7 +115,7 @@ export default function BrandLogo({
           className={`font-black ${sizeMap.title} bg-gradient-to-r from-[#00b4d8] via-[#3b82f6] to-[#8b5cf6] bg-clip-text text-transparent`}
           style={{ fontFamily: SYNE_FONT, letterSpacing: '-0.025em' }}
         >
-          bizz
+          biz24
         </span>
       </div>
 
@@ -154,7 +154,7 @@ export default function BrandLogo({
 
   if (asLink) {
     return (
-      <Link href="/" aria-label="Growmybizz Homepage" className="inline-flex items-center">
+      <Link href="/" aria-label="Growmybiz24 Homepage" className="inline-flex items-center">
         {logoContent}
       </Link>
     );

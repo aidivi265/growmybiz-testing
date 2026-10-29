@@ -11,13 +11,13 @@ import { SYNE_FONT } from '@/lib/fonts';
 
 export const metadata: Metadata = {
   title: 'About Us',
-  description: 'Who we are, what we believe, and how we work. Growmybizz — your digital growth partner.',
+  description: 'Who we are, what we believe, and how we work. Growmybiz24 — your digital growth partner.',
 };
 
 const DEFAULT_ABOUT = {
   story_heading: 'The opportunity: make digital execution simpler.',
   story_body:
-    'Digital growth is fragmented. Businesses need a connected digital presence — but often coordinate separate providers, tools and workflows that do not speak to each other.\n\nGrowmybizz was created to solve that. One team, connected across web, design, marketing, content and AI. The same strategic context applied across every service.\n\nWe are building this the right way: starting focused, proving capability through real work, and expanding with evidence rather than promises.',
+    'Digital growth is fragmented. Businesses need a connected digital presence — but often coordinate separate providers, tools and workflows that do not speak to each other.\n\nGrowmybiz24 was created to solve that. One team, connected across web, design, marketing, content and AI. The same strategic context applied across every service.\n\nWe are building this the right way: starting focused, proving capability through real work, and expanding with evidence rather than promises.',
   mission: 'To engineer transparent, measurable digital solutions that scale businesses sustainably.',
 };
 

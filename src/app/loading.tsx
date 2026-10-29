@@ -8,7 +8,7 @@ export default function Loading() {
         </div>
       </div>
       <p className="mt-4 text-xs font-medium text-gray-400 tracking-wider uppercase animate-pulse">
-        Loading Growmybizz...
+        Loading Growmybiz24...
       </p>
     </div>
   );

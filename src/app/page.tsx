@@ -22,7 +22,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: 'Growmybizz — Digital Growth Partner',
+  title: 'Growmybiz24 — Digital Growth Partner',
   description:
     'Full-service digital agency. Web, design, marketing, content and AI — built around one goal: your business growing online.',
 };

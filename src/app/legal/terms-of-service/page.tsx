@@ -3,9 +3,12 @@ import type { Metadata } from 'next';
 import { Breadcrumb } from '@/components/ui';
 import { siteConfig } from '@/data';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'Terms of Service',
-  description: 'Terms and conditions governing use of Growmybizz services and website.',
+  description: 'Terms and conditions governing use of Growmybiz24 services and website.',
 };
 
 export default function TermsOfServicePage() {

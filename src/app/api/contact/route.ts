@@ -108,7 +108,7 @@ export async function POST(request: Request) {
 
     // Direct WhatsApp URLs
     const clientToAgencyWhatsAppText = encodeURIComponent(
-      `Hi Growmybizz team, I just submitted an inquiry on your website!\n\n` +
+      `Hi Growmybiz24 team, I just submitted an inquiry on your website!\n\n` +
       `👤 Name: ${sanitizedLead.name}\n` +
       `🛠️ Service: ${sanitizedLead.service}\n` +
       `💰 Budget: ${sanitizedLead.budget}\n` +
@@ -117,7 +117,7 @@ export async function POST(request: Request) {
     const clientToAgencyWhatsAppUrl = `https://wa.me/${adminWhatsAppNumber}?text=${clientToAgencyWhatsAppText}`;
 
     const agencyToClientWhatsAppUrl = cleanClientPhone.length >= 10
-      ? `https://wa.me/${cleanClientPhone}?text=${encodeURIComponent(`Hi ${sanitizedLead.name}, thank you for reaching out to Growmybizz regarding ${sanitizedLead.service}! We received your project brief and would love to assist you.`)}`
+      ? `https://wa.me/${cleanClientPhone}?text=${encodeURIComponent(`Hi ${sanitizedLead.name}, thank you for reaching out to Growmybiz24 regarding ${sanitizedLead.service}! We received your project brief and would love to assist you.`)}`
       : clientToAgencyWhatsAppUrl;
 
     // 5. Structured Server Logging (safe strings)
@@ -179,7 +179,7 @@ export async function POST(request: Request) {
     // 8. Instant Email Delivery via Resend (with full HTML escaping)
     const resendApiKey = process.env.RESEND_API_KEY || '';
     const notificationEmail = process.env.NOTIFICATION_EMAIL || '';
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'Growmybizz Leads <onboarding@resend.dev>';
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'Growmybiz24 Leads <onboarding@resend.dev>';
 
     let emailDelivered = false;
     let emailDeliveryId: string | null = null;
@@ -221,7 +221,7 @@ export async function POST(request: Request) {
                 <tr>
                   <td>
                     <span style="display: inline-block; background: rgba(71, 123, 219, 0.25); color: #8cb5f5; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 20px; margin-bottom: 8px;">New Inbound Lead</span>
-                    <h1 style="color: #ffffff; font-size: 24px; font-weight: 800; margin: 4px 0 0 0; letter-spacing: -0.02em;">Growmybizz Inquiry</h1>
+                    <h1 style="color: #ffffff; font-size: 24px; font-weight: 800; margin: 4px 0 0 0; letter-spacing: -0.02em;">Growmybiz24 Inquiry</h1>
                     <p style="color: rgba(255, 255, 255, 0.65); font-size: 13px; margin: 6px 0 0 0;">Received on ${formattedDate} (IST)</p>
                   </td>
                 </tr>
@@ -244,7 +244,7 @@ export async function POST(request: Request) {
                   </td>
                   ` : ''}
                   <td ${cleanClientPhone.length >= 10 ? 'style="padding-left: 8px;" width="50%"' : 'width="100%"'}>
-                    <a href="mailto:${escapedEmail}?subject=Re:%20Growmybizz%20Inquiry%20-%20${encodeURIComponent(sanitizedLead.service)}" style="display: block; text-align: center; background-color: #477BDB; color: #ffffff; text-decoration: none; padding: 12px 16px; border-radius: 10px; font-weight: 700; font-size: 13px; box-shadow: 0 2px 8px rgba(71, 123, 219, 0.25);">
+                    <a href="mailto:${escapedEmail}?subject=Re:%20Growmybiz24%20Inquiry%20-%20${encodeURIComponent(sanitizedLead.service)}" style="display: block; text-align: center; background-color: #477BDB; color: #ffffff; text-decoration: none; padding: 12px 16px; border-radius: 10px; font-weight: 700; font-size: 13px; box-shadow: 0 2px 8px rgba(71, 123, 219, 0.25);">
                       ✉️ Reply via Email
                     </a>
                   </td>
@@ -299,7 +299,7 @@ export async function POST(request: Request) {
           <!-- Footer -->
           <tr>
             <td style="background-color: #F8FAFC; padding: 18px 30px; border-top: 1px solid #E2E8F0; text-align: center;">
-              <p style="margin: 0; color: #94A3B8; font-size: 12px;">Growmybizz Automated Lead Capture · <a href="https://growmybizz.vercel.app/admin" style="color: #477BDB; text-decoration: none;">Open Admin CMS</a></p>
+              <p style="margin: 0; color: #94A3B8; font-size: 12px;">Growmybiz24 Automated Lead Capture · <a href="https://growmybizz.vercel.app/admin" style="color: #477BDB; text-decoration: none;">Open Admin CMS</a></p>
             </td>
           </tr>
 
