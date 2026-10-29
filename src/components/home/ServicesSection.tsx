@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
-import { services } from '@/data/services';
+import { services as defaultServices } from '@/data/services';
 import { Icon } from '@/components/Icon';
 import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
+import type { Service } from '@/types';
 
 // Different card sizes — breaks the boring uniform grid
 const CARD_STYLES = [
@@ -14,7 +15,14 @@ const CARD_STYLES = [
   { span: 'md:col-span-1', tall: false },   // 6
 ];
 
-export default function ServicesSection() {
+interface ServicesSectionProps {
+  services?: Service[];
+}
+
+export default function ServicesSection({ services: propServices }: ServicesSectionProps) {
+  const activeServices = propServices && propServices.length > 0 ? propServices : defaultServices;
+  const countLabel = activeServices.length === 6 ? 'Six disciplines.' : `${activeServices.length} disciplines.`;
+
   return (
     <section className="section-pad-lg" id="services" style={{ background: '#FFFFFF' }}>
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
@@ -33,7 +41,7 @@ export default function ServicesSection() {
                 color: '#0F1C31',
               }}
             >
-              Six disciplines.<br />
+              {countLabel}<br />
               <span style={{
                 background: 'linear-gradient(120deg,#477BDB,#6477C8)',
                 WebkitBackgroundClip: 'text',
@@ -53,7 +61,7 @@ export default function ServicesSection() {
 
         {/* ── Services grid — asymmetric 3-col ── */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          {services.map((svc, i) => {
+          {activeServices.map((svc, i) => {
             const cs = CARD_STYLES[i % CARD_STYLES.length];
             const isWide = cs.span === 'md:col-span-2';
             return (

@@ -1,11 +1,15 @@
 import type { MetadataRoute } from 'next';
-import { services } from '@/data/services';
-import { portfolioItems } from '@/data/portfolio';
-import { blogPosts } from '@/data/insights';
+import { fetchServices, fetchPortfolio, fetchInsights } from '@/lib/dal';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://growmybizz.vercel.app';
   const currentDate = new Date().toISOString();
+
+  const [services, portfolioItems, blogPosts] = await Promise.all([
+    fetchServices(),
+    fetchPortfolio(),
+    fetchInsights(),
+  ]);
 
   // Static core routes
   const staticRoutes: MetadataRoute.Sitemap = [

@@ -1,16 +1,30 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { siteConfig } from '@/data/siteConfig';
 import { MessageCircle } from 'lucide-react';
 
 export default function WhatsAppFloatingButton() {
+  const [whatsappUrl, setWhatsappUrl] = useState(siteConfig.whatsappUrl);
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.settings?.whatsappUrl) {
+          setWhatsappUrl(data.settings.whatsappUrl);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <aside aria-label="Quick contact" className="fixed bottom-6 right-6 z-40 flex items-center gap-2 group">
       <span className="hidden sm:inline-block px-3 py-1.5 rounded-xl bg-[#0F1C31]/90 backdrop-blur-md text-white text-xs font-semibold shadow-xl border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
         Chat with an expert
       </span>
       <a
-        href={siteConfig.whatsappUrl}
+        href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with Growmybizz on WhatsApp"

@@ -3,8 +3,8 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
-import { portfolioItems } from '@/data';
-import { fetchPortfolioBySlug } from '@/lib/dal';
+import { portfolioItems as defaultPortfolioItems } from '@/data';
+import { fetchPortfolio, fetchPortfolioBySlug } from '@/lib/dal';
 import { Breadcrumb } from '@/components/ui';
 import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
 
@@ -20,25 +20,33 @@ const THUMB_GRADIENTS = [
 const THUMB_ACCENTS = ['#477BDB', '#32A88A', '#6477C8'];
 
 export async function generateStaticParams() {
-  return portfolioItems.map((p) => ({ slug: p.slug }));
+  const dynamicPortfolio = await fetchPortfolio();
+  const pool = dynamicPortfolio && dynamicPortfolio.length > 0 ? dynamicPortfolio : defaultPortfolioItems;
+  return pool.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const item = (await fetchPortfolioBySlug(slug)) || portfolioItems.find((p) => p.slug === slug);
+  const item = (await fetchPortfolioBySlug(slug)) || defaultPortfolioItems.find((p) => p.slug === slug);
   if (!item) return {};
   return { title: item.title, description: item.challenge };
 }
 
 export default async function PortfolioItemPage({ params }: Props) {
   const { slug } = await params;
-  const item = portfolioItems.find((p) => p.slug === slug);
+  const [fetchedItem, allItems] = await Promise.all([
+    fetchPortfolioBySlug(slug),
+    fetchPortfolio(),
+  ]);
+
+  const item = fetchedItem || defaultPortfolioItems.find((p) => p.slug === slug);
   if (!item || !item.published) notFound();
 
-  const idx = portfolioItems.findIndex((p) => p.slug === slug);
-  const accent = THUMB_ACCENTS[idx % THUMB_ACCENTS.length];
+  const pool = allItems && allItems.length > 0 ? allItems : defaultPortfolioItems;
+  const idx = pool.findIndex((p) => p.slug === slug);
+  const accent = THUMB_ACCENTS[(idx >= 0 ? idx : 0) % THUMB_ACCENTS.length];
 
-  const related = portfolioItems
+  const related = pool
     .filter((p) => p.published && p.id !== item.id && p.category === item.category)
     .slice(0, 2);
 
@@ -100,104 +108,151 @@ export default async function PortfolioItemPage({ params }: Props) {
         </div>
       </div>
 
-      {/* ── Hero visual showcase ── */}
-      <div className="w-full relative bg-[#09121F] border-b border-white/10 py-8 lg:py-14 overflow-hidden flex items-center justify-center">
-        <div className="max-w-5xl mx-auto px-4 w-full">
-          <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/15 bg-[#0C1728]">
-            <Image
-              src={item.thumbnail}
-              alt={item.title}
-              width={1200}
-              height={675}
-              priority
-              className="w-full h-auto object-contain max-h-[540px]"
-            />
-          </div>
-        </div>
-      </div>
+      {/* Main content */}
+      <div className="py-14 lg:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
 
-      {/* ── Content ── */}
-      <div className="bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-14 lg:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-14">
+            {/* Left 2 cols — case study narrative */}
+            <div className="lg:col-span-2 space-y-10">
 
-            {/* Main content — 2/3 width */}
-            <div className="lg:col-span-2 space-y-12">
+              {/* Visual preview */}
+              <div
+                className="rounded-2xl overflow-hidden border border-[#DDE3EC] bg-[#0A1320] relative"
+                style={{
+                  aspectRatio: '16/9',
+                  boxShadow: '0 12px 40px rgba(15,28,49,0.12)',
+                }}
+              >
+                <Image
+                  src={item.thumbnail}
+                  alt={item.title}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 66vw"
+                  className="w-full h-full object-cover object-top"
+                  priority
+                />
+              </div>
 
               {/* Challenge */}
               <div>
-                <span className="section-label block mb-4">Challenge</span>
-                <p
-                  className="text-[#3D4F63] leading-relaxed text-[1.05rem]"
-                  style={{ fontFamily: INTER_FONT }}
+                <span className="eyebrow block mb-3">The challenge</span>
+                <h2
+                  className="text-xl font-bold text-[#0F1C31] mb-3"
+                  style={{ fontFamily: SYNE_FONT }}
                 >
-                  {item.challenge}
-                </p>
+                  What the project set out to solve
+                </h2>
+                <p className="text-[#3D4F63] leading-relaxed">{item.challenge}</p>
               </div>
 
-              {/* Approach */}
+              {/* Solution */}
               <div>
-                <span className="section-label block mb-4">Approach</span>
-                <p
-                  className="text-[#3D4F63] leading-relaxed text-[1.05rem]"
-                  style={{ fontFamily: INTER_FONT }}
+                <span className="eyebrow block mb-3">The solution</span>
+                <h2
+                  className="text-xl font-bold text-[#0F1C31] mb-3"
+                  style={{ fontFamily: SYNE_FONT }}
                 >
-                  {item.approach}
+                  Approach &amp; implementation
+                </h2>
+                <p className="text-[#3D4F63] leading-relaxed">{item.solution || item.approach}</p>
+              </div>
+
+              {/* Outcome / Impact */}
+              <div className="p-6 rounded-2xl border border-[#DDE3EC] bg-[#F7F9FC]">
+                <span className="eyebrow block mb-2">Outcome &amp; impact</span>
+                <p className="text-[#0F1C31] font-semibold text-base leading-relaxed mb-4">
+                  {item.outcome}
                 </p>
+                {item.metrics && item.metrics.length > 0 && (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4 border-t border-[#DDE3EC]">
+                    {item.metrics.map((m, i) => (
+                      <div key={i}>
+                        <p
+                          className="font-bold text-[#477BDB]"
+                          style={{ fontFamily: SYNE_FONT, fontSize: '1.4rem' }}
+                        >
+                          {m.value}
+                        </p>
+                        <p className="text-[#6B7E95] text-xs mt-0.5">{m.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-
-              {/* Outcome — no jarring amber, use a navy card */}
-              <div>
-                <span className="section-label block mb-4">Outcome</span>
-                <div
-                  className="p-5 rounded-2xl"
-                  style={{
-                    background: 'linear-gradient(135deg, #F0F4F8 0%, #EBF1FB 100%)',
-                    border: '1px solid rgba(71,123,219,0.15)',
-                  }}
-                >
-                  <p className="text-[#3D4F63] leading-relaxed text-sm">{item.outcome}</p>
-                </div>
-              </div>
-
-              {/* Back to portfolio */}
-              <Link
-                href="/portfolio"
-                className="inline-flex items-center gap-2 text-sm text-[#6B7E95] hover:text-[#477BDB] transition-colors"
-              >
-                <ArrowLeft size={13} />
-                Back to portfolio
-              </Link>
-            </div>
-
-            {/* Sidebar — 1/3 width */}
-            <div className="space-y-5">
 
               {/* Deliverables */}
-              <div className="p-5 rounded-2xl border border-[#DDE3EC] bg-[#F7F9FC]">
-                <h3 className="text-xs font-bold text-[#0F1C31] tracking-widest uppercase mb-4">Deliverables</h3>
-                <ul className="space-y-2.5">
-                  {item.deliverables.map((d) => (
-                    <li key={d} className="flex items-start gap-2.5 text-sm text-[#3D4F63]">
-                      <span
-                        className="w-1.5 h-1.5 rounded-full shrink-0 mt-1.5"
-                        style={{ background: accent }}
-                      />
-                      {d}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {item.deliverables.length > 0 && (
+                <div>
+                  <h3 className="text-xs font-bold text-[#0F1C31] tracking-widest uppercase mb-4">
+                    Key Deliverables
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {item.deliverables.map((d, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center gap-2.5 p-3 rounded-xl border border-[#DDE3EC] text-sm text-[#3D4F63]"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#477BDB] shrink-0" />
+                        {d}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-              {/* Technologies */}
-              <div className="p-5 rounded-2xl border border-[#DDE3EC]">
-                <h3 className="text-xs font-bold text-[#0F1C31] tracking-widest uppercase mb-4">Stack & Tools</h3>
-                <div className="flex flex-wrap gap-2">
-                  {item.technologies.map((t) => (
-                    <span key={t} className="tag">{t}</span>
-                  ))}
+              {/* Back to portfolio */}
+              <div className="pt-4 border-t border-[#DDE3EC]">
+                <Link
+                  href="/portfolio"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-[#477BDB] hover:underline"
+                >
+                  <ArrowLeft size={14} /> Back to all projects
+                </Link>
+              </div>
+            </div>
+
+            {/* Right col — metadata sidebar */}
+            <div className="space-y-6">
+
+              {/* Project info card */}
+              <div className="p-6 rounded-2xl border border-[#DDE3EC] bg-[#F7F9FC] space-y-4">
+                <div>
+                  <p className="text-xs text-[#6B7E95] mb-0.5">Client / Engagement</p>
+                  <p className="text-sm font-semibold text-[#0F1C31]">{item.client}</p>
+                </div>
+                <div className="pt-3 border-t border-[#DDE3EC]">
+                  <p className="text-xs text-[#6B7E95] mb-0.5">Discipline</p>
+                  <p className="text-sm font-semibold text-[#0F1C31]">{item.category}</p>
+                </div>
+                <div className="pt-3 border-t border-[#DDE3EC]">
+                  <p className="text-xs text-[#6B7E95] mb-0.5">Year</p>
+                  <p className="text-sm font-semibold text-[#0F1C31]">{item.year}</p>
+                </div>
+                <div className="pt-3 border-t border-[#DDE3EC]">
+                  <p className="text-xs text-[#6B7E95] mb-0.5">Status</p>
+                  <p className="text-sm font-semibold text-emerald-600">Delivered &amp; Verified</p>
                 </div>
               </div>
+
+              {/* Tech Stack */}
+              {((item.techStack && item.techStack.length > 0) || (item.technologies && item.technologies.length > 0)) && (
+                <div className="p-5 rounded-2xl border border-[#DDE3EC]">
+                  <h3 className="text-xs font-bold text-[#0F1C31] tracking-widest uppercase mb-3">
+                    Technologies &amp; Tools
+                  </h3>
+                  <div className="flex flex-wrap gap-1.5">
+                    {((item.techStack && item.techStack.length > 0) ? item.techStack : item.technologies).map((tech) => (
+                      <span
+                        key={tech}
+                        className="px-2.5 py-1 rounded-lg bg-[#EBF1FB] text-[#2A5DBF] text-xs font-medium"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Tags */}
               {item.tags.length > 0 && (

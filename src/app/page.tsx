@@ -6,7 +6,15 @@ import TestimonialsSection from '@/components/home/TestimonialsSection';
 import ProcessPreview from '@/components/home/ProcessPreview';
 import ValuePropsSection from '@/components/home/ValuePropsSection';
 import InsightsPreview from '@/components/home/InsightsPreview';
-import { fetchHeroSlides, fetchProcessSteps, fetchValueProps } from '@/lib/dal';
+import {
+  fetchHeroSlides,
+  fetchServices,
+  fetchPortfolio,
+  fetchTestimonials,
+  fetchProcessSteps,
+  fetchValueProps,
+  fetchInsights,
+} from '@/lib/dal';
 
 export const metadata: Metadata = {
   title: 'Growmybizz — Digital Growth Partner',
@@ -15,10 +23,22 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [heroSlides, processSteps, valueProps] = await Promise.all([
+  const [
+    heroSlides,
+    services,
+    portfolio,
+    testimonials,
+    processSteps,
+    valueProps,
+    insights,
+  ] = await Promise.all([
     fetchHeroSlides(),
+    fetchServices(),
+    fetchPortfolio(),
+    fetchTestimonials(),
     fetchProcessSteps(),
     fetchValueProps(),
+    fetchInsights(),
   ]);
 
   return (
@@ -26,22 +46,22 @@ export default async function HomePage() {
       <HeroSection initialSlides={heroSlides} />
       {/* Dark → White transition strip */}
       <div style={{ height: '2px', background: 'linear-gradient(90deg, #1A2B4A, #243B66, #1A2B4A)' }} />
-      <ServicesSection />
+      <ServicesSection services={services} />
       {/* White → Dark transition */}
       <div style={{ height: '2px', background: 'linear-gradient(90deg, #0F1C31, #1A2B4A, #0F1C31)' }} />
       <ValuePropsSection items={valueProps} />
       {/* Dark → White transition */}
       <div style={{ height: '2px', background: 'linear-gradient(90deg, #1A2B4A, #243B66, #1A2B4A)' }} />
-      <PortfolioPreview />
+      <PortfolioPreview projects={portfolio} />
       {/* White → Dark transition */}
       <div style={{ height: '2px', background: 'linear-gradient(90deg, #0F1C31, #1A2B4A, #0F1C31)' }} />
-      <TestimonialsSection />
+      <TestimonialsSection testimonials={testimonials} />
       {/* Dark → Dark transition */}
       <div style={{ height: '2px', background: 'linear-gradient(90deg, #0A1525, #152744, #0A1525)' }} />
       <ProcessPreview steps={processSteps} />
       {/* Dark → Light transition */}
       <div style={{ height: '2px', background: 'linear-gradient(90deg, #0F1C31, #1A2B4A, #0F1C31)' }} />
-      <InsightsPreview />
+      <InsightsPreview posts={insights} />
     </>
   );
 }

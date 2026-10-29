@@ -1,13 +1,20 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
-import { portfolioItems } from '@/data/portfolio';
+import { portfolioItems as defaultPortfolioItems } from '@/data/portfolio';
 import { SYNE_FONT } from '@/lib/fonts';
+import type { PortfolioItem } from '@/types';
 
 const ACCENT_COLORS = ['#477BDB', '#32A88A', '#6477C8'];
 
-export default function PortfolioPreview() {
-  const featured = portfolioItems.filter((p) => p.featured && p.published).slice(0, 3);
+interface PortfolioPreviewProps {
+  projects?: PortfolioItem[];
+}
+
+export default function PortfolioPreview({ projects }: PortfolioPreviewProps) {
+  const pool = projects && projects.length > 0 ? projects : defaultPortfolioItems;
+  const featured = pool.filter((p) => p.featured && p.published).slice(0, 3);
+
 
   if (featured.length === 0) return null;
 

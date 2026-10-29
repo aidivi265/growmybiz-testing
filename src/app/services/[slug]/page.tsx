@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { services } from '@/data';
-import { fetchServiceBySlug } from '@/lib/dal';
+import { services as defaultServices } from '@/data';
+import { fetchServices, fetchServiceBySlug } from '@/lib/dal';
 import { Section, SectionHeader, Card, Breadcrumb } from '@/components/ui';
 import { Icon } from '@/components/Icon';
 import { SYNE_FONT } from '@/lib/fonts';
@@ -15,12 +15,14 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return services.map((s) => ({ slug: s.slug }));
+  const dynamicServices = await fetchServices();
+  const pool = dynamicServices && dynamicServices.length > 0 ? dynamicServices : defaultServices;
+  return pool.map((s) => ({ slug: s.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const service = services.find((s) => s.slug === slug);
+  const service = (await fetchServiceBySlug(slug)) || defaultServices.find((s) => s.slug === slug);
   if (!service) return {};
   return {
     title: service.title,
@@ -30,10 +32,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ServicePage({ params }: Props) {
   const { slug } = await params;
-  const service = (await fetchServiceBySlug(slug)) || services.find((s) => s.slug === slug);
+  const [serviceData, allServices] = await Promise.all([
+    fetchServiceBySlug(slug),
+    fetchServices(),
+  ]);
+
+  const service = serviceData || defaultServices.find((s) => s.slug === slug);
   if (!service) notFound();
 
-  const otherServices = services.filter((s) => s.id !== service.id);
+  const servicesList = allServices && allServices.length > 0 ? allServices : defaultServices;
+  const otherServices = servicesList.filter((s) => s.id !== service.id);
 
   return (
     <>
@@ -98,34 +106,64 @@ export default async function ServicePage({ params }: Props) {
           title="Service offerings"
           subtitle="A guide to what this discipline covers. We scope engagements clearly before any work begins."
         />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {service.offerings.map((offering) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {service.offerings.map((o) => (
             <Card
-              key={offering.id}
+              key={o.id}
               dark
-              className="p-6 hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200"
+              className="p-6 hover:border-white/[0.12] transition-colors"
             >
-              <div className="w-9 h-9 rounded-lg bg-white/[0.04] flex items-center justify-center mb-4">
-                {offering.icon ? (
-                  <Icon name={offering.icon} size={16} className="text-white/40" />
-                ) : (
-                  <Icon name={service.icon} size={16} style={{ color: service.color }} />
-                )}
-              </div>
-              <h3 className="text-white font-semibold text-sm mb-2">{offering.title}</h3>
-              <p className="text-white/40 text-sm leading-relaxed">{offering.description}</p>
+              <h2 className="text-white font-semibold mb-2">{o.title}</h2>
+              <p className="text-white/45 text-sm leading-relaxed">{o.description}</p>
             </Card>
           ))}
         </div>
       </Section>
 
-      {/* Process for this service */}
+      {/* Deliverables */}
+      {service.deliverables && service.deliverables.length > 0 && (
+        <Section dark>
+          <SectionHeader
+            dark
+            eyebrow="Tangible outputs"
+            title="What you receive"
+            subtitle="Clear deliverables that create tangible value for your business."
+          />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {service.deliverables.map((d, i) => (
+              <div
+                key={i}
+                className="p-5 rounded-2xl border border-white/[0.06] hover:border-white/[0.1] transition-colors"
+              >
+                <div
+                  className="w-7 h-7 rounded-lg flex items-center justify-center mb-3"
+                  style={{ background: `${service.color}20` }}
+                >
+                  <span
+                    style={{
+                      fontFamily: SYNE_FONT,
+                      fontWeight: 800,
+                      fontSize: '0.75rem',
+                      color: service.color,
+                    }}
+                  >
+                    {i + 1}
+                  </span>
+                </div>
+                <p className="text-white/80 text-sm font-medium">{d}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+      )}
+
+      {/* Process */}
       {service.process && service.process.length > 0 && (
         <Section>
           <SectionHeader
-            eyebrow="How it works"
-            title="Our approach to this service"
-            subtitle="A high-level view of how we deliver this type of work. Detailed scopes are documented per engagement."
+            eyebrow="How we do it"
+            title="Our process"
+            subtitle="The steps we take from initial conversation to delivery."
           />
           <div className="max-w-2xl">
             <ol className="space-y-3">

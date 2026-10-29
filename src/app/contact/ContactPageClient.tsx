@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { ArrowRight, CheckCircle, Mail, Phone, MapPin, MessageSquare, AlertCircle } from 'lucide-react';
-import { services } from '@/data/services';
+import { services as defaultServices } from '@/data/services';
 import { budgetRanges, timelineOptions } from '@/data/forms';
 import { siteConfig } from '@/data/siteConfig';
 import { Input, Textarea, Select, Breadcrumb } from '@/components/ui';
-import type { EnquiryFormData } from '@/types';
+import type { EnquiryFormData, Service } from '@/types';
 import { SYNE_FONT } from '@/lib/fonts';
 
 const INITIAL: EnquiryFormData = {
@@ -20,7 +20,15 @@ const INITIAL: EnquiryFormData = {
   message: '',
 };
 
-export default function ContactPageClient() {
+interface ContactPageClientProps {
+  initialServices?: Service[];
+  initialSettings?: any;
+}
+
+export default function ContactPageClient({
+  initialServices,
+  initialSettings,
+}: ContactPageClientProps) {
   const [form, setForm] = useState<EnquiryFormData>(INITIAL);
   const [honeypot, setHoneypot] = useState('');
   const [errors, setErrors] = useState<Partial<EnquiryFormData>>({});
@@ -29,9 +37,12 @@ export default function ContactPageClient() {
   const [submitting, setSubmitting] = useState(false);
   const [whatsappActionUrl, setWhatsappActionUrl] = useState<string | null>(null);
 
+  const currentServices = initialServices && initialServices.length > 0 ? initialServices : defaultServices;
+  const config = initialSettings || siteConfig;
+
   const serviceOptions = [
     { value: '', label: 'Select a service' },
-    ...services.map((s) => ({ value: s.slug, label: s.title })),
+    ...currentServices.map((s) => ({ value: s.slug, label: s.title })),
     { value: 'not-sure', label: 'Not sure yet' },
   ];
 
@@ -80,7 +91,7 @@ export default function ContactPageClient() {
       }
       setSubmitted(true);
     } catch {
-      setServerError(`Unable to connect to the server. Please try again or email us directly at ${siteConfig.email}.`);
+      setServerError(`Unable to connect to the server. Please try again or email us directly at ${config.email}.`);
     } finally {
       setSubmitting(false);
     }
@@ -155,7 +166,7 @@ export default function ContactPageClient() {
                     Skip the email wait time. Connect directly with our founding team on WhatsApp with your project brief pre-loaded.
                   </p>
                   <a
-                    href={whatsappActionUrl || siteConfig.whatsappUrl}
+                    href={whatsappActionUrl || config.whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl text-sm font-bold text-white bg-[#25D366] hover:bg-[#20ba59] transition-all shadow-md hover:shadow-lg active:scale-[0.99]"
@@ -309,9 +320,9 @@ export default function ContactPageClient() {
               <h3 className="text-sm font-semibold text-[#0F1C31] mb-4">Contact details</h3>
               <div className="space-y-4">
                 {[
-                  { icon: Mail, label: 'Email', value: siteConfig.email, href: `mailto:${siteConfig.email}` },
-                  { icon: Phone, label: 'Phone', value: siteConfig.phone, href: `tel:${siteConfig.phone}` },
-                  { icon: MapPin, label: 'Based in', value: siteConfig.address, href: undefined },
+                  { icon: Mail, label: 'Email', value: config.email, href: `mailto:${config.email}` },
+                  { icon: Phone, label: 'Phone', value: config.phone, href: `tel:${config.phone}` },
+                  { icon: MapPin, label: 'Based in', value: config.address, href: undefined },
                 ].map(({ icon: IconComponent, label, value, href }) => (
                   <div key={label} className="flex items-start gap-3">
                     <div className="w-8 h-8 rounded-lg bg-white border border-[#E8EDF4] flex items-center justify-center shrink-0 mt-0.5">

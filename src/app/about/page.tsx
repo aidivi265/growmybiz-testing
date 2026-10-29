@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, Users, Target, Compass } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowRight, Users, Target, Compass, Sparkles } from 'lucide-react';
 import { siteConfig } from '@/data';
-import { fetchTeamMembers, fetchValueProps, fetchSiteSettings } from '@/lib/dal';
+import { fetchTeamMembers, fetchValueProps, fetchSiteSettings, fetchPageCopy } from '@/lib/dal';
 import { Section, SectionHeader, Card, Breadcrumb } from '@/components/ui';
 import { Icon } from '@/components/Icon';
 import { SYNE_FONT } from '@/lib/fonts';
@@ -12,12 +13,25 @@ export const metadata: Metadata = {
   description: 'Who we are, what we believe, and how we work. Growmybizz — your digital growth partner.',
 };
 
+const DEFAULT_ABOUT = {
+  story_heading: 'The opportunity: make digital execution simpler.',
+  story_body:
+    'Digital growth is fragmented. Businesses need a connected digital presence — but often coordinate separate providers, tools and workflows that do not speak to each other.\n\nGrowmybizz was created to solve that. One team, connected across web, design, marketing, content and AI. The same strategic context applied across every service.\n\nWe are building this the right way: starting focused, proving capability through real work, and expanding with evidence rather than promises.',
+  mission: 'To engineer transparent, measurable digital solutions that scale businesses sustainably.',
+};
+
 export default async function AboutPage() {
-  const [members, values, settings] = await Promise.all([
+  const [members, values, settings, aboutCopy] = await Promise.all([
     fetchTeamMembers(),
     fetchValueProps(),
     fetchSiteSettings(),
+    fetchPageCopy('about_content', DEFAULT_ABOUT),
   ]);
+
+  const storyParagraphs = (aboutCopy.story_body || DEFAULT_ABOUT.story_body)
+    .split('\n\n')
+    .filter(Boolean);
+
   return (
     <>
       {/* ── Page Header ── */}
@@ -43,7 +57,7 @@ export default async function AboutPage() {
               Built to help businesses<br />grow online.
             </h1>
             <p className="text-white/50 text-base leading-relaxed mt-3 max-w-xl">
-              A full-service digital agency that brings web, design, marketing, content and AI together — so growing businesses do not have to coordinate separate vendors.
+              {settings?.description || 'A full-service digital agency that brings web, design, marketing, content and AI together — so growing businesses do not have to coordinate separate vendors.'}
             </p>
           </div>
         </div>
@@ -65,23 +79,29 @@ export default async function AboutPage() {
                 marginBottom: '1.25rem',
               }}
             >
-              The opportunity: make digital execution simpler.
+              {aboutCopy.story_heading || DEFAULT_ABOUT.story_heading}
             </h2>
             <div className="space-y-4 text-[#6B7E95] leading-relaxed">
-              <p>
-                Digital growth is fragmented. Businesses need a connected digital presence — but often coordinate separate providers, tools and workflows that do not speak to each other.
-              </p>
-              <p>
-                Growmybizz was created to solve that. One team, connected across web, design, marketing, content and AI. The same strategic context applied across every service.
-              </p>
-              <p>
-                We are building this the right way: starting focused, proving capability through real work, and expanding with evidence rather than promises.
-              </p>
+              {storyParagraphs.map((p: string, idx: number) => (
+                <p key={idx}>{p}</p>
+              ))}
             </div>
+
+            {aboutCopy.mission && (
+              <div className="mt-6 p-4 rounded-xl bg-[#EBF1FB] border border-[#D0E0F9] flex items-start gap-3">
+                <Sparkles size={18} className="text-[#477BDB] shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs font-bold text-[#477BDB] uppercase tracking-wider mb-1">Our Mission</p>
+                  <p className="text-sm font-medium text-[#0F1C31] leading-relaxed">{aboutCopy.mission}</p>
+                </div>
+              </div>
+            )}
+
             <Link href="/contact" className="btn btn-primary btn-md mt-7">
               Work with us <ArrowRight size={14} />
             </Link>
           </div>
+
           {/* Visual placeholder */}
           <div className="rounded-2xl overflow-hidden border border-[#E8EDF4] aspect-square max-h-[420px] bg-gradient-to-br from-[#1A2B4A] to-[#243B66] flex items-center justify-center relative">
             <div
@@ -96,10 +116,10 @@ export default async function AboutPage() {
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#477BDB] to-[#6477C8] flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-blue-500/30">
                 <span className="text-white text-3xl font-bold">G</span>
               </div>
-              <p className="text-white/30 text-sm">
-                {siteConfig.siteName}
+              <p className="text-white/60 text-sm font-semibold">
+                {settings?.siteName || siteConfig.siteName}
               </p>
-              <p className="text-white/15 text-xs mt-1">{siteConfig.tagline}</p>
+              <p className="text-white/30 text-xs mt-1">{settings?.tagline || siteConfig.tagline}</p>
             </div>
           </div>
         </div>
@@ -135,7 +155,7 @@ export default async function AboutPage() {
         <SectionHeader
           eyebrow="The team"
           title="Who you will work with."
-          subtitle="Founder profile and team details will be added as the agency grows. Our work is the best introduction."
+          subtitle="Direct specialists and domain architects dedicated to transparent execution."
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {members.map((member) => (
@@ -143,17 +163,24 @@ export default async function AboutPage() {
               key={member.id}
               className="p-6 rounded-2xl border border-[#E8EDF4] hover:shadow-lg hover:shadow-black/[0.06] transition-all duration-200"
             >
-              {/* Avatar placeholder */}
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#477BDB]/20 to-[#6477C8]/20 flex items-center justify-center mb-4 border border-[#E8EDF4]">
-                <Users size={22} className="text-[#477BDB]" />
-              </div>
+              {member.avatar ? (
+                <div className="w-14 h-14 rounded-2xl overflow-hidden relative mb-4 border border-[#E8EDF4] shadow-sm">
+                  <Image src={member.avatar} alt={member.name} fill className="object-cover" />
+                </div>
+              ) : (
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#477BDB]/20 to-[#6477C8]/20 flex items-center justify-center mb-4 border border-[#E8EDF4]">
+                  <Users size={22} className="text-[#477BDB]" />
+                </div>
+              )}
               <h3 className="font-semibold text-[#0F1C31] mb-0.5">{member.name}</h3>
               <p className="text-[#477BDB] text-sm mb-3">{member.role}</p>
               <p className="text-[#6B7E95] text-sm leading-relaxed">{member.bio}</p>
               {member.linkedin && (
                 <a
                   href={member.linkedin}
-                  className="inline-flex items-center gap-1.5 mt-4 text-xs text-[#6B7E95] hover:text-[#477BDB] transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 mt-4 text-xs font-semibold text-[#6B7E95] hover:text-[#477BDB] transition-colors"
                 >
                   LinkedIn
                   <ArrowRight size={11} />
@@ -162,13 +189,13 @@ export default async function AboutPage() {
             </div>
           ))}
 
-          {/* Placeholder card */}
+          {/* Scalable team card */}
           <div className="p-6 rounded-2xl border border-dashed border-[#E8EDF4] flex flex-col items-center justify-center text-center min-h-[200px]">
             <div className="w-12 h-12 rounded-2xl bg-[#F7F9FC] flex items-center justify-center mb-3">
-              <Users size={18} className="text-[#d0d7de]" />
+              <Users size={18} className="text-[#6B7E95]" />
             </div>
-            <p className="text-[#d0d7de] text-sm font-medium mb-1">Team growing</p>
-            <p className="text-[#d0d7de] text-xs">Collaborators added as the agency scales</p>
+            <p className="text-[#0F1C31] text-sm font-semibold mb-1">Team Growing</p>
+            <p className="text-[#6B7E95] text-xs">Collaborators added as agency client engagements scale</p>
           </div>
         </div>
       </Section>

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Mail, Phone, MapPin, MessageCircle } from 'lucide-react';
 import { siteConfig as defaultSiteConfig } from '@/data/siteConfig';
-import { services } from '@/data/services';
+import { services as defaultServices } from '@/data/services';
 import { SYNE_FONT } from '@/lib/fonts';
 import ScheduleCallButton from '@/components/ScheduleCallButton';
 import BrandLogo from '@/components/BrandLogo';
@@ -13,6 +13,15 @@ const CURRENT_YEAR = new Date().getFullYear();
 
 export default function Footer() {
   const [config, setConfig] = useState(defaultSiteConfig);
+  const [cta, setCta] = useState({
+    heading: "Let's build something worth growing.",
+    subheading: 'Ready to grow?',
+    primary_cta_label: 'Start a Project',
+    primary_cta_href: '/contact',
+  });
+  const [servicesList, setServicesList] = useState<{ id: string; title: string; slug: string }[]>(
+    defaultServices.map((s) => ({ id: s.id, title: s.title, slug: s.slug }))
+  );
 
   useEffect(() => {
     fetch('/api/settings')
@@ -20,6 +29,12 @@ export default function Footer() {
       .then((data) => {
         if (data?.settings) {
           setConfig(data.settings);
+        }
+        if (data?.ctaContent) {
+          setCta(data.ctaContent);
+        }
+        if (data?.services && data.services.length > 0) {
+          setServicesList(data.services);
         }
       })
       .catch(() => {});
@@ -47,7 +62,7 @@ export default function Footer() {
             <div className="max-w-xl">
               <p className="text-[#32A88A] text-xs font-bold tracking-[0.18em] uppercase mb-3 flex items-center gap-2">
                 <span className="w-5 h-px bg-[#32A88A]" />
-                Ready to grow?
+                {cta.subheading || 'Ready to grow?'}
               </p>
               <h2
                 style={{
@@ -59,19 +74,13 @@ export default function Footer() {
                   color: '#fff',
                 }}
               >
-                Let&apos;s build something<br />
-                <span style={{
-                  background: 'linear-gradient(135deg, #477BDB, #32A88A)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}>worth growing.</span>
+                {cta.heading || "Let's build something worth growing."}
               </h2>
             </div>
             <div className="flex flex-wrap gap-3">
-              <Link href="/contact" className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-sm text-white transition-all hover:shadow-[0_6px_24px_rgba(71,123,219,0.5)] hover:-translate-y-0.5"
+              <Link href={cta.primary_cta_href || '/contact'} className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-sm text-white transition-all hover:shadow-[0_6px_24px_rgba(71,123,219,0.5)] hover:-translate-y-0.5"
                 style={{ background: 'linear-gradient(135deg,#477BDB,#6477C8)' }}>
-                Start a Project
+                {cta.primary_cta_label || 'Start a Project'}
                 <ArrowRight size={15} />
               </Link>
               <ScheduleCallButton />
@@ -138,7 +147,7 @@ export default function Footer() {
             <div className="col-span-1 md:col-span-3">
               <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-4">Services</h4>
               <ul className="space-y-2">
-                {services.map((s) => (
+                {servicesList.map((s) => (
                   <li key={s.id}>
                     <Link href={`/services/${s.slug}`} prefetch={false}
                       className="text-[#8BA5C8] text-sm hover:text-white transition-colors flex items-center gap-1.5 group">
@@ -174,7 +183,7 @@ export default function Footer() {
             {/* Legal */}
             <div className="col-span-1 md:col-span-2">
               <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-4">Legal</h4>
-              <ul className="space-y-2 mb-6">
+              <ul className="space-y-2">
                 {[
                   { label: 'Privacy Policy',   href: '/legal/privacy-policy' },
                   { label: 'Terms of Service', href: '/legal/terms-of-service' },
@@ -184,7 +193,10 @@ export default function Footer() {
                   { label: 'Accessibility',    href: '/legal/accessibility' },
                 ].map((l) => (
                   <li key={l.href}>
-                    <Link href={l.href} prefetch={false} className="text-[#8BA5C8] text-sm hover:text-white transition-colors">{l.label}</Link>
+                    <Link href={l.href} prefetch={false}
+                      className="text-[#8BA5C8] text-xs hover:text-white transition-colors">
+                      {l.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -193,15 +205,17 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* ── Bottom bar ── */}
-        <div className="border-t border-white/[0.07]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p className="text-[#5A7090] text-xs">
-              © {CURRENT_YEAR} {config.siteName}. All rights reserved.
-            </p>
-            <p className="text-[#5A7090] text-xs">
-              India · Worldwide delivery
-            </p>
+        {/* ── Sub-footer ── */}
+        <div className="border-t border-white/[0.08]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#8BA5C8]">
+              <p>&copy; {CURRENT_YEAR} {config.siteName}. All rights reserved.</p>
+              <div className="flex items-center gap-4">
+                <Link href="/legal/privacy-policy" prefetch={false} className="hover:text-white transition-colors">Privacy</Link>
+                <Link href="/legal/terms-of-service" prefetch={false} className="hover:text-white transition-colors">Terms</Link>
+                <Link href="/sitemap.xml" prefetch={false} className="hover:text-white transition-colors">Sitemap</Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import { blogPosts } from '@/data/insights';
+import { blogPosts as defaultBlogPosts } from '@/data/insights';
 import { ArrowRight, Clock } from 'lucide-react';
 import { SYNE_FONT } from '@/lib/fonts';
+import type { BlogPost } from '@/types';
 
 const CAT_CONFIG: Record<string, { bg: string; text: string; dot: string }> = {
   'Web & Digital Strategy': { bg: '#EBF1FB', text: '#2A5DBF', dot: '#477BDB' },
@@ -17,9 +18,15 @@ function formatDate(dateStr: string) {
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-export default function InsightsPreview() {
-  const posts = blogPosts.filter((p) => p.featured && p.published).slice(0, 3);
+interface InsightsPreviewProps {
+  posts?: BlogPost[];
+}
+
+export default function InsightsPreview({ posts: propPosts }: InsightsPreviewProps) {
+  const pool = propPosts && propPosts.length > 0 ? propPosts : defaultBlogPosts;
+  const posts = pool.filter((p) => p.featured && p.published).slice(0, 3);
   if (posts.length === 0) return null;
+
 
   const [featured, ...rest] = posts;
   const featCat = CAT_CONFIG[featured.category] ?? DEFAULT_CAT;

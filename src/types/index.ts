@@ -63,9 +63,12 @@ export interface PortfolioItem {
   images: string[];
   challenge: string;
   approach: string;
+  solution?: string;
   deliverables: string[];
   technologies: string[];
+  techStack?: string[];
   outcome: string;
+  metrics?: { label: string; value: string }[];
   featured: boolean;
   published: boolean;
   year: number;

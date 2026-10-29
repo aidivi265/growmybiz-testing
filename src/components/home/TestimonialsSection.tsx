@@ -1,9 +1,18 @@
-import { testimonials } from '@/data/company';
+import { testimonials as defaultTestimonials } from '@/data/company';
 import { SYNE_FONT } from '@/lib/fonts';
 import { Star, Quote } from 'lucide-react';
+import type { Testimonial } from '@/types';
 
-export default function TestimonialsSection() {
-  if (!testimonials || testimonials.length === 0) return null;
+interface TestimonialsSectionProps {
+  testimonials?: Testimonial[];
+}
+
+export default function TestimonialsSection({ testimonials: propTestimonials }: TestimonialsSectionProps) {
+  const pool = propTestimonials && propTestimonials.length > 0 ? propTestimonials : defaultTestimonials;
+  const activeTestimonials = pool.filter((t) => (t as any).is_published ?? (t as any).published ?? true);
+
+  if (!activeTestimonials || activeTestimonials.length === 0) return null;
+
 
   return (
     <section className="section-pad-lg relative overflow-hidden" id="testimonials" style={{ background: '#0D182A' }}>
@@ -54,7 +63,7 @@ export default function TestimonialsSection() {
 
         {/* Testimonials Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {testimonials.map((t, idx) => (
+          {activeTestimonials.map((t, idx) => (
             <div
               key={t.id}
               className={`reveal-on-scroll stagger-${idx + 1} interactive-glow-card rounded-2xl p-7 flex flex-col justify-between relative transition-all duration-300 hover:border-white/20 hover:-translate-y-1`}

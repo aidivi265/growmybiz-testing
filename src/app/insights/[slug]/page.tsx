@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Clock, ArrowRight } from 'lucide-react';
-import { blogPosts } from '@/data';
-import { fetchInsightBySlug } from '@/lib/dal';
+import { blogPosts as defaultBlogPosts } from '@/data';
+import { fetchInsights, fetchInsightBySlug } from '@/lib/dal';
 import { Breadcrumb } from '@/components/ui';
 import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
 
@@ -12,12 +12,14 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return blogPosts.map((p) => ({ slug: p.slug }));
+  const dynamicPosts = await fetchInsights();
+  const pool = dynamicPosts && dynamicPosts.length > 0 ? dynamicPosts : defaultBlogPosts;
+  return pool.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post = (await fetchInsightBySlug(slug)) || blogPosts.find((p) => p.slug === slug);
+  const post = (await fetchInsightBySlug(slug)) || defaultBlogPosts.find((p) => p.slug === slug);
   if (!post) return {};
   return { title: post.title, description: post.excerpt };
 }
@@ -172,12 +174,18 @@ function renderContent(content: string) {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const post = blogPosts.find((p) => p.slug === slug);
+  const [fetchedPost, allPosts] = await Promise.all([
+    fetchInsightBySlug(slug),
+    fetchInsights(),
+  ]);
+
+  const post = fetchedPost || defaultBlogPosts.find((p) => p.slug === slug);
   if (!post || !post.published) notFound();
 
   const cat = CAT_CONFIG[post.category] ?? DEFAULT_CAT;
 
-  const related = blogPosts
+  const pool = allPosts && allPosts.length > 0 ? allPosts : defaultBlogPosts;
+  const related = pool
     .filter((p) => p.published && p.id !== post.id && p.category === post.category)
     .slice(0, 2);
 
