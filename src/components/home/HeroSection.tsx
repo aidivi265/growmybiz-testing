@@ -4,12 +4,17 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { heroSlides } from '@/data/hero';
-import type { HeroSlide } from '@/types';
+import type { HeroSlide, OrbitConfig } from '@/types';
 import { SYNE_FONT } from '@/lib/fonts';
 import ScheduleCallButton from '@/components/ScheduleCallButton';
 import InteractiveGrowthOrbit from './InteractiveGrowthOrbit';
 
-export default function HeroSection({ initialSlides }: { initialSlides?: HeroSlide[] }) {
+interface HeroSectionProps {
+  initialSlides?: HeroSlide[];
+  orbitConfig?: OrbitConfig;
+}
+
+export default function HeroSection({ initialSlides, orbitConfig }: HeroSectionProps) {
   const slides = (initialSlides && initialSlides.length > 0) ? initialSlides : heroSlides;
   const [slide, setSlide] = useState(0);
   const [fading, setFading] = useState(false);
@@ -210,7 +215,7 @@ export default function HeroSection({ initialSlides }: { initialSlides?: HeroSli
 
           {/* ── RIGHT — Interactive 3D Growth Orbit (Active on Desktop/Laptop, Hidden on Mobile UI) ── */}
           <div className="hidden lg:flex flex-col justify-center items-end flex-1 shrink-0 py-8 lg:py-12 z-20">
-            <InteractiveGrowthOrbit />
+            <InteractiveGrowthOrbit config={orbitConfig} />
           </div>
 
         </div>

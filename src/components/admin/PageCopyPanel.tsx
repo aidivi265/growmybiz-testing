@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Save, Check, Loader2, Sparkles, Plus, Trash2, Award, Zap, FileText } from 'lucide-react';
-import type { ValueProp, StatItem } from '@/types';
+import { Save, Check, Loader2, Sparkles, Plus, Trash2, Award, Zap, FileText, Orbit } from 'lucide-react';
+import type { ValueProp, StatItem, OrbitConfig, OrbitNodeConfig } from '@/types';
 
 export default function PageCopyPanel() {
   const [loading, setLoading] = useState(true);
@@ -10,7 +10,7 @@ export default function PageCopyPanel() {
   const [saved, setSaved] = useState(false);
   const [source, setSource] = useState<string>('loading');
 
-  const [activeTab, setActiveTab] = useState<'value_props' | 'stats' | 'about' | 'cta'>('value_props');
+  const [activeTab, setActiveTab] = useState<'value_props' | 'stats' | 'about' | 'cta' | 'orbit'>('value_props');
 
   const [valueProps, setValueProps] = useState<ValueProp[]>([]);
   const [stats, setStats] = useState<StatItem[]>([]);
@@ -25,6 +25,11 @@ export default function PageCopyPanel() {
     primary_cta_label: '',
     primary_cta_href: '',
   });
+  const [orbitConfig, setOrbitConfig] = useState<OrbitConfig>({
+    centerLabel: 'Growmybizz',
+    centerSubtitle: 'Digital Agency OS',
+    nodes: [],
+  });
 
   const loadData = async () => {
     setLoading(true);
@@ -36,6 +41,9 @@ export default function PageCopyPanel() {
         setStats(json.stats || []);
         setAboutContent(json.about_content || {});
         setCtaContent(json.cta_content || {});
+        if (json.orbit_config) {
+          setOrbitConfig(json.orbit_config);
+        }
         setSource(json.source || 'supabase');
       }
     } catch (e) {
@@ -61,6 +69,8 @@ export default function PageCopyPanel() {
         payload = { section_id: 'about_content', data: aboutContent };
       } else if (activeTab === 'cta') {
         payload = { section_id: 'cta_content', data: ctaContent };
+      } else if (activeTab === 'orbit') {
+        payload = { section_id: 'orbit_config', data: orbitConfig };
       }
 
       const res = await fetch('/api/admin/copy', {
@@ -118,12 +128,13 @@ export default function PageCopyPanel() {
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-white/5 pb-3">
+      <div className="flex flex-wrap items-center gap-2 border-b border-white/5 pb-3">
         {[
           { id: 'value_props', label: 'Why Growmybizz (Pillars)', icon: Zap },
           { id: 'stats', label: 'Impact Counters (Stats)', icon: Award },
           { id: 'about', label: 'About Story & Mission', icon: FileText },
           { id: 'cta', label: 'Global CTA Banner', icon: Sparkles },
+          { id: 'orbit', label: 'Interactive 3D Orbit (Home)', icon: Orbit },
         ].map((t) => {
           const Icon = t.icon;
           return (
@@ -348,6 +359,218 @@ export default function PageCopyPanel() {
                 onChange={(e) => setCtaContent({ ...ctaContent, primary_cta_href: e.target.value })}
                 className="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/10 text-white text-xs outline-none"
               />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── 5. Homepage 3D Orbit Customizer Tab ── */}
+      {activeTab === 'orbit' && (
+        <div className="space-y-6">
+          {/* Center Core Sphere Controls */}
+          <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-4 max-w-2xl">
+            <div className="flex items-center gap-2 text-white font-semibold text-sm">
+              <Orbit className="w-4 h-4 text-[#477BDB]" />
+              <span>Center Core Sphere Branding</span>
+            </div>
+            <p className="text-xs text-white/50">
+              Customize the focal nucleus of the 3D rotating kinetic visual that appears in the homepage hero.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-white/70 mb-1.5">
+                  Center Main Title
+                </label>
+                <input
+                  type="text"
+                  value={orbitConfig.centerLabel || 'Growmybizz'}
+                  onChange={(e) =>
+                    setOrbitConfig({ ...orbitConfig, centerLabel: e.target.value })
+                  }
+                  placeholder="Growmybizz"
+                  className="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/10 text-white text-xs outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-white/70 mb-1.5">
+                  Center Subtitle / Badge
+                </label>
+                <input
+                  type="text"
+                  value={orbitConfig.centerSubtitle || 'Digital Agency OS'}
+                  onChange={(e) =>
+                    setOrbitConfig({ ...orbitConfig, centerSubtitle: e.target.value })
+                  }
+                  placeholder="Digital Agency OS"
+                  className="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/10 text-white text-xs outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Orbital Nodes List */}
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="text-sm font-semibold text-white">Orbital Nodes & Service Satellites ({orbitConfig.nodes?.length || 0})</h3>
+                <p className="text-xs text-white/50">
+                  Each satellite node orbits around the center core with live hover physics, glowing badges, and custom icons.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  const newNode: OrbitNodeConfig = {
+                    id: `node-${Date.now()}`,
+                    label: 'New Capability',
+                    sub: 'Fast Execution',
+                    icon: 'Sparkles',
+                    color: '#60a5fa',
+                    size: 'md',
+                  };
+                  setOrbitConfig({
+                    ...orbitConfig,
+                    nodes: [...(orbitConfig.nodes || []), newNode],
+                  });
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-white/10 hover:bg-white/20 transition-colors self-start sm:self-auto cursor-pointer"
+              >
+                <Plus size={13} />
+                <span>Add Orbital Node</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {(orbitConfig.nodes || []).map((node, idx) => (
+                <div
+                  key={node.id || idx}
+                  className="p-4 rounded-xl bg-white/[0.02] border border-white/5 space-y-3 relative group"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-mono text-white/40">Node #{idx + 1}</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = (orbitConfig.nodes || []).filter((_, i) => i !== idx);
+                        setOrbitConfig({ ...orbitConfig, nodes: updated });
+                      }}
+                      className="text-white/30 hover:text-rose-400 p-1 transition-colors"
+                      title="Remove node"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
+
+                  {/* Live Visual Preview Chip */}
+                  <div className="p-3 rounded-lg bg-black/50 border border-white/5 flex items-center gap-2.5">
+                    <div
+                      className="w-3 h-3 rounded-full shrink-0"
+                      style={{ backgroundColor: node.color, boxShadow: `0 0 10px ${node.color}` }}
+                    />
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold text-white truncate">{node.label || 'Node Title'}</p>
+                      <p className="text-[10px] text-white/50 truncate">{node.sub || 'Node Subtext'}</p>
+                    </div>
+                  </div>
+
+                  {/* Form fields */}
+                  <div>
+                    <label className="block text-[10px] text-white/50 mb-1">Headline Label</label>
+                    <input
+                      type="text"
+                      value={node.label}
+                      onChange={(e) => {
+                        const updated = [...(orbitConfig.nodes || [])];
+                        updated[idx] = { ...updated[idx], label: e.target.value };
+                        setOrbitConfig({ ...orbitConfig, nodes: updated });
+                      }}
+                      className="w-full px-2.5 py-1.5 rounded bg-black/40 border border-white/10 text-white text-xs outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] text-white/50 mb-1">Subtitle / Metric</label>
+                    <input
+                      type="text"
+                      value={node.sub}
+                      onChange={(e) => {
+                        const updated = [...(orbitConfig.nodes || [])];
+                        updated[idx] = { ...updated[idx], sub: e.target.value };
+                        setOrbitConfig({ ...orbitConfig, nodes: updated });
+                      }}
+                      className="w-full px-2.5 py-1.5 rounded bg-black/40 border border-white/10 text-white text-xs outline-none"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-[10px] text-white/50 mb-1">Icon</label>
+                      <select
+                        value={node.icon || 'Sparkles'}
+                        onChange={(e) => {
+                          const updated = [...(orbitConfig.nodes || [])];
+                          updated[idx] = { ...updated[idx], icon: e.target.value };
+                          setOrbitConfig({ ...orbitConfig, nodes: updated });
+                        }}
+                        className="w-full px-2 py-1.5 rounded bg-black/40 border border-white/10 text-white text-xs outline-none"
+                      >
+                        <option value="Code2" className="bg-[#0f172a]">Code2</option>
+                        <option value="Bot" className="bg-[#0f172a]">Bot</option>
+                        <option value="TrendingUp" className="bg-[#0f172a]">TrendingUp</option>
+                        <option value="Palette" className="bg-[#0f172a]">Palette</option>
+                        <option value="Zap" className="bg-[#0f172a]">Zap</option>
+                        <option value="Shield" className="bg-[#0f172a]">Shield</option>
+                        <option value="Sparkles" className="bg-[#0f172a]">Sparkles</option>
+                        <option value="Rocket" className="bg-[#0f172a]">Rocket</option>
+                        <option value="Globe" className="bg-[#0f172a]">Globe</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] text-white/50 mb-1">Scale Size</label>
+                      <select
+                        value={node.size || 'md'}
+                        onChange={(e) => {
+                          const updated = [...(orbitConfig.nodes || [])];
+                          updated[idx] = { ...updated[idx], size: e.target.value as any };
+                          setOrbitConfig({ ...orbitConfig, nodes: updated });
+                        }}
+                        className="w-full px-2 py-1.5 rounded bg-black/40 border border-white/10 text-white text-xs outline-none"
+                      >
+                        <option value="sm" className="bg-[#0f172a]">Compact (sm)</option>
+                        <option value="md" className="bg-[#0f172a]">Standard (md)</option>
+                        <option value="lg" className="bg-[#0f172a]">Hero Prominent (lg)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] text-white/50 mb-1">Accent Color & Glow</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="color"
+                        value={node.color || '#60a5fa'}
+                        onChange={(e) => {
+                          const updated = [...(orbitConfig.nodes || [])];
+                          updated[idx] = { ...updated[idx], color: e.target.value };
+                          setOrbitConfig({ ...orbitConfig, nodes: updated });
+                        }}
+                        className="w-8 h-8 rounded border border-white/10 cursor-pointer bg-transparent"
+                      />
+                      <input
+                        type="text"
+                        value={node.color}
+                        onChange={(e) => {
+                          const updated = [...(orbitConfig.nodes || [])];
+                          updated[idx] = { ...updated[idx], color: e.target.value };
+                          setOrbitConfig({ ...orbitConfig, nodes: updated });
+                        }}
+                        className="flex-1 px-2.5 py-1.5 rounded bg-black/40 border border-white/10 text-white text-xs font-mono outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

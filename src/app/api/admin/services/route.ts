@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { verifySessionToken, ADMIN_COOKIE_NAME } from '@/lib/adminAuth';
 import { supabaseAdmin } from '@/lib/supabaseServer';
 import { services as staticServices } from '@/data/services';
+import { defaultServiceCategories } from '@/data/serviceCategories';
 
 async function checkAuth(): Promise<boolean> {
   const cookieStore = await cookies();
@@ -11,30 +12,40 @@ async function checkAuth(): Promise<boolean> {
   return verifySessionToken(token);
 }
 
-// GET /api/admin/services - List all services (including drafts)
+// GET /api/admin/services - List all services + niche categories map
 export async function GET() {
   if (!(await checkAuth())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
-    const { data, error } = await supabaseAdmin
-      .from('services')
-      .select('*')
-      .order('order_index', { ascending: true });
+    const [servicesRes, categoriesRes] = await Promise.all([
+      supabaseAdmin.from('services').select('*').order('order_index', { ascending: true }),
+      supabaseAdmin.from('page_content').select('data').eq('id', 'service_categories').maybeSingle(),
+    ]);
 
-    if (!error && data && data.length > 0) {
-      return NextResponse.json({ success: true, services: data, source: 'supabase' });
-    }
+    const servicesList = servicesRes.data && servicesRes.data.length > 0 ? servicesRes.data : staticServices;
+    const categoriesMap = categoriesRes.data?.data || defaultServiceCategories;
+
+    return NextResponse.json({
+      success: true,
+      services: servicesList,
+      categories: categoriesMap,
+      source: servicesRes.data && servicesRes.data.length > 0 ? 'supabase' : 'static',
+    });
   } catch (err) {
     console.warn('Admin services fetch fallback:', err);
   }
 
-  // Fallback to static
-  return NextResponse.json({ success: true, services: staticServices, source: 'static' });
+  return NextResponse.json({
+    success: true,
+    services: staticServices,
+    categories: defaultServiceCategories,
+    source: 'static',
+  });
 }
 
-// POST /api/admin/services - Create new service
+// POST /api/admin/services - Create new service or update categories map
 export async function POST(request: Request) {
   if (!(await checkAuth())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -42,6 +53,26 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
+
+    // Dedicated action: Save niche industry categories
+    if (body.action === 'save_categories') {
+      const { categories_map } = body;
+      if (!categories_map || typeof categories_map !== 'object') {
+        return NextResponse.json({ error: 'Invalid categories_map' }, { status: 400 });
+      }
+
+      await supabaseAdmin
+        .from('page_content')
+        .upsert({
+          id: 'service_categories',
+          data: categories_map,
+          updated_at: new Date().toISOString(),
+        });
+
+      revalidatePath('/services');
+      return NextResponse.json({ success: true, categories: categories_map });
+    }
+
     const {
       slug,
       title,

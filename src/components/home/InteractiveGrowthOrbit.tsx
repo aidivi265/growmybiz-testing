@@ -10,9 +10,14 @@ import {
   Zap,
   Shield,
   ArrowUpRight,
+  Sparkles,
+  Rocket,
+  Globe,
 } from 'lucide-react';
 import { SYNE_FONT } from '@/lib/fonts';
 import ScheduleCallModal from '@/components/ScheduleCallModal';
+import type { OrbitConfig } from '@/types';
+import { defaultOrbitConfig } from '@/data/orbitConfig';
 
 interface OrbitalNode {
   id: string;
@@ -21,100 +26,65 @@ interface OrbitalNode {
   icon: React.ComponentType<{ size?: number; className?: string; style?: React.CSSProperties }>;
   color: string;
   glow: string;
-  // Polar coordinates for initial layout
   angle: number; // in degrees
   distance: number; // in px
   size: 'sm' | 'md' | 'lg';
   delay: string;
 }
 
-const orbitalNodes: OrbitalNode[] = [
-  {
-    id: 'web-apps',
-    label: 'Next.js & Apps',
-    sub: 'Sub-800ms Velocity',
-    icon: Code2,
-    color: '#38bdf8',
-    glow: 'rgba(56, 189, 248, 0.4)',
-    angle: 320,
-    distance: 175,
-    size: 'lg',
-    delay: '0s',
-  },
-  {
-    id: 'ai-agents',
-    label: 'AI Agents',
-    sub: '75% Intake Auto',
-    icon: Bot,
-    color: '#c084fc',
-    glow: 'rgba(192, 132, 252, 0.4)',
-    angle: 45,
-    distance: 180,
-    size: 'lg',
-    delay: '1.2s',
-  },
-  {
-    id: 'growth-scale',
-    label: '+320% ROAS',
-    sub: 'Performance Ads',
-    icon: TrendingUp,
-    color: '#34d399',
-    glow: 'rgba(52, 211, 153, 0.4)',
-    angle: 140,
-    distance: 185,
-    size: 'md',
-    delay: '2.4s',
-  },
-  {
-    id: 'ui-ux',
-    label: 'UI/UX Design',
-    sub: 'Figma Systems',
-    icon: Palette,
-    color: '#fbbf24',
-    glow: 'rgba(251, 191, 36, 0.4)',
-    angle: 220,
-    distance: 170,
-    size: 'md',
-    delay: '0.8s',
-  },
-  {
-    id: 'mvp-sprint',
-    label: '14-Day MVP',
-    sub: 'Live to Market',
-    icon: Zap,
-    color: '#60a5fa',
-    glow: 'rgba(96, 165, 250, 0.35)',
-    angle: 95,
-    distance: 125,
-    size: 'sm',
-    delay: '1.8s',
-  },
-  {
-    id: 'cloud-scale',
-    label: '99.98% Uptime',
-    sub: 'Supabase Cloud',
-    icon: Shield,
-    color: '#2dd4bf',
-    glow: 'rgba(45, 212, 191, 0.35)',
-    angle: 270,
-    distance: 130,
-    size: 'sm',
-    delay: '3s',
-  },
+const ICON_MAP: Record<string, React.ComponentType<{ size?: number; className?: string; style?: React.CSSProperties }>> = {
+  Code2,
+  Bot,
+  TrendingUp,
+  Palette,
+  Zap,
+  Shield,
+  Sparkles,
+  Rocket,
+  Globe,
+};
+
+const DEFAULT_ICONS = [Code2, Bot, TrendingUp, Palette, Zap, Shield];
+
+const NODE_LAYOUT = [
+  { angle: 320, distance: 175, delay: '0s', size: 'lg' as const },
+  { angle: 45, distance: 180, delay: '1.2s', size: 'lg' as const },
+  { angle: 140, distance: 185, delay: '2.4s', size: 'md' as const },
+  { angle: 220, distance: 170, delay: '0.8s', size: 'md' as const },
+  { angle: 95, distance: 125, delay: '1.8s', size: 'sm' as const },
+  { angle: 270, distance: 130, delay: '3s', size: 'sm' as const },
 ];
 
-/**
- * InteractiveGrowthOrbit
- * An open, boxless 3D kinetic interactive space that dynamically reacts
- * to mouse hover (3D parallax, tilt, magnetic glow) and page scroll.
- */
-export default function InteractiveGrowthOrbit() {
+interface InteractiveGrowthOrbitProps {
+  config?: OrbitConfig;
+}
+
+export function InteractiveGrowthOrbit({ config }: InteractiveGrowthOrbitProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const [hoveredNode, setHoveredNode] = useState<OrbitalNode | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [scrollScale, setScrollScale] = useState(1);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+
+  const rawNodes = config?.nodes && config.nodes.length > 0 ? config.nodes : defaultOrbitConfig.nodes;
+
+  const activeNodes: OrbitalNode[] = rawNodes.map((n, i) => {
+    const layout = NODE_LAYOUT[i % NODE_LAYOUT.length];
+    const IconComp = (n.icon && ICON_MAP[n.icon]) || DEFAULT_ICONS[i % DEFAULT_ICONS.length];
+    return {
+      id: n.id || `node-${i}`,
+      label: n.label,
+      sub: n.sub,
+      icon: IconComp,
+      color: n.color || '#38bdf8',
+      glow: `${n.color || '#38bdf8'}66`,
+      angle: layout.angle,
+      distance: layout.distance,
+      size: n.size || layout.size,
+      delay: layout.delay,
+    };
+  });
 
   // 3D Mouse parallax tilt handler
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
@@ -143,7 +113,6 @@ export default function InteractiveGrowthOrbit() {
   useEffect(() => {
     const onScroll = () => {
       const scrollY = window.scrollY;
-      // Gently expand and tilt down as user scrolls down the first 400px
       const scale = 1 + Math.min(scrollY / 800, 0.25);
       setScrollScale(scale);
     };
@@ -246,8 +215,13 @@ export default function InteractiveGrowthOrbit() {
                 className="text-white font-extrabold text-xs tracking-wider uppercase block"
                 style={{ fontFamily: SYNE_FONT }}
               >
-                Growmybizz
+                {config?.centerLabel || 'Growmybizz'}
               </span>
+              {config?.centerSubtitle && (
+                <span className="text-white/40 text-[9px] font-medium block mt-0.5">
+                  {config.centerSubtitle}
+                </span>
+              )}
             </div>
           </div>
 
@@ -259,113 +233,104 @@ export default function InteractiveGrowthOrbit() {
             >
               {(() => {
                 const rad = (hoveredNode.angle * Math.PI) / 180;
-                const x2 = 250 + Math.cos(rad) * hoveredNode.distance;
-                const y2 = 250 + Math.sin(rad) * hoveredNode.distance;
+                const targetX = 250 + Math.cos(rad) * hoveredNode.distance;
+                const targetY = 250 + Math.sin(rad) * hoveredNode.distance;
                 return (
                   <>
                     <line
                       x1="250"
                       y1="250"
-                      x2={x2}
-                      y2={y2}
+                      x2={targetX}
+                      y2={targetY}
                       stroke={hoveredNode.color}
                       strokeWidth="2"
                       strokeDasharray="4 4"
-                      className="opacity-70 animate-pulse"
+                      className="animate-pulse"
+                      opacity="0.8"
                     />
-                    <circle cx={x2} cy={y2} r="4" fill={hoveredNode.color} />
+                    <circle cx={targetX} cy={targetY} r="4" fill={hoveredNode.color} />
                   </>
                 );
               })()}
             </svg>
           )}
 
-          {/* ── FLOATING ORBITAL SATELLITE NODES ── */}
-          {orbitalNodes.map((node) => {
+          {/* ── 3D FLOATING ORBITAL NODES ── */}
+          {activeNodes.map((node) => {
             const rad = (node.angle * Math.PI) / 180;
-            // Center is (250, 250) in 500x500 box
             const x = Math.cos(rad) * node.distance;
             const y = Math.sin(rad) * node.distance;
-            const Icon = node.icon;
             const isHovered = hoveredNode?.id === node.id;
+
+            // Size presets
+            const sizeClasses = {
+              sm: 'p-2 sm:p-2.5 min-w-[90px]',
+              md: 'p-2.5 sm:p-3 min-w-[110px]',
+              lg: 'p-3 sm:p-3.5 min-w-[130px]',
+            }[node.size];
+
+            const IconComponent = node.icon;
 
             return (
               <div
                 key={node.id}
                 onMouseEnter={() => setHoveredNode(node)}
+                onMouseLeave={() => setHoveredNode(null)}
                 onClick={() => setIsModalOpen(true)}
-                className="absolute cursor-pointer transition-all duration-300"
+                className={`absolute cursor-pointer transition-all duration-300 group ${sizeClasses} rounded-2xl flex items-center gap-2.5 z-30`}
                 style={{
-                  transform: `translate3d(${x}px, ${y}px, ${isHovered ? 60 : 20}px) scale(${isHovered ? 1.15 : 1})`,
+                  transform: `translate3d(${x}px, ${y}px, ${isHovered ? '60px' : '20px'}) scale(${
+                    isHovered ? 1.15 : 1
+                  })`,
+                  background: isHovered
+                    ? 'rgba(15, 28, 49, 0.95)'
+                    : 'rgba(15, 28, 49, 0.75)',
+                  border: `1px solid ${isHovered ? node.color : 'rgba(255, 255, 255, 0.12)'}`,
+                  boxShadow: isHovered
+                    ? `0 12px 30px ${node.glow}, 0 0 20px ${node.glow}`
+                    : '0 8px 24px rgba(0, 0, 0, 0.3)',
+                  backdropFilter: 'blur(12px)',
                   transformStyle: 'preserve-3d',
-                  zIndex: isHovered ? 40 : 25,
                 }}
               >
-                {/* Floating pill capsule */}
+                {/* Node Icon Badge */}
                 <div
-                  className="group relative flex items-center gap-2.5 px-3.5 py-2 rounded-2xl transition-all duration-300 shadow-xl"
+                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:rotate-12"
                   style={{
-                    background: isHovered
-                      ? 'linear-gradient(135deg, rgba(15,28,49,0.98), rgba(20,36,62,0.95))'
-                      : 'linear-gradient(135deg, rgba(15,28,49,0.85), rgba(10,18,32,0.90))',
-                    border: `1.5px solid ${isHovered ? node.color : 'rgba(255,255,255,0.12)'}`,
-                    boxShadow: isHovered
-                      ? `0 12px 32px rgba(0,0,0,0.6), 0 0 28px ${node.glow}`
-                      : '0 8px 24px rgba(0,0,0,0.3)',
-                    backdropFilter: 'blur(12px)',
-                    animation: `float-slow 6s ease-in-out infinite`,
-                    animationDelay: node.delay,
+                    background: `${node.color}22`,
+                    border: `1px solid ${node.color}55`,
                   }}
                 >
-                  {/* Icon badge */}
-                  <div
-                    className="w-7 h-7 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:rotate-12"
-                    style={{
-                      background: `linear-gradient(135deg, ${node.color}33, ${node.color}15)`,
-                      border: `1px solid ${node.color}66`,
-                    }}
-                  >
-                    <Icon size={14} style={{ color: node.color }} />
-                  </div>
+                  <IconComponent size={14} style={{ color: node.color }} />
+                </div>
 
-                  {/* Text details */}
-                  <div className="leading-tight">
-                    <p className="text-white font-bold text-xs whitespace-nowrap flex items-center gap-1">
-                      <span>{node.label}</span>
-                      <ArrowUpRight
-                        size={11}
-                        className={`transition-opacity ${isHovered ? 'opacity-100 text-white' : 'opacity-0'}`}
-                      />
-                    </p>
-                    <p
-                      className="text-[10px] font-medium whitespace-nowrap"
-                      style={{ color: isHovered ? node.color : 'rgba(255,255,255,0.45)' }}
-                    >
-                      {node.sub}
-                    </p>
-                  </div>
+                {/* Node Text Content */}
+                <div className="flex flex-col text-left pr-1 min-w-0">
+                  <span
+                    className="font-bold text-white text-xs sm:text-[13px] tracking-tight leading-none group-hover:text-white transition-colors truncate"
+                    style={{ fontFamily: SYNE_FONT }}
+                  >
+                    {node.label}
+                  </span>
+                  <span
+                    className="text-[10px] sm:text-[11px] font-medium leading-tight mt-1 truncate"
+                    style={{ color: node.color }}
+                  >
+                    {node.sub}
+                  </span>
+                </div>
+
+                {/* Micro Hover Indicator */}
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 ml-auto shrink-0">
+                  <ArrowUpRight size={10} style={{ color: node.color }} />
                 </div>
               </div>
             );
           })}
-
-          {/* ── Interactive Stardust Particles reacting to mouse ── */}
-          <div
-            className="absolute w-2 h-2 rounded-full bg-cyan-400 blur-[1px] pointer-events-none transition-all duration-300"
-            style={{
-              transform: `translate3d(${cursorPos.x * 0.35 + 80}px, ${cursorPos.y * 0.35 - 90}px, 30px)`,
-            }}
-          />
-          <div
-            className="absolute w-1.5 h-1.5 rounded-full bg-purple-400 blur-[1px] pointer-events-none transition-all duration-500"
-            style={{
-              transform: `translate3d(${cursorPos.x * -0.25 - 120}px, ${cursorPos.y * -0.25 + 100}px, 20px)`,
-            }}
-          />
         </div>
       </div>
 
-      {/* Discovery Modal */}
+      {/* Direct Scheduling Popup when clicking central core or any node */}
       <ScheduleCallModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -373,3 +338,5 @@ export default function InteractiveGrowthOrbit() {
     </>
   );
 }
+
+export default InteractiveGrowthOrbit;

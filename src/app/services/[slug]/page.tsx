@@ -3,12 +3,14 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { services as defaultServices } from '@/data';
-import { fetchServices, fetchServiceBySlug } from '@/lib/dal';
+import { fetchServices, fetchServiceBySlug, fetchPortfolio, fetchServiceCategories } from '@/lib/dal';
 import { Section, SectionHeader, Card, Breadcrumb } from '@/components/ui';
 import { Icon } from '@/components/Icon';
 import { SYNE_FONT } from '@/lib/fonts';
 import ScheduleCallButton from '@/components/ScheduleCallButton';
 import FAQAccordion from '@/components/ui/FAQAccordion';
+import ServiceNicheShowcase from '@/components/services/ServiceNicheShowcase';
+import { defaultServiceCategories } from '@/data/serviceCategories';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -32,9 +34,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ServicePage({ params }: Props) {
   const { slug } = await params;
-  const [serviceData, allServices] = await Promise.all([
+  const [serviceData, allServices, allProjects, allCategories] = await Promise.all([
     fetchServiceBySlug(slug),
     fetchServices(),
+    fetchPortfolio(),
+    fetchServiceCategories(),
   ]);
 
   const service = serviceData || defaultServices.find((s) => s.slug === slug);
@@ -42,6 +46,8 @@ export default async function ServicePage({ params }: Props) {
 
   const servicesList = allServices && allServices.length > 0 ? allServices : defaultServices;
   const otherServices = servicesList.filter((s) => s.id !== service.id);
+  const serviceCategories = allCategories[slug] || defaultServiceCategories[slug] || [];
+
 
   return (
     <>
@@ -156,6 +162,14 @@ export default async function ServicePage({ params }: Props) {
           </div>
         </Section>
       )}
+
+      {/* ── Specialized Industry Solutions (Automatically hidden if no projects exist) ── */}
+      <ServiceNicheShowcase
+        serviceTitle={service.title}
+        categories={serviceCategories}
+        projects={allProjects}
+        accentColor={service.color}
+      />
 
       {/* Process */}
       {service.process && service.process.length > 0 && (

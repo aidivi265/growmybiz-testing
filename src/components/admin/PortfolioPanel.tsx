@@ -11,6 +11,8 @@ interface PortfolioFormState {
   title: string;
   client: string;
   category: string;
+  industry: string;
+  serviceSlug: string;
   year: string;
   thumbnail: string;
   challenge: string;
@@ -33,7 +35,9 @@ export default function PortfolioPanel() {
     slug: '',
     title: '',
     client: '',
-    category: 'Web Application',
+    category: 'Web & App Development',
+    industry: 'E-Commerce & D2C Brands',
+    serviceSlug: 'web-app-development',
     year: '2025',
     thumbnail: '/portfolio-mockups/mobile-app.png',
     challenge: '',
@@ -70,7 +74,9 @@ export default function PortfolioPanel() {
       slug: '',
       title: '',
       client: '',
-      category: 'Web Application',
+      category: 'Web & App Development',
+      industry: 'E-Commerce & D2C Brands',
+      serviceSlug: 'web-app-development',
       year: '2025',
       thumbnail: '/portfolio-mockups/mobile-app.png',
       challenge: '',
@@ -85,16 +91,22 @@ export default function PortfolioPanel() {
 
   const openEditModal = (p: PortfolioItem) => {
     setEditingId(p.id);
+    const metricsArr = Array.isArray(p.metrics) ? p.metrics : [];
+    const ind = p.industry || metricsArr.find((m: any) => m.label === '_industry')?.value || '';
+    const sSlug = p.serviceSlug || metricsArr.find((m: any) => m.label === '_serviceSlug')?.value || 'web-app-development';
+
     setForm({
       id: p.id,
       slug: p.slug,
       title: p.title,
       client: p.client,
       category: p.category,
+      industry: ind,
+      serviceSlug: sSlug,
       year: String(p.year || 2025),
       thumbnail: p.thumbnail,
       challenge: p.challenge,
-      solution: p.approach || '',
+      solution: p.solution || p.approach || '',
       outcome: p.outcome,
       technologies_str: Array.isArray(p.technologies) ? p.technologies.join(', ') : '',
       is_concept: p.isConcept ?? false,
@@ -126,12 +138,18 @@ export default function PortfolioPanel() {
         .map((t) => t.trim())
         .filter(Boolean);
 
+      const metrics = [
+        { label: '_industry', value: form.industry },
+        { label: '_serviceSlug', value: form.serviceSlug },
+      ];
+
       const payload = {
         id: editingId,
         slug: form.slug,
         title: form.title,
         client: form.client,
         category: form.category,
+        metrics,
         year: form.year,
         thumbnail: form.thumbnail,
         challenge: form.challenge,
@@ -220,34 +238,45 @@ export default function PortfolioPanel() {
             <thead>
               <tr className="border-b border-white/[0.06] text-white/40">
                 <th className="py-2.5 px-3">Client & Title</th>
-                <th className="py-2.5 px-3">Category</th>
+                <th className="py-2.5 px-3">Category & Industry</th>
                 <th className="py-2.5 px-3">Classification</th>
                 <th className="py-2.5 px-3">Year</th>
                 <th className="py-2.5 px-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.03]">
-              {projects.map((p) => (
-                <tr key={p.id || p.slug} className="hover:bg-white/[0.02] text-white/80">
-                  <td className="py-3 px-3">
-                    <div>
-                      <p className="text-[11px] text-[#32A88A] font-bold uppercase tracking-wider">{p.client}</p>
-                      <p className="font-semibold text-white">{p.title}</p>
-                    </div>
-                  </td>
-                  <td className="py-3 px-3 text-white/60">{p.category}</td>
-                  <td className="py-3 px-3">
-                    {p.isConcept ? (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-300 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-full">
-                        <Sparkles size={10} /> Concept Demo
-                      </span>
-                    ) : (
-                      <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                        Client Deployment
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-3 px-3 text-white/40 font-mono">{p.year}</td>
+              {projects.map((p) => {
+                const metricsArr = Array.isArray(p.metrics) ? p.metrics : [];
+                const ind = p.industry || metricsArr.find((m: any) => m.label === '_industry')?.value;
+
+                return (
+                  <tr key={p.id || p.slug} className="hover:bg-white/[0.02] text-white/80">
+                    <td className="py-3 px-3">
+                      <div>
+                        <p className="text-[11px] text-[#32A88A] font-bold uppercase tracking-wider">{p.client}</p>
+                        <p className="font-semibold text-white">{p.title}</p>
+                      </div>
+                    </td>
+                    <td className="py-3 px-3">
+                      <p className="text-white/70 font-medium">{p.category}</p>
+                      {ind && (
+                        <span className="inline-block mt-0.5 text-[10px] text-cyan-300 bg-cyan-950/40 border border-cyan-500/20 px-2 py-0.5 rounded-md font-mono">
+                          {ind}
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-3 px-3">
+                      {p.isConcept ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-300 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-full">
+                          <Sparkles size={10} /> Concept Demo
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                          Client Deployment
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-3 px-3 text-white/40 font-mono">{p.year}</td>
                   <td className="py-3 px-3 text-right">
                     <div className="inline-flex items-center gap-2">
                       <a
@@ -276,7 +305,8 @@ export default function PortfolioPanel() {
                     </div>
                   </td>
                 </tr>
-              ))}
+              );
+            })}
             </tbody>
           </table>
         </div>
@@ -356,6 +386,72 @@ export default function PortfolioPanel() {
                     className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4] font-mono"
                   />
                 </div>
+              </div>
+
+              {/* Industry & Service Association for Smart Presence */}
+              <div className="p-3.5 rounded-xl bg-blue-500/[0.04] border border-blue-500/20 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-semibold text-blue-400">Industry / Niche Vertical & Service Linking</span>
+                  <span className="text-[10px] text-white/40">Smart Visibility Engine</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] text-white/70 mb-1">Target Industry / Niche</label>
+                    <input
+                      type="text"
+                      value={form.industry}
+                      onChange={(e) => setForm({ ...form, industry: e.target.value })}
+                      placeholder="e.g. Cafes, Restaurants & Hospitality"
+                      className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] text-white/70 mb-1">Linked Service Page</label>
+                    <select
+                      value={form.serviceSlug}
+                      onChange={(e) => setForm({ ...form, serviceSlug: e.target.value })}
+                      className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#3b82d4]"
+                    >
+                      <option value="web-app-development" className="bg-[#0f172a] text-white">Web & App Development</option>
+                      <option value="design-branding" className="bg-[#0f172a] text-white">Design & Branding</option>
+                      <option value="digital-marketing" className="bg-[#0f172a] text-white">Digital Marketing & Paid Ads</option>
+                      <option value="seo-organic-growth" className="bg-[#0f172a] text-white">SEO & Organic Growth</option>
+                      <option value="content-social-media" className="bg-[#0f172a] text-white">Content & Social Media</option>
+                      <option value="ai-automation" className="bg-[#0f172a] text-white">AI & Business Automation</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Quick suggestions */}
+                <div className="space-y-1">
+                  <span className="text-[10px] text-white/40 block">Quick Pick Industry:</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {[
+                      'Cafes, Restaurants & Hospitality',
+                      'Hospitals, Clinics & Healthcare',
+                      'E-Commerce & D2C Brands',
+                      'Real Estate & Builders',
+                      'B2B SaaS & Tech Startups',
+                      'Fitness, Gyms & Wellness',
+                    ].map((sug) => (
+                      <button
+                        type="button"
+                        key={sug}
+                        onClick={() => setForm({ ...form, industry: sug })}
+                        className={`text-[10px] px-2 py-0.5 rounded transition-colors ${
+                          form.industry === sug
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-white/5 text-white/60 hover:text-white hover:bg-white/10'
+                        }`}
+                      >
+                        {sug}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <p className="text-[10px] text-white/40 leading-relaxed">
+                  ✓ <strong>Presence Rule:</strong> This niche category will automatically become active and visible on the chosen service page on the live website when published!
+                </p>
               </div>
 
               {/* Thumbnail with Media Upload Input */}

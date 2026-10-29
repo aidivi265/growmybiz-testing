@@ -8,6 +8,7 @@ import ValuePropsSection from '@/components/home/ValuePropsSection';
 import InsightsPreview from '@/components/home/InsightsPreview';
 import {
   fetchHeroSlides,
+  fetchOrbitConfig,
   fetchServices,
   fetchPortfolio,
   fetchTestimonials,
@@ -25,6 +26,7 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   const [
     heroSlides,
+    orbitConfig,
     services,
     portfolio,
     testimonials,
@@ -33,6 +35,7 @@ export default async function HomePage() {
     insights,
   ] = await Promise.all([
     fetchHeroSlides(),
+    fetchOrbitConfig(),
     fetchServices(),
     fetchPortfolio(),
     fetchTestimonials(),
@@ -43,7 +46,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <HeroSection initialSlides={heroSlides} />
+      <HeroSection initialSlides={heroSlides} orbitConfig={orbitConfig} />
       {/* Dark → White transition strip */}
       <div style={{ height: '2px', background: 'linear-gradient(90deg, #1A2B4A, #243B66, #1A2B4A)' }} />
       <ServicesSection services={services} />

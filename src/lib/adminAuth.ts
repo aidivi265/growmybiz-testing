@@ -11,55 +11,32 @@ if (process.env.NODE_ENV === 'production' && !process.env.ADMIN_SESSION_SECRET) 
 }
 
 /**
- * Timing-safe credential verification to prevent side-channel timing attacks.
- * Verifies against configured admin usernames/emails and passwords.
+ * Single Master Admin ID and Password verification.
+ * Uses timing-safe string comparison to prevent side-channel timing attacks.
+ * Configured via ADMIN_USERNAME and ADMIN_PASSWORD environment variables.
  */
 export function verifyAdminCredentials(username?: string, password?: string): boolean {
   if (!username || !password) return false;
 
-  const envPass = process.env.ADMIN_PASSWORD;
-  const envUser = (process.env.ADMIN_USERNAME || 'admin').toLowerCase().trim();
-  const notificationEmail = (process.env.NOTIFICATION_EMAIL || 'divyanshgupta103@gmail.com').toLowerCase().trim();
-
-  // Allow canonical admin handles, founder email, and env-configured values
-  const validUsers = Array.from(
-    new Set([
-      'admin',
-      'admin@growmybizz.com',
-      'divyansh',
-      'divyansh@growmybizz.com',
-      'divyanshgupta103@gmail.com',
-      envUser,
-      envUser.includes('@') ? envUser : `${envUser}@growmybizz.com`,
-      notificationEmail,
-    ].filter(Boolean))
-  );
-
-  // Accepted passwords: env var, plus standard project credentials
-  const validPasswords = Array.from(
-    new Set([
-      envPass,
-      'growmybizz2025',
-      'Growmybizz2025Secure!',
-    ].filter(Boolean) as string[])
-  );
+  const configuredUser = (process.env.ADMIN_USERNAME || 'admin').toLowerCase().trim();
+  const configuredPass = (process.env.ADMIN_PASSWORD || 'growmybizz2025').trim();
 
   const userClean = username.trim().toLowerCase();
   const passClean = password.trim();
 
-  const isUserValid = validUsers.some((u) => {
-    const b1 = Buffer.from(userClean);
-    const b2 = Buffer.from(u.toLowerCase());
-    return b1.length === b2.length && crypto.timingSafeEqual(b1, b2);
-  });
+  // Match either exact username or handle (e.g. "admin" or "admin@growmybizz.com")
+  const isUserValid =
+    userClean === configuredUser ||
+    userClean === `${configuredUser}@growmybizz.com` ||
+    (userClean.includes('@') && userClean.split('@')[0] === configuredUser);
+
+  if (!isUserValid) return false;
 
   const bPassInput = Buffer.from(passClean);
-  const isPassValid = validPasswords.some((p) => {
-    const bExpected = Buffer.from(p.trim());
-    return bPassInput.length === bExpected.length && crypto.timingSafeEqual(bPassInput, bExpected);
-  });
+  const bExpected = Buffer.from(configuredPass);
+  if (bPassInput.length !== bExpected.length) return false;
 
-  return isUserValid && isPassValid;
+  return crypto.timingSafeEqual(bPassInput, bExpected);
 }
 
 interface SessionPayload {

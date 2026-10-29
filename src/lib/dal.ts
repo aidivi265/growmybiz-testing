@@ -90,28 +90,37 @@ export async function fetchPortfolio(): Promise<PortfolioItem[]> {
       .order('order_index', { ascending: true });
 
     if (!error && data && data.length > 0) {
-      return data.map((p) => ({
-        id: p.id,
-        slug: p.slug,
-        title: p.title,
-        client: p.client,
-        category: p.category,
-        tags: Array.isArray(p.technologies) ? p.technologies : [],
-        thumbnail: p.thumbnail,
-        images: Array.isArray(p.gallery) ? p.gallery : [p.thumbnail],
-        challenge: p.challenge,
-        approach: p.solution || p.approach || '',
-        solution: p.solution || p.approach || '',
-        deliverables: Array.isArray(p.deliverables) ? p.deliverables : [],
-        technologies: Array.isArray(p.technologies) ? p.technologies : [],
-        techStack: Array.isArray(p.technologies) ? p.technologies : [],
-        outcome: p.outcome,
-        metrics: Array.isArray(p.metrics) ? p.metrics : [],
-        featured: p.is_featured ?? true,
-        published: p.is_published ?? true,
-        year: parseInt(p.year, 10) || 2025,
-        isConcept: p.is_concept ?? false,
-      }));
+      return data.map((p) => {
+        const rawMetrics = Array.isArray(p.metrics) ? p.metrics : [];
+        const industry = (p as any).industry || rawMetrics.find((m: any) => m.label === '_industry')?.value;
+        const serviceSlug = (p as any).serviceSlug || rawMetrics.find((m: any) => m.label === '_serviceSlug')?.value;
+        const cleanMetrics = rawMetrics.filter((m: any) => !m.label?.startsWith('_'));
+
+        return {
+          id: p.id,
+          slug: p.slug,
+          title: p.title,
+          client: p.client,
+          category: p.category,
+          industry,
+          serviceSlug,
+          tags: Array.isArray(p.technologies) ? p.technologies : [],
+          thumbnail: p.thumbnail,
+          images: Array.isArray(p.gallery) ? p.gallery : [p.thumbnail],
+          challenge: p.challenge,
+          approach: p.solution || p.approach || '',
+          solution: p.solution || p.approach || '',
+          deliverables: Array.isArray(p.deliverables) ? p.deliverables : [],
+          technologies: Array.isArray(p.technologies) ? p.technologies : [],
+          techStack: Array.isArray(p.technologies) ? p.technologies : [],
+          outcome: p.outcome,
+          metrics: cleanMetrics,
+          featured: p.is_featured ?? true,
+          published: p.is_published ?? true,
+          year: parseInt(p.year, 10) || 2025,
+          isConcept: p.is_concept ?? false,
+        };
+      });
     }
   } catch (err) {
     console.warn('[DAL Notice] Supabase portfolio fetch fallback:', err);
@@ -129,12 +138,19 @@ export async function fetchPortfolioBySlug(slug: string): Promise<PortfolioItem 
       .maybeSingle();
 
     if (!error && data) {
+      const rawMetrics = Array.isArray(data.metrics) ? data.metrics : [];
+      const industry = (data as any).industry || rawMetrics.find((m: any) => m.label === '_industry')?.value;
+      const serviceSlug = (data as any).serviceSlug || rawMetrics.find((m: any) => m.label === '_serviceSlug')?.value;
+      const cleanMetrics = rawMetrics.filter((m: any) => !m.label?.startsWith('_'));
+
       return {
         id: data.id,
         slug: data.slug,
         title: data.title,
         client: data.client,
         category: data.category,
+        industry,
+        serviceSlug,
         tags: Array.isArray(data.technologies) ? data.technologies : [],
         thumbnail: data.thumbnail,
         images: Array.isArray(data.gallery) ? data.gallery : [data.thumbnail],
@@ -145,7 +161,7 @@ export async function fetchPortfolioBySlug(slug: string): Promise<PortfolioItem 
         technologies: Array.isArray(data.technologies) ? data.technologies : [],
         techStack: Array.isArray(data.technologies) ? data.technologies : [],
         outcome: data.outcome,
-        metrics: Array.isArray(data.metrics) ? data.metrics : [],
+        metrics: cleanMetrics,
         featured: data.is_featured ?? true,
         published: data.is_published ?? true,
         year: parseInt(data.year, 10) || 2025,
@@ -415,3 +431,48 @@ export async function fetchLegalDoc(slug: string, fallback: string): Promise<str
 
   return fallback;
 }
+
+import { defaultServiceCategories } from '@/data/serviceCategories';
+import { defaultOrbitConfig } from '@/data/orbitConfig';
+import type { OrbitConfig } from '@/types';
+
+export { defaultOrbitConfig };
+
+// ── 14. Service Niche Categories ──────────────────────────────────────────────
+export async function fetchServiceCategories(): Promise<Record<string, string[]>> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('page_content')
+      .select('data')
+      .eq('id', 'service_categories')
+      .maybeSingle();
+
+    if (!error && data?.data && typeof data.data === 'object') {
+      return data.data as Record<string, string[]>;
+    }
+  } catch (err) {
+    console.warn('[DAL Notice] Service categories fetch fallback:', err);
+  }
+
+  return defaultServiceCategories;
+}
+
+// ── 15. Homepage 3D Interactive Orbit Config ──────────────────────────────────
+export async function fetchOrbitConfig(): Promise<OrbitConfig> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('page_content')
+      .select('data')
+      .eq('id', 'orbit_config')
+      .maybeSingle();
+
+    if (!error && data?.data && Array.isArray((data.data as any)?.nodes)) {
+      return data.data as OrbitConfig;
+    }
+  } catch (err) {
+    console.warn('[DAL Notice] Orbit config fetch fallback:', err);
+  }
+
+  return defaultOrbitConfig;
+}
+

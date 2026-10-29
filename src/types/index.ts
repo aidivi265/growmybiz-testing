@@ -58,6 +58,8 @@ export interface PortfolioItem {
   title: string;
   client: string;
   category: string;
+  industry?: string;
+  serviceSlug?: string;
   tags: string[];
   thumbnail: string;
   images: string[];
@@ -74,6 +76,22 @@ export interface PortfolioItem {
   year: number;
   isConcept?: boolean;
   conceptDisclaimer?: string;
+}
+
+export interface OrbitNodeConfig {
+  id: string;
+  label: string;
+  sub: string;
+  icon?: string;
+  color: string;
+  glow?: string;
+  size?: 'sm' | 'md' | 'lg';
+}
+
+export interface OrbitConfig {
+  centerLabel?: string;
+  centerSubtitle?: string;
+  nodes: OrbitNodeConfig[];
 }
 
 export interface TeamMember {

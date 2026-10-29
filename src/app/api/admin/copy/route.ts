@@ -5,6 +5,8 @@ import { verifySessionToken, ADMIN_COOKIE_NAME } from '@/lib/adminAuth';
 import { supabaseAdmin } from '@/lib/supabaseServer';
 import { valueProps as staticValueProps, stats as staticStats } from '@/data/company';
 
+import { defaultOrbitConfig } from '@/data/orbitConfig';
+
 async function checkAuth(): Promise<boolean> {
   const cookieStore = await cookies();
   const token = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
@@ -21,7 +23,7 @@ export async function GET() {
     const { data, error } = await supabaseAdmin
       .from('page_content')
       .select('*')
-      .in('id', ['value_props', 'stats', 'about_content', 'cta_content']);
+      .in('id', ['value_props', 'stats', 'about_content', 'cta_content', 'orbit_config']);
 
     const map: Record<string, any> = {};
     if (!error && data) {
@@ -34,6 +36,7 @@ export async function GET() {
       success: true,
       value_props: map.value_props || staticValueProps,
       stats: map.stats || staticStats,
+      orbit_config: map.orbit_config || defaultOrbitConfig,
       about_content: map.about_content || {
         story_heading: 'Built to help businesses grow online.',
         story_body: 'We started Growmybizz because we were tired of seeing businesses get passed between separate design agencies, dev shops, and ad contractors who never spoke to each other.',
