@@ -23,14 +23,14 @@ export async function GET() {
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (!error && data && data.length > 0) {
+    if (!error && Array.isArray(data)) {
       return NextResponse.json({ success: true, articles: data, source: 'supabase' });
     }
   } catch (err) {
     console.warn('Admin insights fetch fallback:', err);
   }
 
-  return NextResponse.json({ success: true, articles: staticInsights, source: 'static' });
+  return NextResponse.json({ success: true, articles: [], source: 'supabase' });
 }
 
 // POST /api/admin/insights - Create article
@@ -141,10 +141,15 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Article ID is required.' }, { status: 400 });
     }
 
-    const { error } = await supabaseAdmin.from('articles').delete().eq('id', id);
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+    if (isUuid) {
+      const { error } = await supabaseAdmin.from('articles').delete().eq('id', id);
+      if (error) {
+        return NextResponse.json({ error: error.message }, { status: 400 });
+      }
+    } else {
+      await supabaseAdmin.from('articles').delete().eq('slug', id);
     }
 
     revalidatePath('/insights');

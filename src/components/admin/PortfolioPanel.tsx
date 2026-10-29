@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye, Loader2, Sparkles, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, Loader2, Sparkles, X, FolderOpen } from 'lucide-react';
 import MediaUploadInput from './MediaUploadInput';
 import type { PortfolioItem } from '@/types';
 
@@ -180,10 +180,37 @@ export default function PortfolioPanel() {
     }
   };
 
+  const [seeding, setSeeding] = useState(false);
+
+  const handleSeedStarterProjects = async () => {
+    if (!confirm('Load 6 starter agency case studies into Supabase? You will be able to edit, customize, or delete each one from this dashboard.')) return;
+    setSeeding(true);
+    try {
+      const res = await fetch('/api/admin/portfolio', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'seed' }),
+      });
+      if (res.ok) {
+        await loadProjects();
+      } else {
+        const d = await res.json();
+        alert(d.error || 'Failed to seed sample projects');
+      }
+    } catch {
+      alert('Error connecting to server.');
+    } finally {
+      setSeeding(false);
+    }
+  };
+
   const handleDelete = async (id: string, title: string) => {
     if (!confirm(`Are you sure you want to delete project "${title}"?`)) return;
 
     try {
+      // Optimistically remove from state immediately
+      setProjects((prev) => prev.filter((p) => p.id !== id && p.slug !== id));
+
       const res = await fetch(`/api/admin/portfolio?id=${id}`, {
         method: 'DELETE',
       });
@@ -192,9 +219,11 @@ export default function PortfolioPanel() {
       } else {
         const data = await res.json();
         alert(data.error || 'Failed to delete project');
+        loadProjects();
       }
     } catch {
       alert('Error deleting project');
+      loadProjects();
     }
   };
 
@@ -229,8 +258,33 @@ export default function PortfolioPanel() {
           <span>Loading portfolio items...</span>
         </div>
       ) : projects.length === 0 ? (
-        <div className="py-12 text-center text-white/40 text-xs">
-          No projects published yet. Click &quot;Add Project&quot; to showcase your work.
+        <div className="py-16 text-center text-white/50 space-y-4">
+          <div className="w-12 h-12 rounded-2xl bg-white/[0.03] border border-white/10 mx-auto flex items-center justify-center text-white/40">
+            <FolderOpen size={24} className="text-[#3b82d4]" />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-white">No Portfolio Projects Found</h3>
+            <p className="text-xs text-white/40 mt-1 max-w-sm mx-auto">
+              Your portfolio is currently clean and empty in Supabase (0 projects). You can publish custom projects anytime or load sample agency templates.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <button
+              onClick={openCreateModal}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[#3b82d4] hover:bg-[#2563eb] transition-all cursor-pointer shadow-sm"
+            >
+              <Plus size={14} />
+              <span>Add First Project</span>
+            </button>
+            <button
+              onClick={handleSeedStarterProjects}
+              disabled={seeding}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium text-white/80 bg-white/5 hover:bg-white/10 border border-white/10 transition-all cursor-pointer disabled:opacity-50"
+            >
+              {seeding ? <Loader2 size={13} className="animate-spin" /> : <Sparkles size={13} className="text-amber-400" />}
+              <span>{seeding ? 'Loading Templates...' : 'Load Starter Templates'}</span>
+            </button>
+          </div>
         </div>
       ) : (
         <div className="overflow-x-auto">

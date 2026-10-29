@@ -90,7 +90,7 @@ export async function fetchPortfolio(): Promise<PortfolioItem[]> {
       .eq('is_published', true)
       .order('order_index', { ascending: true });
 
-    if (!error && data && data.length > 0) {
+    if (!error && Array.isArray(data)) {
       return data.map((p) => {
         const rawMetrics = Array.isArray(p.metrics) ? p.metrics : [];
         const industry = (p as any).industry || rawMetrics.find((m: any) => m.label === '_industry')?.value;
@@ -127,7 +127,7 @@ export async function fetchPortfolio(): Promise<PortfolioItem[]> {
     console.warn('[DAL Notice] Supabase portfolio fetch fallback:', err);
   }
 
-  return staticPortfolio;
+  return [];
 }
 
 export async function fetchPortfolioBySlug(slug: string): Promise<PortfolioItem | null> {
@@ -170,11 +170,14 @@ export async function fetchPortfolioBySlug(slug: string): Promise<PortfolioItem 
         isConcept: data.is_concept ?? false,
       };
     }
+    if (!error && !data) {
+      return null;
+    }
   } catch {
-    // Fall through to static
+    // Fall through to null
   }
 
-  return staticPortfolio.find((p) => p.slug === slug) || null;
+  return null;
 }
 
 // ── 3. Blog & Insights Articles ──────────────────────────────────────────────
@@ -186,7 +189,7 @@ export async function fetchInsights(): Promise<BlogPost[]> {
       .eq('is_published', true)
       .order('created_at', { ascending: false });
 
-    if (!error && data && data.length > 0) {
+    if (!error && Array.isArray(data)) {
       return data.map((a) => ({
         id: a.id,
         slug: a.slug,
@@ -207,7 +210,7 @@ export async function fetchInsights(): Promise<BlogPost[]> {
     console.warn('[DAL Notice] Supabase articles fetch fallback:', err);
   }
 
-  return staticInsights;
+  return [];
 }
 
 export async function fetchInsightBySlug(slug: string): Promise<BlogPost | null> {
@@ -236,11 +239,14 @@ export async function fetchInsightBySlug(slug: string): Promise<BlogPost | null>
         coverImage: data.cover_image || '/portfolio-mockups/mobile-app.png',
       };
     }
+    if (!error && !data) {
+      return null;
+    }
   } catch {
-    // Fall through to static
+    // Fall through to null
   }
 
-  return staticInsights.find((a) => a.slug === slug) || null;
+  return null;
 }
 
 // ── 4. Testimonials ──────────────────────────────────────────────────────────
