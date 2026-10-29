@@ -118,7 +118,7 @@ export async function POST(request: Request) {
     const cleanWhatsapp = (whatsappNumber || '').replace(/[^0-9]/g, '');
     const cleanWhatsappUrl = cleanWhatsapp
       ? `https://wa.me/${cleanWhatsapp}?text=${encodeURIComponent(
-          `Hi ${siteName || 'Growmybizz'} team, I would like to discuss a new project.`
+          `Hi ${siteName || 'Growmybiz24'} team, I would like to discuss a new project.`
         )}`
       : undefined;
 

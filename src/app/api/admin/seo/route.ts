@@ -13,38 +13,38 @@ async function checkAuth(): Promise<boolean> {
 const defaultSeoList = [
   {
     route_path: '/',
-    meta_title: 'Growmybizz | Digital Solutions for a Bigger Tomorrow',
-    meta_description: 'Growmybizz is a premier digital agency specializing in performant web development, modern branding, digital marketing, and AI automation.',
+    meta_title: 'Growmybiz24 | Digital Solutions for a Bigger Tomorrow',
+    meta_description: 'Growmybiz24 is a premier digital agency specializing in performant web development, modern branding, digital marketing, and AI automation.',
     og_image: '/og-image.jpg',
-    keywords: ['Growmybizz', 'Digital Agency', 'Web Development', 'AI Automation', 'Branding'],
+    keywords: ['Growmybiz24', 'Digital Agency', 'Web Development', 'AI Automation', 'Branding'],
   },
   {
     route_path: '/services',
-    meta_title: 'Services | Growmybizz Digital Solutions',
+    meta_title: 'Services | Growmybiz24 Digital Solutions',
     meta_description: 'Explore our high-performance digital services: Web & App Development, Design & Branding, Digital Marketing, AI Automation, and Content Production.',
     og_image: '/og-image.jpg',
     keywords: ['Web Development', 'UI UX Design', 'SEO Marketing', 'AI Agents'],
   },
   {
     route_path: '/portfolio',
-    meta_title: 'Portfolio & Case Studies | Growmybizz',
+    meta_title: 'Portfolio & Case Studies | Growmybiz24',
     meta_description: 'Discover our proven track record of architecting digital products, e-commerce solutions, and scalable enterprise designs.',
     og_image: '/og-image.jpg',
     keywords: ['Case Studies', 'Client Work', 'Web Applications', 'Design Systems'],
   },
   {
     route_path: '/insights',
-    meta_title: 'Insights & Technology Blog | Growmybizz',
+    meta_title: 'Insights & Technology Blog | Growmybiz24',
     meta_description: 'Practical guides and deep-dives on modern web architecture, digital marketing conversion rate optimization, and AI automation.',
     og_image: '/og-image.jpg',
     keywords: ['Tech Insights', 'Modern Web', 'CRO', 'AI Workflows'],
   },
   {
     route_path: '/contact',
-    meta_title: 'Contact Us | Start Your Project with Growmybizz',
-    meta_description: 'Get in touch with the Growmybizz leadership team. Let us turn your vision into scalable digital revenue.',
+    meta_title: 'Contact Us | Start Your Project with Growmybiz24',
+    meta_description: 'Get in touch with the Growmybiz24 leadership team. Let us turn your vision into scalable digital revenue.',
     og_image: '/og-image.jpg',
-    keywords: ['Contact Growmybizz', 'Hire Web Agency', 'Get In Touch'],
+    keywords: ['Contact Growmybiz24', 'Hire Web Agency', 'Get In Touch'],
   },
 ];
 

@@ -94,6 +94,7 @@ export function middleware(request: NextRequest) {
       !origin ||
       origin.includes(host) ||
       origin.includes('localhost') ||
+      origin.includes('growmybiz24') ||
       origin.includes('growmybizz.vercel.app') ||
       origin.includes('growmybizz.com');
 

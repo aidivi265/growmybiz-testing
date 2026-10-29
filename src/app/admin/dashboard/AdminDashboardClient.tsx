@@ -221,7 +221,7 @@ function DashboardHome({ setSection }: { setSection: (s: string) => void }) {
     <div>
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-white mb-1">Growmybizz Mission Control</h2>
+          <h2 className="text-xl font-bold text-white mb-1">Growmybiz24 Mission Control</h2>
           <p className="text-white/40 text-sm">Real-time database records and content management powered by Supabase.</p>
         </div>
         <button
@@ -353,7 +353,7 @@ function DashboardHome({ setSection }: { setSection: (s: string) => void }) {
                       <div className="inline-flex items-center gap-1.5">
                         {l.phone && (
                           <a
-                            href={`https://wa.me/${l.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Hi ' + l.name + ', thank you for contacting Growmybizz!')}`}
+                            href={`https://wa.me/${l.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Hi ' + l.name + ', thank you for contacting Growmybiz24!')}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition-colors"
@@ -496,7 +496,7 @@ function LeadsPanel() {
           {filteredLeads.map((lead) => {
             const cleanPhone = lead.phone ? lead.phone.replace(/[^0-9]/g, '') : '';
             const whatsappLink = cleanPhone.length >= 10
-              ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent('Hi ' + lead.name + ', thank you for reaching out to Growmybizz regarding ' + lead.service + '! We received your project brief and would love to discuss this with you.')}`
+              ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent('Hi ' + lead.name + ', thank you for reaching out to Growmybiz24 regarding ' + lead.service + '! We received your project brief and would love to discuss this with you.')}`
               : null;
 
             return (
@@ -558,7 +558,7 @@ function LeadsPanel() {
                     )}
 
                     <a
-                      href={`mailto:${lead.email}?subject=Re:%20Growmybizz%20Inquiry%20-%20${encodeURIComponent(lead.service)}`}
+                      href={`mailto:${lead.email}?subject=Re:%20Growmybiz24%20Inquiry%20-%20${encodeURIComponent(lead.service)}`}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-[#3b82d4] hover:bg-[#2563eb] transition-all shadow-sm"
                     >
                       <Mail size={12} />
@@ -792,10 +792,10 @@ function SiteConfigPanel() {
           </div>
           <div className="space-y-3">
             {[
-              { label: 'LinkedIn', key: 'linkedin' as const, placeholder: 'https://linkedin.com/company/growmybizz' },
-              { label: 'Instagram', key: 'instagram' as const, placeholder: 'https://instagram.com/growmybizz' },
-              { label: 'Twitter / X', key: 'twitter' as const, placeholder: 'https://x.com/growmybizz' },
-              { label: 'YouTube', key: 'youtube' as const, placeholder: 'https://youtube.com/@growmybizz' },
+              { label: 'LinkedIn', key: 'linkedin' as const, placeholder: 'https://linkedin.com/company/growmybiz24' },
+              { label: 'Instagram', key: 'instagram' as const, placeholder: 'https://instagram.com/growmybiz24' },
+              { label: 'Twitter / X', key: 'twitter' as const, placeholder: 'https://x.com/growmybiz24' },
+              { label: 'YouTube', key: 'youtube' as const, placeholder: 'https://youtube.com/@growmybiz24' },
             ].map((s) => {
               const isVisible = (data.socialVisibility as any)?.[s.key] !== false;
               return (

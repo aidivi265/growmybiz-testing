@@ -69,7 +69,7 @@ export default function AdminLoginPage() {
             <BrandLogo size="lg" theme="dark" variant="stacked" centered={true} asLink={false} />
           </div>
           <h1 className="text-xl font-bold text-white">Admin Access</h1>
-          <p className="text-white/40 text-sm mt-1">Growmybizz CMS</p>
+          <p className="text-white/40 text-sm mt-1">Growmybiz24 CMS</p>
         </div>
 
         {/* Login form card */}
@@ -90,7 +90,7 @@ export default function AdminLoginPage() {
                   value={form.username}
                   onChange={(e) => setForm((p) => ({ ...p, username: e.target.value }))}
                   className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white/[0.05] border border-white/[0.08] text-white placeholder-white/25 text-sm focus:outline-none focus:border-[#3b82d4]/60 focus:ring-1 focus:ring-[#3b82d4]/20 transition-colors"
-                  placeholder="admin or admin@growmybizz.com"
+                  placeholder="Enter your username"
                   autoComplete="username"
                   required
                 />
@@ -109,7 +109,7 @@ export default function AdminLoginPage() {
                   value={form.password}
                   onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))}
                   className="w-full pl-9 pr-10 py-2.5 rounded-xl bg-white/[0.05] border border-white/[0.08] text-white placeholder-white/25 text-sm focus:outline-none focus:border-[#3b82d4]/60 focus:ring-1 focus:ring-[#3b82d4]/20 transition-colors"
-                  placeholder="Enter password"
+                  placeholder="Enter your password"
                   autoComplete="current-password"
                   required
                 />
@@ -148,10 +148,10 @@ export default function AdminLoginPage() {
               )}
             </button>
 
-            {/* Quick credentials hint */}
+            {/* Security notice */}
             <div className="pt-1 text-center">
               <p className="text-[11px] text-white/30">
-                Authorized for <span className="text-white/50 font-mono">admin</span> or founder email
+                Protected by 256-bit encrypted session authentication
               </p>
             </div>
           </form>

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Admin Access | Growmybizz CMS',
+  title: 'Admin Access | Growmybiz24 CMS',
   robots: {
     index: false,
     follow: false,

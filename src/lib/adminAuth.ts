@@ -23,7 +23,7 @@ export function verifyAdminCredentials(username?: string, password?: string): bo
     process.env.ADMIN_EMAIL ||
     'admin'
   ).toLowerCase().trim();
-  const configuredPass = (process.env.ADMIN_PASSWORD || 'growmybizz2025').trim();
+  const configuredPass = (process.env.ADMIN_PASSWORD || 'growmybiz24').trim();
 
   const userClean = username.trim().toLowerCase();
   const passClean = password.trim();

@@ -2,10 +2,10 @@ import type { SiteConfig } from '@/types';
 
 export const siteConfig: SiteConfig & { whatsappNumber: string; whatsappUrl: string } = {
   siteName: 'Growmybiz24',
-  tagline: 'Digital Growth Partner',
+  tagline: 'Digital Solutions for a Bigger Tomorrow',
   description:
     'Full-service digital agency — web, design, marketing, content and AI services for businesses that want to grow.',
-  email: 'growmybizz.team@gmail.com',
+  email: 'growmybiz24@gmail.com',
   phone: '+91 72908 84480',
   address: 'New Delhi, India (Global Delivery)',
   whatsappNumber: '+91 72908 84480',

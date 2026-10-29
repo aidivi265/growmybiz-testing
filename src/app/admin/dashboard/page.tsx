@@ -5,7 +5,7 @@ import { ADMIN_COOKIE_NAME, verifySessionToken } from '@/lib/adminAuth';
 import AdminDashboardClient from './AdminDashboardClient';
 
 export const metadata: Metadata = {
-  title: 'Admin Dashboard | Growmybizz CMS',
+  title: 'Admin Dashboard | Growmybiz24 CMS',
   robots: { index: false, follow: false },
 };
 

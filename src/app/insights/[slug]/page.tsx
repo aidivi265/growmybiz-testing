@@ -278,7 +278,7 @@ export default async function BlogPostPage({ params }: Props) {
                 </div>
                 <div>
                   <p className="font-semibold text-[#0F1C31] text-sm">{post.author}</p>
-                  <p className="text-xs text-[#6B7E95]">Growmybizz — Digital Growth Partner</p>
+                  <p className="text-xs text-[#6B7E95]">Growmybiz24 — Digital Growth Partner</p>
                 </div>
               </div>
             </article>

@@ -46,7 +46,7 @@ export default function TeamPanel() {
       role: 'Growth Strategist & Director',
       bio: 'Deep expertise in scaling digital products, conversion architecture, and client success.',
       avatar: '/team/placeholder-founder.jpg',
-      linkedin: 'https://linkedin.com/company/growmybizz',
+      linkedin: 'https://linkedin.com/company/growmybiz24',
     };
     setMembers([...members, newMember]);
     setActiveMemberIndex(members.length);

@@ -45,10 +45,10 @@ export async function POST(request: Request) {
     // Anti-timing analysis artificial delay (200-300ms)
     await new Promise((r) => setTimeout(r, 250));
 
-    // Normalize email (if "admin" is passed, map to "admin@growmybizz.com")
+    // Normalize email (if "admin" is passed, map to "admin@growmybiz24.com")
     const loginEmail = username.includes('@')
       ? username.trim().toLowerCase()
-      : `${username.trim().toLowerCase()}@growmybizz.com`;
+      : `${username.trim().toLowerCase()}@growmybiz24.com`;
 
     let authenticated = false;
     let authUser: { email?: string; id?: string; role?: string } | null = null;

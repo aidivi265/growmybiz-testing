@@ -66,7 +66,7 @@ export async function POST(request: Request) {
           excerpt: excerpt || '',
           content_markdown: content_markdown || '',
           cover_image: cover_image || '/portfolio-mockups/mobile-app.png',
-          author: author || 'Growmybizz Team',
+          author: author || 'Growmybiz24 Team',
           read_time: read_time || '4 min read',
           tags: tags || [],
           is_published: is_published ?? true,

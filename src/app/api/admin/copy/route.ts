@@ -39,7 +39,7 @@ export async function GET() {
       orbit_config: map.orbit_config || defaultOrbitConfig,
       about_content: map.about_content || {
         story_heading: 'Built to help businesses grow online.',
-        story_body: 'We started Growmybizz because we were tired of seeing businesses get passed between separate design agencies, dev shops, and ad contractors who never spoke to each other.',
+        story_body: 'We started Growmybiz24 because we were tired of seeing businesses get passed between separate design agencies, dev shops, and ad contractors who never spoke to each other.',
         mission: 'Coordinate technical, creative, and growth disciplines under one roof so digital execution moves fast and directly drives revenue.',
       },
       cta_content: map.cta_content || {
