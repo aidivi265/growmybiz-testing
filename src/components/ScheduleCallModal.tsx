@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Calendar, MessageSquare, Phone, X, ArrowRight, Clock, CheckCircle } from 'lucide-react';
+import { Calendar, MessageSquare, Phone, X, CheckCircle } from 'lucide-react';
 import { siteConfig } from '@/data/siteConfig';
 
 interface ScheduleCallModalProps {
@@ -36,6 +36,16 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
       })
       .catch(() => {});
   }, []);
+
+  // Listen for Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -74,9 +84,12 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-sm animate-fadeIn">
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md animate-fadeIn"
+      onClick={onClose}
+    >
       <div
-        className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto bg-[#0E1726] border border-white/10 rounded-2xl p-5 sm:p-8 shadow-2xl text-white"
+        className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#0E1726] border border-white/15 rounded-2xl p-5 sm:p-8 shadow-2xl text-white my-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Glow accent */}
@@ -88,13 +101,13 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+          className="absolute top-4 right-4 sm:top-5 sm:right-5 p-2 rounded-xl text-white/60 hover:text-white bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
           aria-label="Close modal"
         >
           <X size={18} />
         </button>
 
-        <div className="flex items-center gap-2.5 mb-2">
+        <div className="flex items-center gap-2.5 mb-2.5">
           <div className="w-8 h-8 rounded-lg bg-[#477BDB]/20 border border-[#477BDB]/40 flex items-center justify-center text-[#477BDB]">
             <Calendar size={16} />
           </div>
@@ -103,8 +116,10 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
           </span>
         </div>
 
-        <h3 className="text-xl sm:text-2xl font-bold mb-2">Schedule a 15-Min Discovery Call</h3>
-        <p className="text-white/60 text-xs sm:text-sm mb-6 leading-relaxed">
+        <h3 className="text-xl sm:text-2xl font-black mb-2 text-white tracking-tight">
+          Schedule a 15-Min Discovery Call
+        </h3>
+        <p className="text-white/70 text-xs sm:text-sm mb-5 leading-relaxed">
           Skip lengthy back-and-forths. We will review your current website, digital bottlenecks, and business growth roadmap.
         </p>
 
@@ -114,40 +129,40 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
               <CheckCircle size={24} />
             </div>
             <div>
-              <h4 className="text-lg font-bold">Call Request Logged!</h4>
-              <p className="text-xs text-white/60 mt-1 max-w-sm mx-auto">
-                Our founders have received your slot request for <strong>{preferredTime}</strong> and will reach out shortly.
+              <h4 className="text-lg font-bold text-white">Call Request Logged!</h4>
+              <p className="text-xs text-white/70 mt-1 max-w-sm mx-auto">
+                Our founders have received your slot request for <strong className="text-white">{preferredTime}</strong> and will reach out shortly.
               </p>
             </div>
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl text-sm font-semibold bg-[#25D366] hover:bg-[#20ba59] text-white transition-colors"
+              className="inline-flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl text-sm font-semibold bg-[#25D366] hover:bg-[#20ba59] text-white transition-colors cursor-pointer"
             >
               <MessageSquare size={16} />
               Confirm Immediately on WhatsApp
             </a>
           </div>
         ) : (
-          <div className="space-y-5">
+          <div className="space-y-4 sm:space-y-5">
             {/* Direct WhatsApp Call Out */}
-            <div className="p-4 rounded-xl bg-gradient-to-r from-[#25D366]/10 to-[#25D366]/5 border border-[#25D366]/30">
+            <div className="p-3.5 sm:p-4 rounded-xl bg-gradient-to-r from-[#25D366]/15 to-[#25D366]/5 border border-[#25D366]/30">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-full bg-[#25D366] flex items-center justify-center text-white shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-[#25D366] flex items-center justify-center text-white shrink-0 shadow-sm">
                     <MessageSquare size={16} />
                   </div>
                   <div>
                     <p className="text-xs font-bold text-white">Instant WhatsApp Connect</p>
-                    <p className="text-[11px] text-white/50">Fastest response directly with our team</p>
+                    <p className="text-[11px] text-white/60">Fastest response directly with our team</p>
                   </div>
                 </div>
                 <a
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-[#25D366] hover:bg-[#20ba59] text-white transition-all shrink-0"
+                  className="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-[#25D366] hover:bg-[#20ba59] text-white transition-all shrink-0 cursor-pointer shadow-sm"
                 >
                   Chat Now
                 </a>
@@ -174,7 +189,7 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. John Doe"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#477BDB] focus:ring-1 focus:ring-[#477BDB] transition-colors"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/15 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#477BDB] focus:ring-1 focus:ring-[#477BDB] transition-colors"
                 />
               </div>
 
@@ -188,12 +203,12 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
                   value={phoneOrEmail}
                   onChange={(e) => setPhoneOrEmail(e.target.value)}
                   placeholder="e.g. +91 98765 43210 or name@company.com"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#477BDB] focus:ring-1 focus:ring-[#477BDB] transition-colors"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/15 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#477BDB] focus:ring-1 focus:ring-[#477BDB] transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-white/80 mb-1">
+                <label className="block text-xs font-medium text-white/80 mb-1.5">
                   Preferred Time Window
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
@@ -206,9 +221,9 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
                       type="button"
                       key={timeSlot}
                       onClick={() => setPreferredTime(timeSlot)}
-                      className={`p-2 rounded-lg border text-center transition-all ${
+                      className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
                         preferredTime === timeSlot
-                          ? 'border-[#477BDB] bg-[#477BDB]/20 text-white font-semibold'
+                          ? 'border-[#477BDB] bg-[#477BDB]/25 text-white font-semibold shadow-sm'
                           : 'border-white/10 bg-white/5 text-white/60 hover:text-white hover:border-white/20'
                       }`}
                     >
@@ -221,14 +236,14 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 px-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-[#477BDB] to-[#6477C8] hover:shadow-lg hover:shadow-blue-500/25 transition-all flex items-center justify-center gap-2 mt-2 disabled:opacity-60"
+                className="w-full py-3 px-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-[#477BDB] to-[#6477C8] hover:shadow-lg hover:shadow-blue-500/25 transition-all flex items-center justify-center gap-2 mt-2 disabled:opacity-60 cursor-pointer"
               >
                 {loading ? (
                   <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
                 ) : (
                   <>
                     <Phone size={14} />
-                    Confirm Call Request
+                    <span>Confirm Call Request</span>
                   </>
                 )}
               </button>
@@ -241,4 +256,3 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
 }
 
 export default ScheduleCallModal;
-

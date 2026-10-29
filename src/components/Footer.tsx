@@ -123,12 +123,12 @@ export default function Footer() {
       {/* ── Main grid ── */}
       <div className="bg-[#0F1E36]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-          <div className="grid grid-cols-2 md:grid-cols-12 gap-8 lg:gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10">
 
             {/* Brand col */}
-            <div className="col-span-2 md:col-span-5">
+            <div className="col-span-1 sm:col-span-2 lg:col-span-4">
               <div className="mb-5">
-                <BrandLogo theme="dark" size="xl" showTagline={false} asLink={true} />
+                <BrandLogo theme="dark" size="lg" showTagline={false} asLink={true} />
               </div>
               <p className="text-[#8BA5C8] text-sm leading-relaxed mb-6 max-w-sm">
                 {config.description}
@@ -166,7 +166,7 @@ export default function Footer() {
 
             {/* Services */}
             {pageVisibility.services !== false && (
-              <div className="col-span-1 md:col-span-3">
+              <div className="col-span-1 sm:col-span-1 lg:col-span-3">
                 <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-4">Services</h4>
                 <ul className="space-y-2">
                   {servicesList.map((s) => (
@@ -183,7 +183,7 @@ export default function Footer() {
             )}
 
             {/* Company */}
-            <div className="col-span-1 md:col-span-2">
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
               <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-4">Company</h4>
               <ul className="space-y-2">
                 {[
@@ -206,7 +206,7 @@ export default function Footer() {
             </div>
 
             {/* Legal */}
-            <div className="col-span-1 md:col-span-2">
+            <div className="col-span-1 sm:col-span-2 lg:col-span-3">
               <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-4">Legal</h4>
               <ul className="space-y-2">
                 {[

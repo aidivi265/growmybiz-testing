@@ -57,6 +57,11 @@
     color: var(--text-heading);
   }
 
+  /* Headings inside white-text containers inherit white */
+  .text-white h1, .text-white h2, .text-white h3, .text-white h4, .text-white h5, .text-white h6 {
+    color: #ffffff;
+  }
+
   ::selection { background: #477BDB; color: #fff; }
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--bg-subtle); }

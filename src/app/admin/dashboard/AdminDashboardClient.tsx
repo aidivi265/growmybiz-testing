@@ -90,7 +90,7 @@ export default function AdminDashboardClient() {
       {/* Sidebar backdrop — mobile */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/60 z-30 lg:hidden"
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-30 lg:hidden animate-fadeIn cursor-pointer"
           onClick={() => setSidebarOpen(false)}
         />
       )}

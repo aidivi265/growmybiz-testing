@@ -64,6 +64,15 @@ export default function TestimonialsPanel() {
     loadTestimonials();
   }, []);
 
+  useEffect(() => {
+    if (!isModalOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsModalOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isModalOpen]);
+
   const openCreateModal = () => {
     setEditingId(null);
     setForm({
@@ -259,10 +268,16 @@ export default function TestimonialsPanel() {
 
       {/* Create / Edit Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#0f0f18] rounded-2xl border border-white/10 w-full max-w-lg p-6 shadow-2xl relative">
-            <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/[0.06]">
-              <h3 className="text-base font-bold text-white">
+        <div
+          className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div
+            className="bg-[#0f0f18] rounded-2xl border border-white/15 w-full max-w-lg p-5 sm:p-6 shadow-2xl relative my-auto text-white"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/[0.08]">
+              <h3 className="text-base font-bold text-white tracking-tight">
                 {editingId ? 'Edit Testimonial' : 'Add Client Testimonial'}
               </h3>
               <button

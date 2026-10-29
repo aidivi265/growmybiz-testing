@@ -80,6 +80,15 @@ export default function ServicesPanel() {
     loadData();
   }, []);
 
+  useEffect(() => {
+    if (!isModalOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsModalOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isModalOpen]);
+
   const toggleServiceVisibility = async (s: any) => {
     const currentStatus = s.is_published !== false;
     const nextStatus = !currentStatus;
@@ -605,10 +614,16 @@ export default function ServicesPanel() {
 
       {/* ── Edit/Create Service Modal ── */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#0e0e18] border border-white/10 rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 text-white shadow-2xl">
+        <div
+          className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div
+            className="bg-[#0e0e18] border border-white/15 rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto p-5 sm:p-6 text-white shadow-2xl my-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-5">
-              <h3 className="text-base font-bold text-white">
+              <h3 className="text-base font-bold text-white tracking-tight">
                 {editingId ? 'Edit Service' : 'Create New Service'}
               </h3>
               <button
