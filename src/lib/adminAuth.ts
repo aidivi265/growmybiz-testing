@@ -18,7 +18,11 @@ if (process.env.NODE_ENV === 'production' && !process.env.ADMIN_SESSION_SECRET) 
 export function verifyAdminCredentials(username?: string, password?: string): boolean {
   if (!username || !password) return false;
 
-  const configuredUser = (process.env.ADMIN_USERNAME || 'admin').toLowerCase().trim();
+  const configuredUser = (
+    process.env.ADMIN_USERNAME ||
+    process.env.ADMIN_EMAIL ||
+    'admin'
+  ).toLowerCase().trim();
   const configuredPass = (process.env.ADMIN_PASSWORD || 'growmybizz2025').trim();
 
   const userClean = username.trim().toLowerCase();

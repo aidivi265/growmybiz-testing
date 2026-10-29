@@ -11,6 +11,9 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateStaticParams() {
   const dynamicPosts = await fetchInsights();
   const pool = dynamicPosts && dynamicPosts.length > 0 ? dynamicPosts : defaultBlogPosts;

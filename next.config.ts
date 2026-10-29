@@ -5,9 +5,9 @@ const cspHeader = `
   default-src 'self';
   script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://growmybizz.vercel.app;
+  img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://growmybizz.vercel.app https://*.growmybizz.vercel.app https://growmybizz.com https://*.growmybizz.com;
   font-src 'self' https://fonts.gstatic.com data:;
-  connect-src 'self' https://*.supabase.co https://va.vercel-scripts.com https://vitals.vercel-insights.com;
+  connect-src 'self' https://*.supabase.co https://va.vercel-scripts.com https://vitals.vercel-insights.com https://growmybizz.com https://*.growmybizz.com;
   frame-ancestors 'none';
   base-uri 'self';
   form-action 'self';
@@ -43,6 +43,14 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "growmybizz.vercel.app",
+      },
+      {
+        protocol: "https",
+        hostname: "growmybizz.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.growmybizz.com",
       },
     ],
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days

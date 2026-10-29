@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   keywords: ['digital agency', 'web development', 'design', 'branding', 'digital marketing', 'AI automation', 'India', 'Growmybizz'],
   authors: [{ name: siteConfig.siteName }],
   creator: siteConfig.siteName,
-  metadataBase: new URL('https://growmybizz.vercel.app'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://growmybizz.vercel.app'),
   icons: {
     icon: '/growmybizz-app-icon.png',
     apple: '/icon-192.png',

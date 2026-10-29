@@ -17,6 +17,9 @@ import {
   fetchInsights,
 } from '@/lib/dal';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'Growmybizz — Digital Growth Partner',
   description:

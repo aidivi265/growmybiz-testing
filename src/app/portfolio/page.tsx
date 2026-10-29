@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import PortfolioPageClient from './PortfolioPageClient';
 import { fetchPortfolio } from '@/lib/dal';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'Portfolio',
   description: 'Concept projects, frameworks and client work — labelled clearly, described honestly.',
