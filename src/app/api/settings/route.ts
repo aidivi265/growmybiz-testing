@@ -9,12 +9,17 @@ export async function GET() {
     const [settingsRes, ctaRes, servicesRes] = await Promise.all([
       supabaseAdmin.from('site_settings').select('*').eq('id', 'global').maybeSingle(),
       supabaseAdmin.from('page_content').select('data').eq('id', 'cta_content').maybeSingle(),
-      supabaseAdmin.from('services').select('id, title, slug').eq('is_active', true).order('sort_order', { ascending: true }),
+      supabaseAdmin.from('services').select('id, title, slug').eq('is_published', true).order('order_index', { ascending: true }),
     ]);
 
     const settingsData = settingsRes.data;
     const ctaData = ctaRes.data?.data;
     const servicesData = servicesRes.data;
+
+    const rawSocial = settingsData?.social || siteConfig.social;
+    const socialVisibility = rawSocial?._visibility || {};
+    const cleanSocial = { ...rawSocial };
+    delete cleanSocial._visibility;
 
     return NextResponse.json(
       {
@@ -28,7 +33,8 @@ export async function GET() {
           address: settingsData?.address || siteConfig.address,
           whatsappNumber: settingsData?.whatsapp_number || siteConfig.whatsappNumber,
           whatsappUrl: settingsData?.whatsapp_url || siteConfig.whatsappUrl,
-          social: settingsData?.social || siteConfig.social,
+          social: cleanSocial,
+          socialVisibility,
         },
         ctaContent: ctaData || {
           heading: "Let's build something worth growing.",

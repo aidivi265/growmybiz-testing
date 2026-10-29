@@ -12,6 +12,9 @@ export const metadata: Metadata = {
     'Six disciplines, one connected team. Web, design, marketing, content, AI and more — built around your goals.',
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function ServicesPage() {
   const services = await fetchServices();
   return (

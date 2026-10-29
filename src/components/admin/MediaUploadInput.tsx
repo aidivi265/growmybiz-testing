@@ -82,7 +82,7 @@ export default function MediaUploadInput({
           type="file"
           ref={fileInputRef}
           onChange={handleFileChange}
-          accept="image/png,image/jpeg,image/webp,image/svg+xml"
+          accept="image/*"
           className="hidden"
         />
 
@@ -90,41 +90,34 @@ export default function MediaUploadInput({
           type="button"
           disabled={uploading}
           onClick={() => fileInputRef.current?.click()}
-          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-white/[0.06] hover:bg-white/[0.1] text-white/80 hover:text-white border border-white/10 transition-colors disabled:opacity-50 shrink-0"
+          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-white/[0.06] hover:bg-white/[0.1] text-white/80 hover:text-white border border-white/10 transition-colors disabled:opacity-50 shrink-0 cursor-pointer"
         >
           {uploading ? (
             <>
               <Loader2 size={13} className="animate-spin text-[#3b82d4]" />
-              <span>Uploading...</span>
+              <span>Uploading to CDN...</span>
             </>
           ) : (
             <>
               <UploadCloud size={13} className="text-[#3b82d4]" />
-              <span>Upload CDN</span>
+              <span>Choose Photo</span>
             </>
           )}
         </button>
       </div>
 
-      {error && <p className="text-[11px] text-red-400">{error}</p>}
+      {error && <p className="text-[11px] text-red-400 font-medium">{error}</p>}
       {helperText && !error && <p className="text-[11px] text-white/40">{helperText}</p>}
 
       {value && (
-        <div className="mt-2 relative w-full h-28 rounded-lg overflow-hidden border border-white/10 bg-black/40 flex items-center justify-center">
-          {value.startsWith('http') || value.startsWith('/') ? (
-            <Image
-              src={value}
-              alt="Preview"
-              fill
-              className="object-contain p-1"
-              unoptimized
-            />
-          ) : (
-            <div className="flex items-center gap-2 text-white/30 text-xs">
-              <ImageIcon size={16} />
-              <span>{value}</span>
-            </div>
-          )}
+        <div className="mt-2 relative w-full h-28 rounded-lg overflow-hidden border border-white/10 bg-black/40 flex items-center justify-center p-2">
+          {/* Native img tag ensures zero Next.js optimizer latency or domain blocking in admin */}
+          <img
+            src={value}
+            alt="Preview"
+            className="max-h-full max-w-full object-contain rounded"
+            crossOrigin="anonymous"
+          />
         </div>
       )}
     </div>

@@ -30,19 +30,13 @@ export const defaultServiceCategories: Record<string, string[]> = {
     'B2B LinkedIn & Corporate Pipeline',
     'Education & Course Admissions',
   ],
-  'seo-organic-growth': [
-    'Medical Practices & Local 3-Pack',
-    'Cafes & Restaurant Discovery',
-    'E-Commerce Category Rank Dominance',
-    'B2B Technical & Topical Authority',
-    'Real Estate Regional Search',
-  ],
-  'content-social-media': [
+  'video-content': [
     'Cafes & Dining Viral Reels',
     'Founder & Executive LinkedIn Presence',
     'D2C Product Reels & UGC Creators',
     'Healthcare & Doctor Thought Leadership',
     'Real Estate Property Video Tours',
+    'Brand Films & Commercial Storytelling',
   ],
   'ai-automation': [
     'Clinics 24/7 Appointment Booking Bots',
@@ -50,5 +44,25 @@ export const defaultServiceCategories: Record<string, string[]> = {
     'Real Estate Lead Qualification Bots',
     'Customer Support & Invoicing Automation',
     'E-Commerce Abandoned Cart Recovery Flows',
+  ],
+  'other-digital-services': [
+    'Local SEO & Google Business 3-Pack',
+    'Custom API & CRM Integrations',
+    'Cloud Migration & Serverless DevOps',
+    'Core Web Vitals & Security Hardening',
+    'Ongoing Web Maintenance Retainers',
+  ],
+  // Backwards compatibility aliases
+  'content-production': [
+    'Cafes & Dining Viral Reels',
+    'Founder & Executive LinkedIn Presence',
+    'D2C Product Reels & UGC Creators',
+    'Healthcare & Doctor Thought Leadership',
+  ],
+  'seo-organic-growth': [
+    'Medical Practices & Local 3-Pack',
+    'Cafes & Restaurant Discovery',
+    'E-Commerce Category Rank Dominance',
+    'B2B Technical & Topical Authority',
   ],
 };

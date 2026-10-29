@@ -415,9 +415,9 @@ export default function PortfolioPanel() {
                       <option value="web-app-development" className="bg-[#0f172a] text-white">Web & App Development</option>
                       <option value="design-branding" className="bg-[#0f172a] text-white">Design & Branding</option>
                       <option value="digital-marketing" className="bg-[#0f172a] text-white">Digital Marketing & Paid Ads</option>
-                      <option value="seo-organic-growth" className="bg-[#0f172a] text-white">SEO & Organic Growth</option>
-                      <option value="content-social-media" className="bg-[#0f172a] text-white">Content & Social Media</option>
+                      <option value="video-content" className="bg-[#0f172a] text-white">Video & Content</option>
                       <option value="ai-automation" className="bg-[#0f172a] text-white">AI & Business Automation</option>
+                      <option value="other-digital-services" className="bg-[#0f172a] text-white">Other Digital Services</option>
                     </select>
                   </div>
                 </div>

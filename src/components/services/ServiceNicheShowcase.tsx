@@ -8,43 +8,47 @@ import type { PortfolioItem } from '@/types';
 import { SYNE_FONT } from '@/lib/fonts';
 
 interface ServiceNicheShowcaseProps {
+  serviceSlug?: string;
   serviceTitle: string;
   categories: string[];
   projects: PortfolioItem[];
   accentColor?: string;
 }
 
-function projectMatchesCategory(project: PortfolioItem, category: string): boolean {
-  const norm = category.toLowerCase();
-  const pIndustry = (project.industry || '').toLowerCase();
-  const pCategory = (project.category || '').toLowerCase();
-  const pTags = (project.tags || []).map((t) => t.toLowerCase());
+function projectMatchesCategory(project: PortfolioItem, category: string, serviceSlug?: string): boolean {
+  // If the project is linked to a specific service, only match on that service's page
+  if (serviceSlug && project.serviceSlug && project.serviceSlug !== serviceSlug) {
+    return false;
+  }
+
+  const norm = category.toLowerCase().trim();
+  const pIndustry = (project.industry || '').toLowerCase().trim();
+  const pTags = (project.tags || []).map((t) => t.toLowerCase().trim());
   const pTitle = (project.title || '').toLowerCase();
   const pClient = (project.client || '').toLowerCase();
 
-  // Keyword segment matching (e.g. "hospital", "clinic", "cafe", "restaurant", "ecommerce", "real estate")
+  // 1. Direct industry match (highest confidence)
+  if (pIndustry && (pIndustry === norm || pIndustry.includes(norm) || norm.includes(pIndustry))) {
+    return true;
+  }
+
+  // 2. Keyword segment matching (e.g. "hospital", "clinic", "cafe", "restaurant", "ecommerce", "real estate")
   const keywords = norm
     .split(/[,/&]+/)
     .map((k) => k.trim())
     .filter((k) => k.length > 2);
 
-  return (
-    pIndustry.includes(norm) ||
-    norm.includes(pIndustry) ||
-    pCategory.includes(norm) ||
-    norm.includes(pCategory) ||
-    keywords.some(
-      (k) =>
-        pIndustry.includes(k) ||
-        pCategory.includes(k) ||
-        pTags.some((t) => t.includes(k) || k.includes(t)) ||
-        pTitle.includes(k) ||
-        pClient.includes(k)
-    )
+  return keywords.some(
+    (k) =>
+      (pIndustry && pIndustry.includes(k)) ||
+      pTags.some((t) => t.includes(k) || k.includes(t)) ||
+      pTitle.includes(k) ||
+      pClient.includes(k)
   );
 }
 
 export default function ServiceNicheShowcase({
+  serviceSlug,
   serviceTitle,
   categories,
   projects,
@@ -52,7 +56,7 @@ export default function ServiceNicheShowcase({
 }: ServiceNicheShowcaseProps) {
   // RULE: Only keep categories that have at least one uploaded, published project
   const activeCategoriesWithProjects = categories.filter((cat) =>
-    projects.some((p) => p.published && projectMatchesCategory(p, cat))
+    projects.some((p) => p.published && projectMatchesCategory(p, cat, serviceSlug))
   );
 
   // If no category has a project, DO NOT RENDER the section
@@ -68,9 +72,9 @@ export default function ServiceNicheShowcase({
       ? projects.filter(
           (p) =>
             p.published &&
-            activeCategoriesWithProjects.some((cat) => projectMatchesCategory(p, cat))
+            activeCategoriesWithProjects.some((cat) => projectMatchesCategory(p, cat, serviceSlug))
         )
-      : projects.filter((p) => p.published && projectMatchesCategory(p, activeTab));
+      : projects.filter((p) => p.published && projectMatchesCategory(p, activeTab, serviceSlug));
 
   return (
     <section className="py-16 sm:py-20 relative overflow-hidden" style={{ background: '#09101D' }}>

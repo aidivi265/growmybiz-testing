@@ -20,6 +20,9 @@ const DEFAULT_ABOUT = {
   mission: 'To engineer transparent, measurable digital solutions that scale businesses sustainably.',
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function AboutPage() {
   const [members, values, settings, aboutCopy] = await Promise.all([
     fetchTeamMembers(),
@@ -165,7 +168,7 @@ export default async function AboutPage() {
             >
               {member.avatar ? (
                 <div className="w-14 h-14 rounded-2xl overflow-hidden relative mb-4 border border-[#E8EDF4] shadow-sm">
-                  <Image src={member.avatar} alt={member.name} fill className="object-cover" />
+                  <Image src={member.avatar} alt={member.name} fill className="object-cover" unoptimized />
                 </div>
               ) : (
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#477BDB]/20 to-[#6477C8]/20 flex items-center justify-center mb-4 border border-[#E8EDF4]">
@@ -175,17 +178,32 @@ export default async function AboutPage() {
               <h3 className="font-semibold text-[#0F1C31] mb-0.5">{member.name}</h3>
               <p className="text-[#477BDB] text-sm mb-3">{member.role}</p>
               <p className="text-[#6B7E95] text-sm leading-relaxed">{member.bio}</p>
-              {member.linkedin && (
-                <a
-                  href={member.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 mt-4 text-xs font-semibold text-[#6B7E95] hover:text-[#477BDB] transition-colors"
-                >
-                  LinkedIn
-                  <ArrowRight size={11} />
-                </a>
-              )}
+              
+              {/* Member Social Profiles (only displayed if explicitly marked visible) */}
+              <div className="flex items-center gap-3 mt-4">
+                {member.linkedin && member.showLinkedin !== false && (
+                  <a
+                    href={member.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B7E95] hover:text-[#477BDB] transition-colors"
+                  >
+                    <span>LinkedIn</span>
+                    <ArrowRight size={11} />
+                  </a>
+                )}
+                {member.instagram && member.showInstagram !== false && (
+                  <a
+                    href={member.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B7E95] hover:text-[#E1306C] transition-colors"
+                  >
+                    <span>Instagram</span>
+                    <ArrowRight size={11} />
+                  </a>
+                )}
+              </div>
             </div>
           ))}
 

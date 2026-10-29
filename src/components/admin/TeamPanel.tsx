@@ -231,24 +231,86 @@ export default function TeamPanel() {
                   <MediaUploadInput
                     label="Profile Picture / Avatar"
                     value={currentMember.avatar || ''}
-                    onChange={(url) => handleMemberChange(activeMemberIndex, 'avatar', url)}
-                    helperText="Upload a professional headshot (square aspect ratio recommended)."
+                    onChange={(url) => {
+                      handleMemberChange(activeMemberIndex, 'avatar', url);
+                    }}
+                    helperText="Upload a professional headshot (square aspect ratio recommended). Supported: JPG, PNG, WEBP, AVIF up to 15MB."
                   />
                 </div>
 
-                <div>
-                  <label className="block text-xs font-medium text-white/70 mb-1">
-                    LinkedIn Profile URL
-                  </label>
-                  <input
-                    type="text"
-                    value={currentMember.linkedin || ''}
-                    onChange={(e) =>
-                      handleMemberChange(activeMemberIndex, 'linkedin', e.target.value)
-                    }
-                    placeholder="https://linkedin.com/in/..."
-                    className="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/10 text-white text-xs outline-none"
-                  />
+                {/* Social Profiles & Visibility Controls */}
+                <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 space-y-3">
+                  <div className="text-xs font-semibold text-white/80">Social Links & Website Visibility</div>
+                  
+                  {/* LinkedIn */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[11px] font-medium text-white/70">
+                        LinkedIn Profile URL
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleMemberChange(
+                            activeMemberIndex,
+                            'showLinkedin',
+                            currentMember.showLinkedin === false ? true : false
+                          )
+                        }
+                        className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-colors cursor-pointer ${
+                          currentMember.showLinkedin !== false
+                            ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                            : 'bg-white/5 text-white/40 border border-white/10 hover:text-white'
+                        }`}
+                      >
+                        {currentMember.showLinkedin !== false ? '✓ LinkedIn Visible' : '✕ LinkedIn Hidden'}
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={currentMember.linkedin || ''}
+                      onChange={(e) =>
+                        handleMemberChange(activeMemberIndex, 'linkedin', e.target.value)
+                      }
+                      placeholder="https://linkedin.com/in/..."
+                      className="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-[#477BDB]"
+                    />
+                  </div>
+
+                  {/* Instagram */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[11px] font-medium text-white/70">
+                        Instagram Profile URL
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleMemberChange(
+                            activeMemberIndex,
+                            'showInstagram',
+                            currentMember.showInstagram === false ? true : false
+                          )
+                        }
+                        className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-colors cursor-pointer ${
+                          currentMember.showInstagram !== false
+                            ? 'bg-pink-500/20 text-pink-400 border border-pink-500/30'
+                            : 'bg-white/5 text-white/40 border border-white/10 hover:text-white'
+                        }`}
+                      >
+                        {currentMember.showInstagram !== false ? '✓ Instagram Visible' : '✕ Instagram Hidden'}
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={currentMember.instagram || ''}
+                      onChange={(e) =>
+                        handleMemberChange(activeMemberIndex, 'instagram', e.target.value)
+                      }
+                      placeholder="https://instagram.com/..."
+                      className="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-[#477BDB]"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -269,12 +331,26 @@ export default function TeamPanel() {
                   <div className="text-xs text-[#477BDB] font-medium">{currentMember.role}</div>
                 </div>
                 <p className="text-xs text-white/60 leading-relaxed">{currentMember.bio}</p>
-                {currentMember.linkedin && (
-                  <div className="pt-1 flex items-center gap-1 text-[11px] text-white/40">
-                    <Globe size={12} className="text-[#477BDB]" />
-                    <span className="truncate">{currentMember.linkedin}</span>
-                  </div>
-                )}
+                
+                {/* Social badges preview */}
+                <div className="pt-1 flex flex-wrap items-center gap-2">
+                  {currentMember.linkedin && currentMember.showLinkedin !== false && (
+                    <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-400 text-[11px] font-medium">
+                      <Globe size={11} />
+                      <span>LinkedIn</span>
+                    </div>
+                  )}
+                  {currentMember.instagram && currentMember.showInstagram !== false && (
+                    <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-pink-500/10 text-pink-400 text-[11px] font-medium">
+                      <Globe size={11} />
+                      <span>Instagram</span>
+                    </div>
+                  )}
+                  {((!currentMember.linkedin || currentMember.showLinkedin === false) &&
+                    (!currentMember.instagram || currentMember.showInstagram === false)) && (
+                    <span className="text-[10px] text-white/30 italic">No social links visible</span>
+                  )}
+                </div>
               </div>
             </>
           )}

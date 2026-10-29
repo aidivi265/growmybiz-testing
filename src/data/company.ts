@@ -9,6 +9,9 @@ export const teamMembers: TeamMember[] = [
     bio: 'Passionate about building digital solutions, helping businesses grow and turning ideas into reality. Specialized in full-stack web platforms, conversion funnels, and modern AI automation.',
     avatar: '/team/placeholder-founder.jpg',
     linkedin: 'https://linkedin.com/in/growmybizz',
+    instagram: 'https://instagram.com/growmybizz',
+    showLinkedin: true,
+    showInstagram: true,
   },
   {
     id: 'tm-2',
@@ -17,6 +20,9 @@ export const teamMembers: TeamMember[] = [
     bio: 'Specialist in modern design systems, conversion-driven landing pages, and intuitive user experiences for B2B SaaS and D2C brands.',
     avatar: '/team/placeholder-sanya.jpg',
     linkedin: 'https://linkedin.com/in/growmybizz',
+    instagram: 'https://instagram.com/growmybizz',
+    showLinkedin: true,
+    showInstagram: true,
   },
 ];
 

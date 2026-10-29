@@ -13,11 +13,21 @@ export interface SiteConfig {
   email: string;
   phone: string;
   address: string;
+  whatsappNumber?: string;
+  whatsappUrl?: string;
   social: {
     instagram?: string;
     linkedin?: string;
     twitter?: string;
     youtube?: string;
+    github?: string;
+  };
+  socialVisibility?: {
+    instagram?: boolean;
+    linkedin?: boolean;
+    twitter?: boolean;
+    youtube?: boolean;
+    github?: boolean;
   };
 }
 
@@ -101,6 +111,9 @@ export interface TeamMember {
   bio: string;
   avatar: string;
   linkedin?: string;
+  instagram?: string;
+  showLinkedin?: boolean;
+  showInstagram?: boolean;
 }
 
 export interface ProcessStep {

@@ -16,6 +16,9 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateStaticParams() {
   const dynamicServices = await fetchServices();
   const pool = dynamicServices && dynamicServices.length > 0 ? dynamicServices : defaultServices;
@@ -165,6 +168,7 @@ export default async function ServicePage({ params }: Props) {
 
       {/* ── Specialized Industry Solutions (Automatically hidden if no projects exist) ── */}
       <ServiceNicheShowcase
+        serviceSlug={slug}
         serviceTitle={service.title}
         categories={serviceCategories}
         projects={allProjects}

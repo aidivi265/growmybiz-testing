@@ -20,33 +20,37 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // 3. Validate File Size (Max 5MB)
-    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+    // 3. Validate File Size (Max 15MB to allow high-res mobile and camera headshots)
+    const MAX_FILE_SIZE = 15 * 1024 * 1024;
     if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json({ error: 'File exceeds 5MB size limit' }, { status: 400 });
+      return NextResponse.json({ error: 'File exceeds 15MB size limit. Please upload a photo under 15MB.' }, { status: 400 });
     }
 
-    // 4. Validate MIME Type
-    const allowedTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml', 'image/avif', 'image/gif'];
-    if (!allowedTypes.includes(file.type)) {
+    // 4. Validate MIME Type & File Extension
+    const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+    const extension = (originalName.split('.').pop() || 'png').toLowerCase();
+    const cleanBaseName = originalName.substring(0, originalName.lastIndexOf('.')) || 'media';
+    const filePath = `uploads/${Date.now()}_${cleanBaseName.slice(0, 30)}.${extension}`;
+
+    const allowedExtensions = ['png', 'jpg', 'jpeg', 'webp', 'svg', 'avif', 'gif', 'heic', 'heif'];
+    const isImageMime = file.type?.startsWith('image/') || file.type === 'application/octet-stream';
+    const isAllowedExt = allowedExtensions.includes(extension);
+
+    if (!isImageMime && !isAllowedExt) {
       return NextResponse.json(
-        { error: 'Invalid file format. Allowed formats: PNG, JPG, WEBP, AVIF, SVG.' },
+        { error: 'Invalid file format. Please upload an image (PNG, JPG, JPEG, WEBP, AVIF, SVG).' },
         { status: 400 }
       );
     }
 
-    // 5. Generate Safe Filename
-    const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const extension = originalName.split('.').pop() || 'png';
-    const cleanBaseName = originalName.substring(0, originalName.lastIndexOf('.')) || 'media';
-    const filePath = `uploads/${Date.now()}_${cleanBaseName.slice(0, 30)}.${extension}`;
-
-    // 6. Upload to Supabase Storage
+    // 5. Upload to Supabase Storage
     const buffer = Buffer.from(await file.arrayBuffer());
+    const contentType = file.type && file.type !== 'application/octet-stream' ? file.type : `image/${extension === 'jpg' ? 'jpeg' : extension}`;
+
     const { error: uploadError } = await supabaseAdmin.storage
       .from('growmybizz-media')
       .upload(filePath, buffer, {
-        contentType: file.type,
+        contentType,
         upsert: true,
       });
 

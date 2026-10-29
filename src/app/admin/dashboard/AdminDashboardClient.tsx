@@ -675,6 +675,12 @@ function SiteConfigPanel() {
       twitter: siteConfig.social.twitter || '',
       youtube: siteConfig.social.youtube || '',
     },
+    socialVisibility: {
+      linkedin: true,
+      instagram: true,
+      twitter: true,
+      youtube: true,
+    },
   });
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -762,30 +768,60 @@ function SiteConfigPanel() {
           />
         </div>
 
-        <div className="pt-2 border-t border-white/5 space-y-3">
-          <div className="text-xs font-semibold text-white/80">Social Media Channels</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="pt-4 border-t border-white/5 space-y-4">
+          <div>
+            <div className="text-xs font-semibold text-white">Social Media Channels & Visibility</div>
+            <p className="text-[11px] text-white/40">
+              Toggle any social channel to show or hide it across the whole website (footer, header, etc.). When hidden, it will completely vanish from the public site.
+            </p>
+          </div>
+          <div className="space-y-3">
             {[
-              { label: 'LinkedIn URL', key: 'linkedin' as const },
-              { label: 'Instagram URL', key: 'instagram' as const },
-              { label: 'Twitter / X URL', key: 'twitter' as const },
-              { label: 'YouTube URL', key: 'youtube' as const },
-            ].map((s) => (
-              <div key={s.key}>
-                <label className="block text-[11px] text-white/50 mb-1">{s.label}</label>
-                <input
-                  type="text"
-                  value={(data.social as any)?.[s.key] || ''}
-                  onChange={(e) =>
-                    setData({
-                      ...data,
-                      social: { ...(data.social || {}), [s.key]: e.target.value },
-                    })
-                  }
-                  className="w-full px-2.5 py-1.5 rounded-lg bg-[#0d0d14] border border-white/[0.08] text-white text-xs outline-none"
-                />
-              </div>
-            ))}
+              { label: 'LinkedIn', key: 'linkedin' as const, placeholder: 'https://linkedin.com/company/growmybizz' },
+              { label: 'Instagram', key: 'instagram' as const, placeholder: 'https://instagram.com/growmybizz' },
+              { label: 'Twitter / X', key: 'twitter' as const, placeholder: 'https://x.com/growmybizz' },
+              { label: 'YouTube', key: 'youtube' as const, placeholder: 'https://youtube.com/@growmybizz' },
+            ].map((s) => {
+              const isVisible = (data.socialVisibility as any)?.[s.key] !== false;
+              return (
+                <div key={s.key} className="p-3 rounded-xl bg-[#0d0d14] border border-white/[0.06] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-white/80">{s.label}</span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setData({
+                          ...data,
+                          socialVisibility: {
+                            ...(data.socialVisibility || {}),
+                            [s.key]: !isVisible,
+                          },
+                        })
+                      }
+                      className={`px-2.5 py-1 rounded-md text-[10px] font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                        isVisible
+                          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                          : 'bg-white/5 text-white/40 border border-white/10 hover:text-white'
+                      }`}
+                    >
+                      <span>{isVisible ? '✓ Visible on Website' : '✕ Hidden on Website'}</span>
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    value={(data.social as any)?.[s.key] || ''}
+                    placeholder={s.placeholder}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        social: { ...(data.social || {}), [s.key]: e.target.value },
+                      })
+                    }
+                    className="w-full px-2.5 py-1.5 rounded-lg bg-black/40 border border-white/[0.08] text-white text-xs outline-none focus:border-[#3b82d4]"
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

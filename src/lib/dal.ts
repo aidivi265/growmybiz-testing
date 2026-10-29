@@ -280,6 +280,11 @@ export async function fetchSiteSettings(): Promise<
       .maybeSingle();
 
     if (!error && data) {
+      const rawSocial = data.social || staticSiteConfig.social;
+      const socialVisibility = rawSocial?._visibility || {};
+      const cleanSocial = { ...rawSocial };
+      delete cleanSocial._visibility;
+
       return {
         siteName: data.site_name || staticSiteConfig.siteName,
         tagline: data.tagline || staticSiteConfig.tagline,
@@ -289,7 +294,8 @@ export async function fetchSiteSettings(): Promise<
         address: data.address || staticSiteConfig.address,
         whatsappNumber: data.whatsapp_number || staticSiteConfig.whatsappNumber,
         whatsappUrl: data.whatsapp_url || staticSiteConfig.whatsappUrl,
-        social: data.social || staticSiteConfig.social,
+        social: cleanSocial,
+        socialVisibility,
       };
     }
   } catch {

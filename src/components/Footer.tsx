@@ -40,12 +40,20 @@ export default function Footer() {
       .catch(() => {});
   }, []);
 
+  const rawSocial = config.social || {};
+  const visibility = (config as any).socialVisibility || {};
+
   const socialLinks: { label: string; abbr: string; href: string }[] = [
-    { label: 'LinkedIn',  abbr: 'Li', href: config.social?.linkedin  ?? 'https://linkedin.com/company/growmybizz' },
-    { label: 'Instagram', abbr: 'IG', href: config.social?.instagram ?? 'https://instagram.com/growmybizz' },
-    { label: 'Twitter/X', abbr: 'X',  href: config.social?.twitter   ?? 'https://x.com/growmybizz' },
-    { label: 'YouTube',   abbr: 'YT', href: config.social?.youtube   ?? 'https://youtube.com/@growmybizz' },
-  ];
+    { label: 'LinkedIn',  abbr: 'Li', href: rawSocial.linkedin || '' },
+    { label: 'Instagram', abbr: 'IG', href: rawSocial.instagram || '' },
+    { label: 'Twitter/X', abbr: 'X',  href: rawSocial.twitter || '' },
+    { label: 'YouTube',   abbr: 'YT', href: rawSocial.youtube || '' },
+    { label: 'GitHub',    abbr: 'GH', href: rawSocial.github || '' },
+  ].filter((s) => {
+    const key = s.label.toLowerCase().replace(/[^a-z]/g, '') as string;
+    const isExplicitlyHidden = visibility[key] === false || (key === 'twitterx' && visibility.twitter === false);
+    return !isExplicitlyHidden && Boolean(s.href && s.href.trim().length > 0);
+  });
 
   return (
     <footer>
@@ -131,16 +139,18 @@ export default function Footer() {
                   </li>
                 ))}
               </ul>
-              {/* Social icons */}
-              <div className="flex items-center gap-2 mt-5">
-                {socialLinks.map((s) => (
-                  <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
-                    aria-label={s.label}
-                    className="w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-[#8BA5C8] hover:text-white hover:border-[#477BDB]/60 hover:bg-[#477BDB]/20 transition-all text-[10px] font-bold">
-                    {s.abbr}
-                  </a>
-                ))}
-              </div>
+              {/* Social icons (only rendered if at least 1 social link is visible and not empty) */}
+              {socialLinks.length > 0 && (
+                <div className="flex items-center gap-2 mt-5">
+                  {socialLinks.map((s) => (
+                    <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
+                      aria-label={s.label}
+                      className="w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-[#8BA5C8] hover:text-white hover:border-[#477BDB]/60 hover:bg-[#477BDB]/20 transition-all text-[10px] font-bold">
+                      {s.abbr}
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Services */}
