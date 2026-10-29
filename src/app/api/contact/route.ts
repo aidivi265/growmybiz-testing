@@ -176,10 +176,11 @@ export async function POST(request: Request) {
       // Non-fatal if environment has read-only filesystem
     }
 
-    // 8. Instant Email Delivery via Resend (with full HTML escaping)
-    const resendApiKey = process.env.RESEND_API_KEY || '';
-    const notificationEmail = process.env.NOTIFICATION_EMAIL || '';
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'Growmybiz24 Leads <onboarding@resend.dev>';
+    // 8. Instant Email Delivery via Resend (with full HTML escaping and clean ASCII sanitization)
+    const cleanHeaderString = (str?: string) => (str || '').replace(/[^\x20-\x7E]/g, '').trim();
+    const resendApiKey = cleanHeaderString(process.env.RESEND_API_KEY);
+    const notificationEmail = cleanHeaderString(process.env.NOTIFICATION_EMAIL) || 'growmybiz24@gmail.com';
+    const fromEmail = (process.env.RESEND_FROM_EMAIL || 'Growmybiz24 <onboarding@resend.dev>').replace(/[\uFEFF]/g, '').trim();
 
     let emailDelivered = false;
     let emailDeliveryId: string | null = null;

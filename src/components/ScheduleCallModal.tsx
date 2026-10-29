@@ -99,11 +99,12 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
 
   const modalContent = (
     <div
-      className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md animate-fadeIn"
+      className="fixed inset-0 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-fadeIn"
+      style={{ zIndex: 999999 }}
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#0E1726] border border-white/15 rounded-2xl p-5 sm:p-8 shadow-2xl text-white my-auto"
+        className="relative w-full max-w-md max-h-[92vh] overflow-y-auto bg-[#0E1726] border border-white/20 rounded-2xl p-4 sm:p-6 shadow-2xl text-white my-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Glow accent */}
@@ -115,82 +116,94 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 sm:top-5 sm:right-5 p-2 rounded-xl text-white/60 hover:text-white bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
+          className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 p-2 rounded-xl text-white/70 hover:text-white bg-white/10 hover:bg-white/20 transition-colors cursor-pointer"
           aria-label="Close modal"
         >
           <X size={18} />
         </button>
 
-        <div className="flex items-center gap-2.5 mb-2.5">
-          <div className="w-8 h-8 rounded-lg bg-[#477BDB]/20 border border-[#477BDB]/40 flex items-center justify-center text-[#477BDB]">
-            <Calendar size={16} />
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-7 h-7 rounded-lg bg-[#477BDB]/25 border border-[#477BDB]/50 flex items-center justify-center text-[#7AA2FF]">
+            <Calendar size={14} />
           </div>
-          <span className="text-[11px] font-bold uppercase tracking-widest text-[#7AA2FF]">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#7AA2FF]">
             Direct Strategy Call
           </span>
         </div>
 
-        <h3 className="text-xl sm:text-2xl font-black mb-2 text-white tracking-tight">
+        <h3
+          className="text-lg sm:text-xl font-black mb-1.5 text-white tracking-tight"
+          style={{ color: '#ffffff' }}
+        >
           Schedule a 15-Min Discovery Call
         </h3>
-        <p className="text-white/70 text-xs sm:text-sm mb-6 leading-relaxed">
+        <p
+          className="text-white/80 text-xs mb-4 leading-relaxed"
+          style={{ color: '#cbd5e1' }}
+        >
           Skip lengthy back-and-forths. We will review your current website, digital bottlenecks, and business growth roadmap.
         </p>
 
         {submitted ? (
-          <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-center space-y-3">
-            <div className="w-12 h-12 rounded-full bg-[#32A88A]/20 border border-[#32A88A]/40 text-[#32A88A] flex items-center justify-center mx-auto">
-              <CheckCircle size={24} />
+          <div className="p-5 rounded-xl bg-white/5 border border-white/10 text-center space-y-3">
+            <div className="w-11 h-11 rounded-full bg-[#32A88A]/20 border border-[#32A88A]/40 text-[#32A88A] flex items-center justify-center mx-auto">
+              <CheckCircle size={22} />
             </div>
-            <h4 className="text-lg font-bold text-white mb-1">Call Request Logged!</h4>
-            <p className="text-white/60 text-xs leading-relaxed max-w-sm mx-auto">
+            <h4 className="text-base font-bold text-white mb-1" style={{ color: '#ffffff' }}>
+              Call Request Logged!
+            </h4>
+            <p className="text-white/70 text-xs leading-relaxed max-w-sm mx-auto" style={{ color: '#94a3b8' }}>
               Our growth strategist will reach out at your requested window: <strong className="text-white">{preferredTime}</strong>.
             </p>
-            <div className="pt-2">
+            <div className="pt-1.5">
               <a
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs text-white bg-[#25D366] hover:bg-[#20ba59] transition-all cursor-pointer shadow-md"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-xs text-white bg-[#25D366] hover:bg-[#20ba59] transition-all cursor-pointer shadow-md"
               >
-                <MessageSquare size={14} />
+                <MessageSquare size={13} />
                 Open WhatsApp for Immediate Chat
               </a>
             </div>
           </div>
         ) : (
-          <div className="space-y-5">
+          <div className="space-y-3.5">
             {/* Direct WhatsApp Option */}
-            <div className="p-3.5 rounded-xl bg-gradient-to-r from-[#25D366]/15 to-transparent border border-[#25D366]/30 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-[#25D366] text-white flex items-center justify-center shrink-0 shadow-sm">
-                  <MessageSquare size={16} />
+            <div className="p-2.5 sm:p-3 rounded-xl bg-gradient-to-r from-[#25D366]/20 to-transparent border border-[#25D366]/40 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-[#25D366] text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <MessageSquare size={15} />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-white">Instant WhatsApp Connect</p>
-                  <p className="text-[11px] text-white/60">Fastest response directly with our team</p>
+                  <p className="text-xs font-bold text-white leading-tight" style={{ color: '#ffffff' }}>
+                    Instant WhatsApp Connect
+                  </p>
+                  <p className="text-[11px] text-white/70 leading-tight" style={{ color: '#cbd5e1' }}>
+                    Fastest response directly with our team
+                  </p>
                 </div>
               </div>
               <a
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-[#25D366] hover:bg-[#20ba59] text-white transition-all shrink-0 cursor-pointer shadow-sm"
+                className="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#25D366] hover:bg-[#20ba59] text-white transition-all shrink-0 cursor-pointer shadow-sm"
               >
                 Chat Now
               </a>
             </div>
 
-            <div className="relative flex items-center justify-center">
+            <div className="relative flex items-center justify-center my-1">
               <div className="w-full border-t border-white/10" />
-              <span className="absolute bg-[#0E1726] px-3 text-[10px] uppercase font-bold text-white/40 tracking-wider">
+              <span className="absolute bg-[#0E1726] px-2.5 text-[9.5px] uppercase font-bold text-white/50 tracking-wider">
                 Or Request a Call Back
               </span>
             </div>
 
-            <form onSubmit={handleCallbackRequest} className="space-y-3.5">
+            <form onSubmit={handleCallbackRequest} className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-white/80 mb-1">
+                <label className="block text-xs font-medium text-white/80 mb-1" style={{ color: '#e2e8f0' }}>
                   Your Full Name
                 </label>
                 <input
@@ -199,12 +212,12 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. John Doe"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/15 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#477BDB] focus:ring-1 focus:ring-[#477BDB] transition-colors"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/15 text-white placeholder-white/35 text-xs sm:text-sm focus:outline-none focus:border-[#477BDB] focus:ring-1 focus:ring-[#477BDB] transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-white/80 mb-1">
+                <label className="block text-xs font-medium text-white/80 mb-1" style={{ color: '#e2e8f0' }}>
                   Phone Number or Email Address
                 </label>
                 <input
@@ -213,15 +226,15 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
                   value={phoneOrEmail}
                   onChange={(e) => setPhoneOrEmail(e.target.value)}
                   placeholder="e.g. +91 98765 43210 or name@company.com"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/15 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#477BDB] focus:ring-1 focus:ring-[#477BDB] transition-colors"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/15 text-white placeholder-white/35 text-xs sm:text-sm focus:outline-none focus:border-[#477BDB] focus:ring-1 focus:ring-[#477BDB] transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-white/80 mb-1.5">
+                <label className="block text-xs font-medium text-white/80 mb-1" style={{ color: '#e2e8f0' }}>
                   Preferred Time Window
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                <div className="grid grid-cols-3 gap-1.5 text-[11px]">
                   {[
                     'Morning (10 AM - 1 PM)',
                     'Afternoon (1 PM - 5 PM)',
@@ -231,10 +244,10 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
                       type="button"
                       key={timeSlot}
                       onClick={() => setPreferredTime(timeSlot)}
-                      className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
+                      className={`py-2 px-1 rounded-lg border text-center transition-all cursor-pointer font-medium ${
                         preferredTime === timeSlot
-                          ? 'border-[#477BDB] bg-[#477BDB]/25 text-white font-semibold shadow-sm'
-                          : 'border-white/10 bg-white/5 text-white/60 hover:text-white hover:border-white/20'
+                          ? 'border-[#477BDB] bg-[#477BDB]/30 text-white shadow-sm'
+                          : 'border-white/10 bg-white/5 text-white/70 hover:text-white hover:border-white/20'
                       }`}
                     >
                       {timeSlot.split(' ')[0]}
@@ -246,13 +259,13 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 px-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-[#477BDB] to-[#6477C8] hover:shadow-lg hover:shadow-blue-500/25 transition-all flex items-center justify-center gap-2 mt-2 disabled:opacity-60 cursor-pointer"
+                className="w-full py-2.5 px-4 rounded-xl font-semibold text-xs sm:text-sm text-white bg-gradient-to-r from-[#477BDB] to-[#6477C8] hover:shadow-lg hover:shadow-blue-500/25 transition-all flex items-center justify-center gap-2 mt-2 disabled:opacity-60 cursor-pointer"
               >
                 {loading ? (
                   <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
                 ) : (
                   <>
-                    <Phone size={14} />
+                    <Phone size={13} />
                     <span>Confirm Call Request</span>
                   </>
                 )}

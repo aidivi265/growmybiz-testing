@@ -126,9 +126,9 @@ export default function Footer() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10">
 
             {/* Brand col */}
-            <div className="col-span-1 sm:col-span-2 lg:col-span-4">
+            <div className="col-span-1 sm:col-span-2 lg:col-span-5 xl:col-span-4 pr-0 lg:pr-6">
               <div className="mb-5">
-                <BrandLogo theme="dark" size="lg" showTagline={false} asLink={true} />
+                <BrandLogo theme="dark" size="md" showTagline={false} asLink={true} />
               </div>
               <p className="text-[#8BA5C8] text-sm leading-relaxed mb-6 max-w-sm">
                 {config.description}
@@ -206,7 +206,7 @@ export default function Footer() {
             </div>
 
             {/* Legal */}
-            <div className="col-span-1 sm:col-span-2 lg:col-span-3">
+            <div className="col-span-1 sm:col-span-2 lg:col-span-2">
               <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-4">Legal</h4>
               <ul className="space-y-2">
                 {[

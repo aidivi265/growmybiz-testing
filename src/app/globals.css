@@ -43,23 +43,23 @@
     font-size: 15px;
   }
 
-  /* ── Global heading defaults — Syne for display impact ── */
-  h1, h2 {
+  /* ── Global heading defaults — Syne for display impact (zero-specificity :where so utility classes always win) ── */
+  :where(h1, h2) {
     font-family: var(--font-syne), sans-serif;
     font-weight: 800;
     letter-spacing: -0.025em;
     line-height: 1.1;
     color: var(--text-heading);
   }
-  h3, h4, h5, h6 {
+  :where(h3, h4, h5, h6) {
     font-family: var(--font-inter), sans-serif;
     font-weight: 700;
     color: var(--text-heading);
   }
 
-  /* Headings inside white-text containers inherit white */
+  /* Headings inside white-text or dark containers inherit white */
   .text-white h1, .text-white h2, .text-white h3, .text-white h4, .text-white h5, .text-white h6 {
-    color: #ffffff;
+    color: #ffffff !important;
   }
 
   ::selection { background: #477BDB; color: #fff; }
