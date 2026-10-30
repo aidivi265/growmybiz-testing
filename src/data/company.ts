@@ -10,8 +10,8 @@ export const teamMembers: TeamMember[] = [
     avatar: 'https://cswpwcmtjzutuownuvez.supabase.co/storage/v1/object/public/growmybizz-media/uploads/1793247001414_latest.jpg',
     linkedin: 'https://linkedin.com/in/growmybiz24',
     instagram: 'https://instagram.com/growmybiz24',
-    showLinkedin: false,
-    showInstagram: false,
+    showLinkedin: true,
+    showInstagram: true,
   },
   {
     id: 'tm-2',
@@ -21,8 +21,8 @@ export const teamMembers: TeamMember[] = [
     avatar: '',
     linkedin: 'https://linkedin.com/in/growmybiz24',
     instagram: 'https://instagram.com/growmybiz24',
-    showLinkedin: false,
-    showInstagram: false,
+    showLinkedin: true,
+    showInstagram: true,
   },
 ];
 

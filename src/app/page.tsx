@@ -21,9 +21,9 @@ import {
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'Growmybiz24 — Digital Growth Partner',
+  title: 'Growmybiz24 — Digital Solutions for a Bigger Tomorrow | Web, Design & AI Growth Agency',
   description:
-    'Full-service digital agency. Web, design, marketing, content and AI — built around one goal: your business growing online.',
+    'Full-service digital growth agency in India. We engineer custom web platforms, scalable SaaS products, high-converting brand identities, and custom AI automation for global businesses.',
 };
 
 export default async function HomePage() {

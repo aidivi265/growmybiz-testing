@@ -10,7 +10,7 @@ import { Icon } from '@/components/Icon';
 import { SYNE_FONT } from '@/lib/fonts';
 
 export const metadata: Metadata = {
-  title: 'About Us',
+  title: 'About Us | Founders, Engineering Culture & Mission',
   description: 'Who we are, what we believe, and how we work. Growmybiz24 — your digital growth partner.',
 };
 

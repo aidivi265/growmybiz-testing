@@ -11,32 +11,61 @@ export const viewport: Viewport = {
   themeColor: '#0F1C31',
 };
 
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://growmybiz24.com';
+
 export const metadata: Metadata = {
   title: {
     default: `${siteConfig.siteName} — ${siteConfig.tagline}`,
     template: `%s | ${siteConfig.siteName}`,
   },
   description: siteConfig.description,
-  keywords: ['digital agency', 'web development', 'design', 'branding', 'digital marketing', 'AI automation', 'India', 'Growmybiz24'],
-  authors: [{ name: siteConfig.siteName }],
+  keywords: [
+    'Growmybiz24',
+    'Growmybiz24 Digital Agency',
+    'Web Development Company India',
+    'Next.js Full Stack Development',
+    'Custom AI Automation Solutions',
+    'UI UX Design Agency India',
+    'Performance Marketing Agency',
+    'E-commerce Growth Partner',
+    'B2B SaaS Product Engineering',
+    'Digital Solutions for a Bigger Tomorrow',
+  ],
+  authors: [{ name: siteConfig.siteName, url: baseUrl }],
   creator: siteConfig.siteName,
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://growmybizz.vercel.app'),
+  metadataBase: new URL(baseUrl),
+  alternates: {
+    canonical: '/',
+  },
   icons: {
-    icon: '/growmybizz-app-icon.png',
-    apple: '/icon-192.png',
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/brand-logo-mark.png', type: 'image/png' },
+      { url: '/growmybizz-app-icon.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+    ],
   },
   openGraph: {
     type: 'website',
     siteName: siteConfig.siteName,
     title: `${siteConfig.siteName} — ${siteConfig.tagline}`,
     description: siteConfig.description,
+    url: baseUrl,
     locale: 'en_IN',
     images: [
+      {
+        url: '/brand-logo-white-bg.png',
+        width: 1200,
+        height: 630,
+        alt: `${siteConfig.siteName} — ${siteConfig.tagline}`,
+      },
       {
         url: '/growmybizz-app-icon.png',
         width: 512,
         height: 512,
-        alt: `${siteConfig.siteName} — ${siteConfig.tagline}`,
+        alt: siteConfig.siteName,
       },
     ],
   },
@@ -44,13 +73,70 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: `${siteConfig.siteName} — ${siteConfig.tagline}`,
     description: siteConfig.description,
-    images: ['/growmybizz-app-icon.png'],
+    creator: '@growmybiz24',
+    site: '@growmybiz24',
+    images: ['/brand-logo-white-bg.png'],
   },
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'ProfessionalService',
+      '@id': `${baseUrl}/#organization`,
+      name: 'Growmybiz24',
+      alternateName: 'Growmybiz24 Digital Agency',
+      url: baseUrl,
+      logo: `${baseUrl}/brand-logo-white-bg.png`,
+      image: `${baseUrl}/brand-logo-white-bg.png`,
+      description: siteConfig.description,
+      telephone: siteConfig.phone,
+      email: siteConfig.email,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'New Delhi',
+        addressCountry: 'IN',
+      },
+      sameAs: [
+        siteConfig.social.linkedin,
+        siteConfig.social.instagram,
+        siteConfig.social.twitter,
+        siteConfig.social.youtube,
+      ],
+      priceRange: '₹₹₹',
+      currenciesAccepted: 'INR, USD, EUR, GBP',
+      paymentAccepted: 'UPI, Net Banking, Credit Card, Bank Transfer',
+      openingHoursSpecification: [
+        {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+          opens: '09:00',
+          closes: '20:00',
+        },
+      ],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${baseUrl}/#website`,
+      url: baseUrl,
+      name: 'Growmybiz24',
+      publisher: {
+        '@id': `${baseUrl}/#organization`,
+      },
+    },
+  ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -60,6 +146,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${inter.variable} ${syne.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className={inter.className}>
         <LayoutShell>{children}</LayoutShell>
         <Analytics />

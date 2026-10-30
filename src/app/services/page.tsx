@@ -8,9 +8,9 @@ import { Icon } from '@/components/Icon';
 import { SYNE_FONT } from '@/lib/fonts';
 
 export const metadata: Metadata = {
-  title: 'Services',
+  title: 'Digital Growth Services | Web, Branding, Marketing & AI',
   description:
-    'Six disciplines, one connected team. Web, design, marketing, content, AI and more — built around your goals.',
+    'Six connected disciplines: Web & Mobile Engineering, Conversion UI/UX, Performance Marketing, AI Automation, and Content Architecture.',
 };
 
 export const revalidate = 60;

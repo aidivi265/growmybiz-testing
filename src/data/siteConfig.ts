@@ -5,7 +5,7 @@ export const siteConfig: SiteConfig & { whatsappNumber: string; whatsappUrl: str
   tagline: 'Digital Solutions for a Bigger Tomorrow',
   description:
     'Full-service digital agency — web, design, marketing, content and AI services for businesses that want to grow.',
-  email: 'growmybiz24@gmail.com',
+  email: 'hello@growmybiz24.com',
   phone: '+91 72908 84480',
   address: 'New Delhi, India (Global Delivery)',
   whatsappNumber: '+91 72908 84480',

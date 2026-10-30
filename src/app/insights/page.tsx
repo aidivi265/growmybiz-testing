@@ -6,8 +6,9 @@ import { fetchInsights, fetchPageVisibility } from '@/lib/dal';
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'Insights',
-  description: 'Practical guides and frameworks on web, design, marketing, AI and growth strategy.',
+  title: 'Insights, Tech Blog & Strategic Guides | Growmybiz24',
+  description:
+    'Actionable engineering frameworks, CRO strategies, and practical AI implementations for scaling modern businesses.',
 };
 
 export default async function InsightsPage() {

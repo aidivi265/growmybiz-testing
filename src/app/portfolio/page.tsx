@@ -6,8 +6,9 @@ import { fetchPortfolio, fetchPageVisibility } from '@/lib/dal';
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'Portfolio',
-  description: 'Concept projects, frameworks and client work — labelled clearly, described honestly.',
+  title: 'Case Studies & Digital Product Portfolio | Growmybiz24',
+  description:
+    'Explore verified case studies, interactive UI/UX prototypes, and high-performance digital platforms delivered by Growmybiz24.',
 };
 
 export default async function PortfolioPage() {

@@ -10,8 +10,9 @@ import { SYNE_FONT } from '@/lib/fonts';
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'Our Process',
-  description: 'How we work — a clear, repeatable six-step process from discovery to handover.',
+  title: 'Our Agile 6-Step Delivery Process | Growmybiz24',
+  description:
+    'How we build and scale digital products: a transparent, predictable discovery-to-launch framework with zero guesswork.',
 };
 
 export default async function ProcessPage() {

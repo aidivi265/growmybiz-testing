@@ -6,7 +6,7 @@ import { fetchServices, fetchSiteSettings, fetchPageVisibility } from '@/lib/dal
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'Contact — Start a Project',
+  title: 'Contact Us | Start a Project & Technical Scoping',
   description: 'Tell us about your project. We will respond with a clear scope and no ambiguity.',
 };
 
