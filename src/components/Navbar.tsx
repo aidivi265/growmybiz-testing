@@ -9,21 +9,27 @@ import BrandLogo from '@/components/BrandLogo';
 import type { NavItem } from '@/types';
 import { getClientSettings } from '@/lib/settingsClient';
 
-export default function Navbar() {
+interface NavbarProps {
+  initialVisibility?: any;
+}
+
+export default function Navbar({ initialVisibility }: NavbarProps = {}) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const pathname = usePathname();
 
-  const [pageVisibility, setPageVisibility] = useState<Record<string, boolean>>({
-    about: true,
-    services: true,
-    portfolio: true,
-    process: true,
-    insights: true,
-    contact: true,
-  });
+  const [pageVisibility, setPageVisibility] = useState<Record<string, boolean>>(
+    initialVisibility || {
+      about: true,
+      services: true,
+      portfolio: true,
+      process: true,
+      insights: true,
+      contact: true,
+    }
+  );
   const [activeServices, setActiveServices] = useState<{ id: string; title: string; slug: string }[]>([]);
 
   useEffect(() => {

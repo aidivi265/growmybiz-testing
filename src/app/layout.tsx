@@ -4,6 +4,7 @@ import { inter, syne } from '@/lib/fonts';
 import LayoutShell from '@/components/LayoutShell';
 import { siteConfig } from '@/data/siteConfig';
 import { Analytics } from '@vercel/analytics/next';
+import { fetchSiteSettings, fetchPageVisibility } from '@/lib/dal';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -140,7 +141,12 @@ const jsonLd = {
   ],
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const [siteSettings, pageVisibility] = await Promise.all([
+    fetchSiteSettings(),
+    fetchPageVisibility(),
+  ]);
+
   return (
     <html
       lang="en"
@@ -158,7 +164,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={inter.className}>
-        <LayoutShell>{children}</LayoutShell>
+        <LayoutShell initialSettings={siteSettings} initialVisibility={pageVisibility}>
+          {children}
+        </LayoutShell>
         <Analytics />
       </body>
     </html>

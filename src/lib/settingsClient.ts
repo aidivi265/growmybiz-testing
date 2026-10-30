@@ -3,19 +3,25 @@
 let cachedSettingsPromise: Promise<any> | null = null;
 let cachedSettingsData: any = null;
 let lastFetchTime = 0;
-const CACHE_TTL = 60 * 1000; // 1 minute client cache
+const CACHE_TTL = 30 * 1000; // 30s in-memory client cache
 
-export async function getClientSettings(): Promise<any> {
+export function invalidateClientSettings() {
+  cachedSettingsData = null;
+  cachedSettingsPromise = null;
+  lastFetchTime = 0;
+}
+
+export async function getClientSettings(forceRefresh = false): Promise<any> {
   const now = Date.now();
-  if (cachedSettingsData && now - lastFetchTime < CACHE_TTL) {
+  if (!forceRefresh && cachedSettingsData && now - lastFetchTime < CACHE_TTL) {
     return cachedSettingsData;
   }
 
-  if (cachedSettingsPromise) {
+  if (!forceRefresh && cachedSettingsPromise) {
     return cachedSettingsPromise;
   }
 
-  cachedSettingsPromise = fetch('/api/settings')
+  cachedSettingsPromise = fetch('/api/settings', { cache: 'no-store' })
     .then((res) => (res.ok ? res.json() : null))
     .then((data) => {
       cachedSettingsData = data;

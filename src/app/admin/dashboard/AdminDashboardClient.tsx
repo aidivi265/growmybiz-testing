@@ -40,6 +40,7 @@ import ProcessPanel from '@/components/admin/ProcessPanel';
 import TeamPanel from '@/components/admin/TeamPanel';
 import PageCopyPanel from '@/components/admin/PageCopyPanel';
 import LegalPanel from '@/components/admin/LegalPanel';
+import { invalidateClientSettings } from '@/lib/settingsClient';
 
 // ─── Admin Nav Items ──────────────────────────────────────────────────────────
 const adminNav = [
@@ -768,6 +769,10 @@ function SiteConfigPanel() {
       if (res.ok) {
         setSaved(true);
         setSource('supabase');
+        invalidateClientSettings();
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('growmybiz:settings-updated', { detail: data }));
+        }
         setTimeout(() => setSaved(false), 2500);
       }
     } catch (err) {
@@ -844,12 +849,15 @@ function SiteConfigPanel() {
                     <button
                       type="button"
                       onClick={() =>
-                        setData({
-                          ...data,
-                          socialVisibility: {
-                            ...(data.socialVisibility || {}),
-                            [s.key]: !isVisible,
-                          },
+                        setData((prev) => {
+                          const currentVis = (prev.socialVisibility as any)?.[s.key] !== false;
+                          return {
+                            ...prev,
+                            socialVisibility: {
+                              ...(prev.socialVisibility || {}),
+                              [s.key]: !currentVis,
+                            },
+                          };
                         })
                       }
                       className={`px-2.5 py-1 rounded-md text-[10px] font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${

@@ -12,8 +12,13 @@ import { getClientSettings } from '@/lib/settingsClient';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
-export default function Footer() {
-  const [config, setConfig] = useState(defaultSiteConfig);
+interface FooterProps {
+  initialSettings?: any;
+  initialVisibility?: any;
+}
+
+export default function Footer({ initialSettings, initialVisibility }: FooterProps = {}) {
+  const [config, setConfig] = useState(initialSettings || defaultSiteConfig);
   const [cta, setCta] = useState({
     heading: "Let's build something worth growing.",
     subheading: 'Ready to grow?',
@@ -23,14 +28,16 @@ export default function Footer() {
   const [servicesList, setServicesList] = useState<{ id: string; title: string; slug: string }[]>(
     defaultServices.map((s) => ({ id: s.id, title: s.title, slug: s.slug }))
   );
-  const [pageVisibility, setPageVisibility] = useState<Record<string, boolean>>({
-    about: true,
-    services: true,
-    portfolio: true,
-    process: true,
-    insights: true,
-    contact: true,
-  });
+  const [pageVisibility, setPageVisibility] = useState<Record<string, boolean>>(
+    initialVisibility || {
+      about: true,
+      services: true,
+      portfolio: true,
+      process: true,
+      insights: true,
+      contact: true,
+    }
+  );
 
   useEffect(() => {
     getClientSettings().then((data) => {
@@ -47,6 +54,20 @@ export default function Footer() {
         setPageVisibility(data.pageVisibility);
       }
     });
+
+    const handleSettingsUpdated = (e: any) => {
+      if (e.detail) {
+        setConfig((prev: any) => ({
+          ...prev,
+          ...e.detail,
+          socialVisibility: e.detail.socialVisibility || prev.socialVisibility,
+        }));
+      }
+    };
+    window.addEventListener('growmybiz:settings-updated', handleSettingsUpdated);
+    return () => {
+      window.removeEventListener('growmybiz:settings-updated', handleSettingsUpdated);
+    };
   }, []);
 
   const rawSocial = config.social || defaultSiteConfig.social || {};
@@ -94,7 +115,10 @@ export default function Footer() {
       key: 'youtube',
     },
   ].filter((s) => {
-    const isExplicitlyHidden = visibility[s.key] === false;
+    const isExplicitlyHidden =
+      visibility[s.key] === false ||
+      (config as any)?.socialVisibility?.[s.key] === false ||
+      (rawSocial as any)?._visibility?.[s.key] === false;
     return !isExplicitlyHidden && Boolean(s.href && s.href.trim().length > 0);
   });
 

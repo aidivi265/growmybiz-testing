@@ -6,7 +6,17 @@ import Footer from '@/components/Footer';
 import WhatsAppFloatingButton from '@/components/WhatsAppFloatingButton';
 import ScrollObserver from '@/components/ui/ScrollObserver';
 
-export default function LayoutShell({ children }: { children: React.ReactNode }) {
+interface LayoutShellProps {
+  children: React.ReactNode;
+  initialSettings?: any;
+  initialVisibility?: any;
+}
+
+export default function LayoutShell({
+  children,
+  initialSettings,
+  initialVisibility,
+}: LayoutShellProps) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith('/admin');
 
@@ -17,9 +27,9 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
   return (
     <>
       <ScrollObserver />
-      <Navbar />
+      <Navbar initialVisibility={initialVisibility} />
       <main>{children}</main>
-      <Footer />
+      <Footer initialSettings={initialSettings} initialVisibility={initialVisibility} />
       <WhatsAppFloatingButton />
     </>
   );

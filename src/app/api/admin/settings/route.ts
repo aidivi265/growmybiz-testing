@@ -168,6 +168,7 @@ export async function POST(request: Request) {
       }
     }
 
+    revalidatePath('/', 'layout');
     revalidatePath('/');
     revalidatePath('/about');
     revalidatePath('/services');
