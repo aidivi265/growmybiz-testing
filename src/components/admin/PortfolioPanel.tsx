@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Plus, Edit2, Trash2, Eye, Loader2, Sparkles, X, FolderOpen } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, Loader2, Sparkles, X, FolderOpen, AlertCircle, CheckCircle2 } from 'lucide-react';
 import MediaUploadInput from './MediaUploadInput';
 import type { PortfolioItem } from '@/types';
 
@@ -24,6 +24,23 @@ interface PortfolioFormState {
   is_featured: boolean;
 }
 
+const DEFAULT_FORM: PortfolioFormState = {
+  slug: '',
+  title: '',
+  client: '',
+  category: 'Web & App Development',
+  industry: 'E-Commerce & D2C Brands',
+  serviceSlug: 'web-app-development',
+  year: '2025',
+  thumbnail: '/portfolio/ecommerce-ux.svg',
+  challenge: '',
+  solution: '',
+  outcome: '',
+  technologies_str: 'Next.js, TypeScript, Tailwind CSS',
+  is_concept: false,
+  is_featured: true,
+};
+
 export default function PortfolioPanel() {
   const [projects, setProjects] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,23 +48,10 @@ export default function PortfolioPanel() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [successToast, setSuccessToast] = useState<string | null>(null);
 
-  const [form, setForm] = useState<PortfolioFormState>({
-    slug: '',
-    title: '',
-    client: '',
-    category: 'Web & App Development',
-    industry: 'E-Commerce & D2C Brands',
-    serviceSlug: 'web-app-development',
-    year: '2025',
-    thumbnail: '/portfolio-mockups/mobile-app.png',
-    challenge: '',
-    solution: '',
-    outcome: '',
-    technologies_str: 'Next.js, TypeScript, Tailwind CSS',
-    is_concept: false,
-    is_featured: true,
-  });
+  const [form, setForm] = useState<PortfolioFormState>(DEFAULT_FORM);
 
   const loadProjects = async () => {
     setLoading(true);
@@ -59,7 +63,7 @@ export default function PortfolioPanel() {
         setSource(data.source || 'supabase');
       }
     } catch (e) {
-      console.error(e);
+      console.error('Failed to load portfolio items:', e);
     } finally {
       setLoading(false);
     }
@@ -69,38 +73,19 @@ export default function PortfolioPanel() {
     loadProjects();
   }, []);
 
-  useEffect(() => {
-    if (!isModalOpen) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsModalOpen(false);
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isModalOpen]);
-
   const openCreateModal = () => {
     setEditingId(null);
+    setFormError(null);
     setForm({
-      slug: '',
-      title: '',
-      client: '',
-      category: 'Web & App Development',
-      industry: 'E-Commerce & D2C Brands',
-      serviceSlug: 'web-app-development',
-      year: '2025',
-      thumbnail: '/portfolio-mockups/mobile-app.png',
-      challenge: '',
-      solution: '',
-      outcome: '',
-      technologies_str: 'Next.js, TypeScript, Tailwind CSS',
-      is_concept: false,
-      is_featured: true,
+      ...DEFAULT_FORM,
+      year: String(new Date().getFullYear()),
     });
     setIsModalOpen(true);
   };
 
   const openEditModal = (p: PortfolioItem) => {
     setEditingId(p.id);
+    setFormError(null);
     const metricsArr = Array.isArray(p.metrics) ? p.metrics : [];
     const ind = p.industry || metricsArr.find((m: any) => m.label === '_industry')?.value || '';
     const sSlug = p.serviceSlug || metricsArr.find((m: any) => m.label === '_serviceSlug')?.value || 'web-app-development';
@@ -110,17 +95,17 @@ export default function PortfolioPanel() {
       slug: p.slug,
       title: p.title,
       client: p.client,
-      category: p.category,
+      category: p.category || 'Web & App Development',
       industry: ind,
       serviceSlug: sSlug,
       year: String(p.year || 2025),
-      thumbnail: p.thumbnail,
-      challenge: p.challenge,
+      thumbnail: p.thumbnail || '/portfolio/ecommerce-ux.svg',
+      challenge: p.challenge || '',
       solution: p.solution || p.approach || '',
-      outcome: p.outcome,
+      outcome: p.outcome || '',
       technologies_str: Array.isArray(p.technologies) ? p.technologies.join(', ') : '',
-      is_concept: p.isConcept ?? false,
-      is_featured: p.featured ?? true,
+      is_concept: (p as any).is_concept ?? p.isConcept ?? false,
+      is_featured: (p as any).is_featured ?? p.featured ?? true,
     });
     setIsModalOpen(true);
   };
@@ -139,7 +124,20 @@ export default function PortfolioPanel() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.title || !form.slug || !form.client) return;
+    setFormError(null);
+
+    if (!form.title.trim()) {
+      setFormError('Please enter a project title.');
+      return;
+    }
+    if (!form.client.trim()) {
+      setFormError('Please enter a client or brand name.');
+      return;
+    }
+    if (!form.slug.trim()) {
+      setFormError('Please enter a unique URL slug.');
+      return;
+    }
 
     setSaving(true);
     try {
@@ -153,18 +151,24 @@ export default function PortfolioPanel() {
         { label: '_serviceSlug', value: form.serviceSlug },
       ];
 
+      const cleanSlug = form.slug
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9-]+/g, '-')
+        .replace(/(^-|-$)+/g, '');
+
       const payload = {
         id: editingId,
-        slug: form.slug,
-        title: form.title,
-        client: form.client,
-        category: form.category,
+        slug: cleanSlug,
+        title: form.title.trim(),
+        client: form.client.trim(),
+        category: form.category.trim(),
         metrics,
-        year: form.year,
-        thumbnail: form.thumbnail,
-        challenge: form.challenge,
-        solution: form.solution,
-        outcome: form.outcome,
+        year: form.year.trim() || '2025',
+        thumbnail: form.thumbnail.trim() || '/portfolio/ecommerce-ux.svg',
+        challenge: form.challenge.trim(),
+        solution: form.solution.trim(),
+        outcome: form.outcome.trim(),
         technologies,
         is_concept: form.is_concept,
         is_featured: form.is_featured,
@@ -176,41 +180,23 @@ export default function PortfolioPanel() {
         body: JSON.stringify(payload),
       });
 
-      if (res.ok) {
-        setIsModalOpen(false);
-        loadProjects();
-      } else {
-        const data = await res.json();
-        alert(data.error || 'Failed to save project');
+      const data = await res.json();
+
+      if (!res.ok) {
+        setFormError(data.error || 'Failed to save project. Please check the fields and try again.');
+        setSaving(false);
+        return;
       }
-    } catch {
-      alert('Error saving project');
+
+      // Success
+      setIsModalOpen(false);
+      setSuccessToast(editingId ? 'Project updated successfully!' : 'Project published to portfolio successfully!');
+      setTimeout(() => setSuccessToast(null), 4000);
+      await loadProjects();
+    } catch (err: any) {
+      setFormError(err?.message || 'Error connecting to server. Please try again.');
     } finally {
       setSaving(false);
-    }
-  };
-
-  const [seeding, setSeeding] = useState(false);
-
-  const handleSeedStarterProjects = async () => {
-    if (!confirm('Load 6 starter agency case studies into Supabase? You will be able to edit, customize, or delete each one from this dashboard.')) return;
-    setSeeding(true);
-    try {
-      const res = await fetch('/api/admin/portfolio', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'seed' }),
-      });
-      if (res.ok) {
-        await loadProjects();
-      } else {
-        const d = await res.json();
-        alert(d.error || 'Failed to seed sample projects');
-      }
-    } catch {
-      alert('Error connecting to server.');
-    } finally {
-      setSeeding(false);
     }
   };
 
@@ -218,13 +204,14 @@ export default function PortfolioPanel() {
     if (!confirm(`Are you sure you want to delete project "${title}"?`)) return;
 
     try {
-      // Optimistically remove from state immediately
       setProjects((prev) => prev.filter((p) => p.id !== id && p.slug !== id));
 
       const res = await fetch(`/api/admin/portfolio?id=${id}`, {
         method: 'DELETE',
       });
       if (res.ok) {
+        setSuccessToast(`Deleted "${title}"`);
+        setTimeout(() => setSuccessToast(null), 3000);
         loadProjects();
       } else {
         const data = await res.json();
@@ -239,6 +226,14 @@ export default function PortfolioPanel() {
 
   return (
     <div className="bg-[#0d0d14] rounded-xl border border-white/[0.06] p-5">
+      {/* Toast Alert */}
+      {successToast && (
+        <div className="mb-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-center gap-2">
+          <CheckCircle2 size={15} />
+          <span>{successToast}</span>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
@@ -249,50 +244,42 @@ export default function PortfolioPanel() {
             </span>
           </div>
           <p className="text-xs text-white/40 mt-0.5">
-            Publish client case studies, prototypes, and concept demonstrations with live outcomes.
+            Add, update, or remove portfolio projects, case studies, and prototypes with live metrics.
           </p>
         </div>
         <button
           onClick={openCreateModal}
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-white bg-[#3b82d4] hover:bg-[#2563eb] transition-all shrink-0"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#3b82d4] hover:bg-[#2563eb] transition-all shrink-0 cursor-pointer shadow-lg shadow-blue-500/10"
         >
-          <Plus size={14} />
+          <Plus size={15} />
           <span>Add Project</span>
         </button>
       </div>
 
-      {/* Table */}
+      {/* Table / Empty State */}
       {loading ? (
-        <div className="py-12 flex items-center justify-center gap-2 text-white/40 text-xs">
+        <div className="py-16 flex items-center justify-center gap-2 text-white/40 text-xs">
           <Loader2 size={16} className="animate-spin text-[#3b82d4]" />
           <span>Loading portfolio items...</span>
         </div>
       ) : projects.length === 0 ? (
         <div className="py-16 text-center text-white/50 space-y-4">
-          <div className="w-12 h-12 rounded-2xl bg-white/[0.03] border border-white/10 mx-auto flex items-center justify-center text-white/40">
-            <FolderOpen size={24} className="text-[#3b82d4]" />
+          <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/10 mx-auto flex items-center justify-center text-white/40">
+            <FolderOpen size={26} className="text-[#3b82d4]" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-white">No Portfolio Projects Found</h3>
+            <h3 className="text-sm font-semibold text-white">No Projects Added Yet</h3>
             <p className="text-xs text-white/40 mt-1 max-w-sm mx-auto">
-              Your portfolio is currently clean and empty in Supabase (0 projects). You can publish custom projects anytime or load sample agency templates.
+              Your portfolio is ready for your custom work. Click the button below to add your first case study or client prototype.
             </p>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+          <div className="pt-2">
             <button
               onClick={openCreateModal}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[#3b82d4] hover:bg-[#2563eb] transition-all cursor-pointer shadow-sm"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#3b82d4] hover:bg-[#2563eb] transition-all cursor-pointer shadow-md shadow-blue-500/20"
             >
-              <Plus size={14} />
+              <Plus size={15} />
               <span>Add First Project</span>
-            </button>
-            <button
-              onClick={handleSeedStarterProjects}
-              disabled={seeding}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium text-white/80 bg-white/5 hover:bg-white/10 border border-white/10 transition-all cursor-pointer disabled:opacity-50"
-            >
-              {seeding ? <Loader2 size={13} className="animate-spin" /> : <Sparkles size={13} className="text-amber-400" />}
-              <span>{seeding ? 'Loading Templates...' : 'Load Starter Templates'}</span>
             </button>
           </div>
         </div>
@@ -312,6 +299,7 @@ export default function PortfolioPanel() {
               {projects.map((p) => {
                 const metricsArr = Array.isArray(p.metrics) ? p.metrics : [];
                 const ind = p.industry || metricsArr.find((m: any) => m.label === '_industry')?.value;
+                const isConcept = (p as any).is_concept ?? p.isConcept ?? false;
 
                 return (
                   <tr key={p.id || p.slug} className="hover:bg-white/[0.02] text-white/80">
@@ -319,6 +307,7 @@ export default function PortfolioPanel() {
                       <div>
                         <p className="text-[11px] text-[#32A88A] font-bold uppercase tracking-wider">{p.client}</p>
                         <p className="font-semibold text-white">{p.title}</p>
+                        <p className="text-[10px] text-white/30 font-mono mt-0.5">/portfolio/{p.slug}</p>
                       </div>
                     </td>
                     <td className="py-3 px-3">
@@ -330,7 +319,7 @@ export default function PortfolioPanel() {
                       )}
                     </td>
                     <td className="py-3 px-3">
-                      {p.isConcept ? (
+                      {isConcept ? (
                         <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-300 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-full">
                           <Sparkles size={10} /> Concept Demo
                         </span>
@@ -341,128 +330,152 @@ export default function PortfolioPanel() {
                       )}
                     </td>
                     <td className="py-3 px-3 text-white/40 font-mono">{p.year}</td>
-                  <td className="py-3 px-3 text-right">
-                    <div className="inline-flex items-center gap-2">
-                      <a
-                        href={`/portfolio/${p.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.05] transition-colors"
-                        title="View Case Study"
-                      >
-                        <Eye size={13} />
-                      </a>
-                      <button
-                        onClick={() => openEditModal(p)}
-                        className="p-1.5 rounded-lg text-white/40 hover:text-[#3b82d4] hover:bg-white/[0.05] transition-colors"
-                        title="Edit Project"
-                      >
-                        <Edit2 size={13} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(p.id, p.title)}
-                        className="p-1.5 rounded-lg text-white/40 hover:text-red-400 hover:bg-white/[0.05] transition-colors"
-                        title="Delete Project"
-                      >
-                        <Trash2 size={13} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
+                    <td className="py-3 px-3 text-right">
+                      <div className="inline-flex items-center gap-2">
+                        <a
+                          href={`/portfolio/${p.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.05] transition-colors"
+                          title="View Live Page"
+                        >
+                          <Eye size={14} />
+                        </a>
+                        <button
+                          onClick={() => openEditModal(p)}
+                          className="p-1.5 rounded-lg text-white/40 hover:text-[#3b82d4] hover:bg-white/[0.05] transition-colors cursor-pointer"
+                          title="Edit Project"
+                        >
+                          <Edit2 size={14} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(p.id, p.title)}
+                          className="p-1.5 rounded-lg text-white/40 hover:text-red-400 hover:bg-white/[0.05] transition-colors cursor-pointer"
+                          title="Delete Project"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       )}
 
-      {/* Create / Edit Modal */}
+      {/* ── Protected Create / Edit Modal (Sticky Header & Sticky Footer) ── */}
       {isModalOpen && typeof document !== 'undefined' && createPortal(
         <div
-          className="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn"
-          onClick={() => setIsModalOpen(false)}
+          className="fixed inset-0 z-[99999] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 animate-fadeIn"
+          role="dialog"
+          aria-modal="true"
         >
+          {/* Modal Container */}
           <div
-            className="bg-[#0f0f18] rounded-2xl border border-white/15 w-full max-w-xl p-5 sm:p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto my-auto text-white"
-            onClick={(e) => e.stopPropagation()}
+            className="bg-[#0f0f18] rounded-2xl border border-white/15 w-full max-w-2xl shadow-2xl flex flex-col max-h-[92vh] text-white overflow-hidden"
           >
-            <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/[0.08]">
-              <h3 className="text-base font-bold text-white tracking-tight">
-                {editingId ? 'Edit Project' : 'Add Project to Portfolio'}
-              </h3>
+            {/* Sticky Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.08] bg-[#12121d] shrink-0">
+              <div>
+                <h3 className="text-base font-bold text-white tracking-tight">
+                  {editingId ? 'Edit Portfolio Project' : 'Add Project to Portfolio'}
+                </h3>
+                <p className="text-xs text-white/40 mt-0.5">
+                  {editingId ? 'Update project deliverables and live metrics' : 'Enter project details to publish to your live website'}
+                </p>
+              </div>
               <button
+                type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="text-white/40 hover:text-white"
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                aria-label="Close modal"
               >
                 <X size={18} />
               </button>
             </div>
 
-            <form onSubmit={handleSave} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* Scrollable Form Body */}
+            <form id="portfolio-form" onSubmit={handleSave} className="flex-1 overflow-y-auto p-6 space-y-4">
+              {/* Form Error Banner */}
+              {formError && (
+                <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-xs flex items-start gap-2.5">
+                  <AlertCircle size={16} className="text-red-400 shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="font-semibold text-red-200">Unable to Save</p>
+                    <p className="mt-0.5">{formError}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Basic Details */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-xs font-medium text-white/60 mb-1">Project Title *</label>
+                  <label className="block text-xs font-semibold text-white/80 mb-1.5">Project Title *</label>
                   <input
                     type="text"
                     required
                     value={form.title}
                     onChange={(e) => handleTitleChange(e.target.value)}
                     placeholder="e.g. NextGen E-commerce Store"
-                    className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4]"
+                    className="w-full bg-white/[0.04] border border-white/15 rounded-lg px-3.5 py-2.5 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4] focus:ring-1 focus:ring-[#3b82d4]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-white/60 mb-1">Client / Brand Name *</label>
+                  <label className="block text-xs font-semibold text-white/80 mb-1.5">Client / Brand Name *</label>
                   <input
                     type="text"
                     required
                     value={form.client}
                     onChange={(e) => setForm({ ...form, client: e.target.value })}
                     placeholder="e.g. UrbanCart India"
-                    className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4]"
+                    className="w-full bg-white/[0.04] border border-white/15 rounded-lg px-3.5 py-2.5 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4] focus:ring-1 focus:ring-[#3b82d4]"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {/* Slug, Category, Year */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                 <div>
-                  <label className="block text-xs font-medium text-white/60 mb-1">URL Slug *</label>
+                  <label className="block text-xs font-semibold text-white/80 mb-1.5">URL Slug *</label>
                   <input
                     type="text"
                     required
                     value={form.slug}
                     onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                    placeholder="ecommerce-prototype"
-                    className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4] font-mono"
+                    placeholder="ecommerce-store"
+                    className="w-full bg-white/[0.04] border border-white/15 rounded-lg px-3.5 py-2.5 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4] font-mono"
                   />
+                  <p className="text-[10px] text-white/30 mt-1 truncate">/portfolio/{form.slug || 'slug'}</p>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-white/60 mb-1">Category</label>
+                  <label className="block text-xs font-semibold text-white/80 mb-1.5">Category</label>
                   <input
                     type="text"
                     value={form.category}
                     onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    placeholder="Web App, SaaS, Branding"
-                    className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4]"
+                    placeholder="Web & App Development"
+                    className="w-full bg-white/[0.04] border border-white/15 rounded-lg px-3.5 py-2.5 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-white/60 mb-1">Year</label>
+                  <label className="block text-xs font-semibold text-white/80 mb-1.5">Year</label>
                   <input
                     type="text"
                     value={form.year}
                     onChange={(e) => setForm({ ...form, year: e.target.value })}
                     placeholder="2025"
-                    className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4] font-mono"
+                    className="w-full bg-white/[0.04] border border-white/15 rounded-lg px-3.5 py-2.5 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4] font-mono"
                   />
                 </div>
               </div>
 
-              {/* Industry & Service Association for Smart Presence */}
-              <div className="p-3.5 rounded-xl bg-blue-500/[0.04] border border-blue-500/20 space-y-3">
+              {/* Smart Niche & Linked Service */}
+              <div className="p-4 rounded-xl bg-blue-500/[0.04] border border-blue-500/20 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-semibold text-blue-400">Industry / Niche Vertical & Service Linking</span>
-                  <span className="text-[10px] text-white/40">Smart Visibility Engine</span>
+                  <span className="text-xs font-semibold text-blue-400">Target Industry & Linked Service</span>
+                  <span className="text-[10px] text-white/40">Connects with service pages</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
@@ -471,8 +484,8 @@ export default function PortfolioPanel() {
                       type="text"
                       value={form.industry}
                       onChange={(e) => setForm({ ...form, industry: e.target.value })}
-                      placeholder="e.g. Cafes, Restaurants & Hospitality"
-                      className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4]"
+                      placeholder="e.g. E-Commerce & D2C Brands"
+                      className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4]"
                     />
                   </div>
                   <div>
@@ -480,7 +493,7 @@ export default function PortfolioPanel() {
                     <select
                       value={form.serviceSlug}
                       onChange={(e) => setForm({ ...form, serviceSlug: e.target.value })}
-                      className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#3b82d4]"
+                      className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#3b82d4]"
                     >
                       <option value="web-app-development" className="bg-[#0f172a] text-white">Web & App Development</option>
                       <option value="design-branding" className="bg-[#0f172a] text-white">Design & Branding</option>
@@ -492,137 +505,131 @@ export default function PortfolioPanel() {
                   </div>
                 </div>
 
-                {/* Quick suggestions */}
-                <div className="space-y-1">
-                  <span className="text-[10px] text-white/40 block">Quick Pick Industry:</span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {[
-                      'Cafes, Restaurants & Hospitality',
-                      'Hospitals, Clinics & Healthcare',
-                      'E-Commerce & D2C Brands',
-                      'Real Estate & Builders',
-                      'B2B SaaS & Tech Startups',
-                      'Fitness, Gyms & Wellness',
-                    ].map((sug) => (
-                      <button
-                        type="button"
-                        key={sug}
-                        onClick={() => setForm({ ...form, industry: sug })}
-                        className={`text-[10px] px-2 py-0.5 rounded transition-colors ${
-                          form.industry === sug
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-white/5 text-white/60 hover:text-white hover:bg-white/10'
-                        }`}
-                      >
-                        {sug}
-                      </button>
-                    ))}
-                  </div>
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {[
+                    'E-Commerce & D2C Brands',
+                    'B2B SaaS & Tech Startups',
+                    'Cafes & Hospitality',
+                    'Healthcare & Clinics',
+                    'Real Estate & Builders',
+                    'Fitness & Wellness',
+                  ].map((sug) => (
+                    <button
+                      type="button"
+                      key={sug}
+                      onClick={() => setForm({ ...form, industry: sug })}
+                      className={`text-[10px] px-2 py-0.5 rounded transition-colors cursor-pointer ${
+                        form.industry === sug
+                          ? 'bg-blue-600 text-white font-medium'
+                          : 'bg-white/5 text-white/60 hover:text-white hover:bg-white/10'
+                      }`}
+                    >
+                      {sug}
+                    </button>
+                  ))}
                 </div>
-                <p className="text-[10px] text-white/40 leading-relaxed">
-                  ✓ <strong>Presence Rule:</strong> This niche category will automatically become active and visible on the chosen service page on the live website when published!
-                </p>
               </div>
 
-              {/* Thumbnail with Media Upload Input */}
+              {/* Thumbnail / Mockup Upload */}
               <MediaUploadInput
-                label="Thumbnail / Hero Mockup"
+                label="Thumbnail / Cover Mockup"
                 value={form.thumbnail}
                 onChange={(url) => setForm({ ...form, thumbnail: url })}
-                placeholder="Upload to Supabase Storage CDN"
+                placeholder="Upload custom photo or enter URL"
+                helperText="Upload a screenshot, mockup, or image. Storage CDN will host it automatically."
               />
 
+              {/* Challenge */}
               <div>
-                <label className="block text-xs font-medium text-white/60 mb-1">The Challenge</label>
+                <label className="block text-xs font-semibold text-white/80 mb-1">The Challenge / Problem</label>
                 <textarea
                   rows={2}
                   value={form.challenge}
                   onChange={(e) => setForm({ ...form, challenge: e.target.value })}
-                  placeholder="What was the problem, friction, or requirement?"
-                  className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4]"
+                  placeholder="What was the client's problem or initial challenge?"
+                  className="w-full bg-white/[0.04] border border-white/15 rounded-lg px-3.5 py-2 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4]"
                 />
               </div>
 
+              {/* Solution */}
               <div>
-                <label className="block text-xs font-medium text-white/60 mb-1">The Solution & Approach</label>
+                <label className="block text-xs font-semibold text-white/80 mb-1">The Solution & Approach</label>
                 <textarea
                   rows={2}
                   value={form.solution}
                   onChange={(e) => setForm({ ...form, solution: e.target.value })}
-                  placeholder="How did Growmybiz24 solve it?"
-                  className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4]"
+                  placeholder="How did you solve it and what was delivered?"
+                  className="w-full bg-white/[0.04] border border-white/15 rounded-lg px-3.5 py-2 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4]"
                 />
               </div>
 
+              {/* Outcome */}
               <div>
-                <label className="block text-xs font-medium text-white/60 mb-1">Measurable Outcome / Metric *</label>
+                <label className="block text-xs font-semibold text-white/80 mb-1">Measurable Outcome / Result</label>
                 <input
                   type="text"
-                  required
                   value={form.outcome}
                   onChange={(e) => setForm({ ...form, outcome: e.target.value })}
-                  placeholder="+42% checkout conversions, 1.1s load time"
-                  className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4]"
+                  placeholder="e.g. +42% checkout conversion, 1.1s load time"
+                  className="w-full bg-white/[0.04] border border-white/15 rounded-lg px-3.5 py-2.5 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4]"
                 />
               </div>
 
+              {/* Technologies */}
               <div>
-                <label className="block text-xs font-medium text-white/60 mb-1">Technologies (comma separated)</label>
+                <label className="block text-xs font-semibold text-white/80 mb-1">Technologies Used (comma separated)</label>
                 <input
                   type="text"
                   value={form.technologies_str}
                   onChange={(e) => setForm({ ...form, technologies_str: e.target.value })}
-                  placeholder="Next.js, TypeScript, Tailwind, Stripe"
-                  className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4] font-mono text-[11px]"
+                  placeholder="Next.js, TypeScript, Tailwind CSS, Supabase"
+                  className="w-full bg-white/[0.04] border border-white/15 rounded-lg px-3.5 py-2.5 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4] font-mono text-[11px]"
                 />
               </div>
 
-              <div className="flex items-center gap-6 pt-2">
-                <div className="flex items-center gap-2">
+              {/* Checkboxes */}
+              <div className="flex flex-wrap items-center gap-6 pt-2 pb-1">
+                <label className="flex items-center gap-2 cursor-pointer select-none">
                   <input
                     type="checkbox"
-                    id="is_concept"
                     checked={form.is_concept}
                     onChange={(e) => setForm({ ...form, is_concept: e.target.checked })}
-                    className="rounded bg-white/10 border-white/20 text-[#3b82d4]"
+                    className="w-4 h-4 rounded bg-white/10 border-white/20 text-[#3b82d4] focus:ring-0"
                   />
-                  <label htmlFor="is_concept" className="text-xs text-amber-300 font-medium">
-                    Concept Demonstration (Pitch Deck standard)
-                  </label>
-                </div>
+                  <span className="text-xs text-amber-300 font-medium">Concept / Prototype Demo</span>
+                </label>
 
-                <div className="flex items-center gap-2">
+                <label className="flex items-center gap-2 cursor-pointer select-none">
                   <input
                     type="checkbox"
-                    id="is_featured"
                     checked={form.is_featured}
                     onChange={(e) => setForm({ ...form, is_featured: e.target.checked })}
-                    className="rounded bg-white/10 border-white/20 text-[#3b82d4]"
+                    className="w-4 h-4 rounded bg-white/10 border-white/20 text-[#3b82d4] focus:ring-0"
                   />
-                  <label htmlFor="is_featured" className="text-xs text-white/80">
-                    Feature on Homepage
-                  </label>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/[0.06]">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs text-white/60 hover:text-white"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#3b82d4] hover:bg-[#2563eb] disabled:opacity-50"
-                >
-                  {saving && <Loader2 size={13} className="animate-spin" />}
-                  <span>{editingId ? 'Save Changes' : 'Publish Project'}</span>
-                </button>
+                  <span className="text-xs text-white/80 font-medium">Feature on Homepage</span>
+                </label>
               </div>
             </form>
+
+            {/* Sticky Footer (Buttons ALWAYS visible, NEVER hidden) */}
+            <div className="px-6 py-4 border-t border-white/[0.08] bg-[#12121d] shrink-0 flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="px-4 py-2 rounded-xl text-xs font-medium text-white/60 hover:text-white hover:bg-white/[0.05] transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                form="portfolio-form"
+                disabled={saving}
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#3b82d4] hover:bg-[#2563eb] disabled:opacity-50 transition-all cursor-pointer shadow-lg shadow-blue-500/20"
+              >
+                {saving && <Loader2 size={13} className="animate-spin" />}
+                <span>{saving ? 'Saving...' : editingId ? 'Save Changes' : 'Publish Project'}</span>
+              </button>
+            </div>
           </div>
         </div>,
         document.body

@@ -11,6 +11,7 @@ async function checkAuth(): Promise<boolean> {
 }
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const DEFAULT_THUMBNAIL = '/portfolio/ecommerce-ux.svg';
 
 // GET /api/admin/portfolio - List all portfolio projects
 export async function GET() {
@@ -25,7 +26,39 @@ export async function GET() {
       .order('order_index', { ascending: true });
 
     if (!error && Array.isArray(data)) {
-      return NextResponse.json({ success: true, projects: data, source: 'supabase' });
+      // Normalize snake_case DB columns to both formats so UI components never break
+      const normalizedProjects = data.map((p) => {
+        const rawMetrics = Array.isArray(p.metrics) ? p.metrics : [];
+        const industry = (p as any).industry || rawMetrics.find((m: any) => m.label === '_industry')?.value || '';
+        const serviceSlug = (p as any).serviceSlug || rawMetrics.find((m: any) => m.label === '_serviceSlug')?.value || 'web-app-development';
+
+        return {
+          ...p,
+          id: p.id,
+          slug: p.slug,
+          title: p.title,
+          client: p.client,
+          category: p.category,
+          industry,
+          serviceSlug,
+          thumbnail: p.thumbnail || DEFAULT_THUMBNAIL,
+          challenge: p.challenge || '',
+          solution: p.solution || '',
+          outcome: p.outcome || '',
+          technologies: Array.isArray(p.technologies) ? p.technologies : [],
+          gallery: Array.isArray(p.gallery) ? p.gallery : [p.thumbnail || DEFAULT_THUMBNAIL],
+          isConcept: p.is_concept ?? false,
+          is_concept: p.is_concept ?? false,
+          featured: p.is_featured ?? true,
+          is_featured: p.is_featured ?? true,
+          published: p.is_published ?? true,
+          is_published: p.is_published ?? true,
+          year: p.year || '2025',
+          order_index: p.order_index ?? 0,
+        };
+      });
+
+      return NextResponse.json({ success: true, projects: normalizedProjects, source: 'supabase' });
     }
   } catch (err) {
     console.warn('Admin portfolio fetch fallback:', err);
@@ -34,7 +67,7 @@ export async function GET() {
   return NextResponse.json({ success: true, projects: [], source: 'supabase' });
 }
 
-// POST /api/admin/portfolio - Create portfolio item or seed defaults
+// POST /api/admin/portfolio - Create portfolio item
 export async function POST(request: Request) {
   if (!(await checkAuth())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -42,42 +75,6 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-
-    // Check for seed action
-    if (body.action === 'seed') {
-      const { portfolioItems } = await import('@/data/portfolio');
-      const rows = portfolioItems.map((p, idx) => ({
-        slug: p.slug,
-        title: p.title,
-        client: p.client,
-        category: p.category || 'Web & App Development',
-        year: String(p.year || 2025),
-        thumbnail: p.thumbnail || '/portfolio-mockups/mobile-app.png',
-        challenge: p.challenge || 'Project problem statement.',
-        solution: p.solution || p.approach || 'Solution and technical implementation.',
-        outcome: p.outcome || 'Delivered quantifiable client results.',
-        deliverables: p.deliverables || [],
-        technologies: p.technologies || [],
-        gallery: p.images || [p.thumbnail || '/portfolio-mockups/mobile-app.png'],
-        metrics: [
-          { label: '_industry', value: p.industry || '' },
-          { label: '_serviceSlug', value: p.serviceSlug || 'web-app-development' },
-        ],
-        is_concept: p.isConcept ?? false,
-        is_featured: p.featured ?? true,
-        is_published: true,
-        order_index: idx,
-      }));
-
-      const { data, error } = await supabaseAdmin.from('portfolio_projects').insert(rows).select('*');
-      if (error) {
-        return NextResponse.json({ error: error.message }, { status: 400 });
-      }
-
-      revalidatePath('/portfolio');
-      revalidatePath('/');
-      return NextResponse.json({ success: true, count: data?.length || 0, projects: data });
-    }
 
     const {
       slug,
@@ -99,50 +96,78 @@ export async function POST(request: Request) {
       order_index,
     } = body;
 
-    if (!slug || !title || !client) {
-      return NextResponse.json({ error: 'Title, client, and slug are required.' }, { status: 400 });
+    if (!title?.trim()) {
+      return NextResponse.json({ error: 'Project Title is required.' }, { status: 400 });
+    }
+    if (!client?.trim()) {
+      return NextResponse.json({ error: 'Client or Brand Name is required.' }, { status: 400 });
     }
 
-    const defaultThumb = '/portfolio-mockups/mobile-app.png';
+    const cleanSlug = (slug?.trim() || title.trim())
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)+/g, '');
+
+    if (!cleanSlug) {
+      return NextResponse.json({ error: 'URL Slug is required and must contain alphanumeric characters.' }, { status: 400 });
+    }
+
+    // Determine highest priority order index (place newly created project at top)
+    const { data: firstProj } = await supabaseAdmin
+      .from('portfolio_projects')
+      .select('order_index')
+      .order('order_index', { ascending: true })
+      .limit(1)
+      .maybeSingle();
+
+    const topOrderIndex = typeof order_index === 'number'
+      ? order_index
+      : (firstProj && typeof firstProj.order_index === 'number' ? firstProj.order_index - 1 : 0);
+
+    const newRecord = {
+      slug: cleanSlug,
+      title: title.trim(),
+      client: client.trim(),
+      category: category?.trim() || 'Web & App Development',
+      year: String(year || '2025'),
+      thumbnail: thumbnail?.trim() || DEFAULT_THUMBNAIL,
+      challenge: challenge?.trim() || '',
+      solution: solution?.trim() || '',
+      outcome: outcome?.trim() || '',
+      deliverables: Array.isArray(deliverables) ? deliverables : [],
+      metrics: Array.isArray(metrics) ? metrics : [],
+      technologies: Array.isArray(technologies) ? technologies : [],
+      gallery: Array.isArray(gallery) && gallery.length > 0 ? gallery : [thumbnail?.trim() || DEFAULT_THUMBNAIL],
+      is_concept: is_concept ?? false,
+      is_featured: is_featured ?? true,
+      is_published: is_published ?? true,
+      order_index: topOrderIndex,
+    };
 
     const { data, error } = await supabaseAdmin
       .from('portfolio_projects')
-      .insert([
-        {
-          slug: slug.trim().toLowerCase(),
-          title: title.trim(),
-          client: client.trim(),
-          category: category || 'Web & App Development',
-          year: String(year || '2025'),
-          thumbnail: thumbnail?.trim() || defaultThumb,
-          challenge: challenge?.trim() || 'Client problem statement and project scope.',
-          solution: solution?.trim() || 'Strategic development and UI/UX implementation.',
-          outcome: outcome?.trim() || 'Validated growth, scalability, and enhanced conversions.',
-          deliverables: Array.isArray(deliverables) ? deliverables : [],
-          metrics: Array.isArray(metrics) ? metrics : [],
-          technologies: Array.isArray(technologies) ? technologies : [],
-          gallery: Array.isArray(gallery) && gallery.length > 0 ? gallery : [thumbnail || defaultThumb],
-          is_concept: is_concept ?? false,
-          is_featured: is_featured ?? true,
-          is_published: is_published ?? true,
-          order_index: typeof order_index === 'number' ? order_index : 0,
-        },
-      ])
+      .insert([newRecord])
       .select('*')
       .single();
 
     if (error) {
+      if (error.code === '23505' || error.message?.includes('duplicate key') || error.message?.includes('unique constraint')) {
+        return NextResponse.json(
+          { error: `A project with URL slug "${cleanSlug}" already exists. Please choose a slightly different slug.` },
+          { status: 400 }
+        );
+      }
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
     revalidatePath('/portfolio');
-    revalidatePath(`/portfolio/${slug}`);
+    revalidatePath(`/portfolio/${cleanSlug}`);
     revalidatePath('/');
 
     return NextResponse.json({ success: true, project: data });
-  } catch (err) {
+  } catch (err: any) {
     console.error('Portfolio create error:', err);
-    return NextResponse.json({ error: 'Failed to create portfolio item.' }, { status: 500 });
+    return NextResponse.json({ error: err?.message || 'Failed to create portfolio item.' }, { status: 500 });
   }
 }
 
@@ -162,18 +187,12 @@ export async function PUT(request: Request) {
 
     const isUuid = UUID_REGEX.test(id);
 
-    // Sanitize updates to prevent NOT NULL database crashes
-    if (updates.challenge !== undefined && !updates.challenge) {
-      updates.challenge = 'Client problem statement and project scope.';
+    if (updates.slug) {
+      updates.slug = updates.slug.toLowerCase().trim().replace(/[^a-z0-9-]+/g, '-').replace(/(^-|-$)+/g, '');
     }
-    if (updates.solution !== undefined && !updates.solution) {
-      updates.solution = 'Strategic development and UI/UX implementation.';
-    }
-    if (updates.thumbnail !== undefined && !updates.thumbnail) {
-      updates.thumbnail = '/portfolio-mockups/mobile-app.png';
-    }
-    if (updates.category !== undefined && !updates.category) {
-      updates.category = 'Web & App Development';
+
+    if (updates.thumbnail && !updates.thumbnail.trim()) {
+      updates.thumbnail = DEFAULT_THUMBNAIL;
     }
 
     let query = supabaseAdmin.from('portfolio_projects').update(updates);
@@ -187,6 +206,12 @@ export async function PUT(request: Request) {
     const { data, error } = await query.select('*').maybeSingle();
 
     if (error) {
+      if (error.code === '23505' || error.message?.includes('duplicate key') || error.message?.includes('unique constraint')) {
+        return NextResponse.json(
+          { error: `URL slug "${updates.slug}" is already taken by another project. Please choose another.` },
+          { status: 400 }
+        );
+      }
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
@@ -195,9 +220,9 @@ export async function PUT(request: Request) {
     revalidatePath('/');
 
     return NextResponse.json({ success: true, project: data });
-  } catch (err) {
+  } catch (err: any) {
     console.error('Portfolio update error:', err);
-    return NextResponse.json({ error: 'Failed to update portfolio item.' }, { status: 500 });
+    return NextResponse.json({ error: err?.message || 'Failed to update portfolio item.' }, { status: 500 });
   }
 }
 
@@ -223,7 +248,6 @@ export async function DELETE(request: Request) {
         return NextResponse.json({ error: error.message }, { status: 400 });
       }
     } else {
-      // If it's a string slug (like static mock id "ecommerce-ux-prototype"), delete by slug or complete gracefully
       await supabaseAdmin.from('portfolio_projects').delete().eq('slug', id);
     }
 
@@ -231,8 +255,8 @@ export async function DELETE(request: Request) {
     revalidatePath('/');
 
     return NextResponse.json({ success: true, deleted: id });
-  } catch (err) {
+  } catch (err: any) {
     console.error('Portfolio delete error:', err);
-    return NextResponse.json({ error: 'Failed to delete portfolio item.' }, { status: 500 });
+    return NextResponse.json({ error: err?.message || 'Failed to delete portfolio item.' }, { status: 500 });
   }
 }
