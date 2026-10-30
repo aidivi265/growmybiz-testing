@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Plus, Edit2, Trash2, Eye, Loader2, Sparkles, X, FolderOpen, AlertCircle, CheckCircle2, Globe, ExternalLink } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, Loader2, Sparkles, X, FolderOpen, AlertCircle, CheckCircle2, Globe, ExternalLink, ArrowUp, ArrowDown } from 'lucide-react';
 import MediaUploadInput from './MediaUploadInput';
 import type { PortfolioItem } from '@/types';
 
@@ -53,6 +53,7 @@ export default function PortfolioPanel() {
   const [formError, setFormError] = useState<string | null>(null);
   const [successToast, setSuccessToast] = useState<string | null>(null);
   const [showCustomUpload, setShowCustomUpload] = useState(false);
+  const [reordering, setReordering] = useState(false);
 
   const [form, setForm] = useState<PortfolioFormState>(DEFAULT_FORM);
 
@@ -233,6 +234,47 @@ export default function PortfolioPanel() {
     }
   };
 
+  const handleMoveProject = async (index: number, direction: 'up' | 'down') => {
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= projects.length) return;
+
+    const newProjects = [...projects];
+    const temp = newProjects[index];
+    newProjects[index] = newProjects[targetIndex];
+    newProjects[targetIndex] = temp;
+
+    // Create sequence update payload
+    const updatedItems = newProjects.map((p, idx) => ({
+      id: p.id || p.slug,
+      order_index: idx,
+    }));
+
+    setProjects(newProjects);
+    setReordering(true);
+
+    try {
+      const res = await fetch('/api/admin/portfolio', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: updatedItems }),
+      });
+
+      if (res.ok) {
+        setSuccessToast(`Sequence updated! "${temp.title}" is now #${targetIndex + 1} in display order.`);
+        setTimeout(() => setSuccessToast(null), 3000);
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to save sequence arrangement');
+        loadProjects();
+      }
+    } catch {
+      alert('Error connecting to server to save sequence');
+      loadProjects();
+    } finally {
+      setReordering(false);
+    }
+  };
+
   const handleDelete = async (id: string, title: string) => {
     if (!confirm(`Are you sure you want to delete project "${title}"?`)) return;
 
@@ -321,15 +363,16 @@ export default function PortfolioPanel() {
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="border-b border-white/[0.06] text-white/40">
-                <th className="py-2.5 px-3">Client & Title</th>
-                <th className="py-2.5 px-3">Category & Industry</th>
+                <th className="py-2.5 px-3 w-20 text-center">Seq / Order</th>
+                <th className="py-2.5 px-3">Client &amp; Title</th>
+                <th className="py-2.5 px-3">Category &amp; Industry</th>
                 <th className="py-2.5 px-3">Classification</th>
                 <th className="py-2.5 px-3">Year</th>
                 <th className="py-2.5 px-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.03]">
-              {projects.map((p) => {
+              {projects.map((p, idx) => {
                 const metricsArr = Array.isArray(p.metrics) ? p.metrics : [];
                 const ind = p.industry || metricsArr.find((m: any) => m.label === '_industry')?.value;
                 const liveUrl = p.liveUrl || (p as any).live_url || metricsArr.find((m: any) => m.label === '_liveUrl')?.value;
@@ -337,6 +380,33 @@ export default function PortfolioPanel() {
 
                 return (
                   <tr key={p.id || p.slug} className="hover:bg-white/[0.02] text-white/80">
+                    <td className="py-3 px-3 text-center">
+                      <div className="inline-flex items-center gap-1.5 bg-white/[0.04] px-2 py-1 rounded-lg border border-white/[0.08]">
+                        <span className="text-[11px] font-mono font-bold text-white/70 min-w-[16px] text-center">
+                          #{idx + 1}
+                        </span>
+                        <div className="flex flex-col gap-0.5">
+                          <button
+                            type="button"
+                            disabled={idx === 0 || reordering}
+                            onClick={() => handleMoveProject(idx, 'up')}
+                            className="p-0.5 rounded hover:bg-white/20 text-white/50 hover:text-emerald-400 disabled:opacity-20 cursor-pointer disabled:cursor-not-allowed transition-colors"
+                            title="Move Up in Sequence"
+                          >
+                            <ArrowUp size={11} />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={idx === projects.length - 1 || reordering}
+                            onClick={() => handleMoveProject(idx, 'down')}
+                            className="p-0.5 rounded hover:bg-white/20 text-white/50 hover:text-emerald-400 disabled:opacity-20 cursor-pointer disabled:cursor-not-allowed transition-colors"
+                            title="Move Down in Sequence"
+                          >
+                            <ArrowDown size={11} />
+                          </button>
+                        </div>
+                      </div>
+                    </td>
                     <td className="py-3 px-3">
                       <div>
                         <p className="text-[11px] text-[#32A88A] font-bold uppercase tracking-wider">{p.client}</p>

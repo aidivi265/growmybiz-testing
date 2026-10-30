@@ -285,3 +285,45 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: err?.message || 'Failed to delete portfolio item.' }, { status: 500 });
   }
 }
+
+// PATCH /api/admin/portfolio - Reorder projects sequence
+export async function PATCH(request: Request) {
+  if (!(await checkAuth())) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const body = await request.json();
+    const { items } = body;
+
+    if (!Array.isArray(items) || items.length === 0) {
+      return NextResponse.json({ error: 'Array of items with id and order_index is required.' }, { status: 400 });
+    }
+
+    // Update each project's order_index in Supabase
+    const updatePromises = items.map((it: { id: string; order_index: number }) => {
+      const isUuid = UUID_REGEX.test(it.id);
+      if (isUuid) {
+        return supabaseAdmin
+          .from('portfolio_projects')
+          .update({ order_index: it.order_index })
+          .eq('id', it.id);
+      } else {
+        return supabaseAdmin
+          .from('portfolio_projects')
+          .update({ order_index: it.order_index })
+          .eq('slug', it.id);
+      }
+    });
+
+    await Promise.all(updatePromises);
+
+    revalidatePath('/portfolio');
+    revalidatePath('/');
+
+    return NextResponse.json({ success: true, reorderedCount: items.length });
+  } catch (err: any) {
+    console.error('Portfolio reorder error:', err);
+    return NextResponse.json({ error: err?.message || 'Failed to reorder projects' }, { status: 500 });
+  }
+}
