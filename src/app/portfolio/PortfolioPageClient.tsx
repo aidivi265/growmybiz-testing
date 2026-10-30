@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Globe, ExternalLink } from 'lucide-react';
 import { portfolioItems, portfolioCategories } from '@/data/portfolio';
 import { Breadcrumb } from '@/components/ui';
 import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
@@ -97,9 +97,10 @@ export default function PortfolioPageClient({ initialItems }: { initialItems?: t
                           fill
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                          unoptimized={item.thumbnail.startsWith('http')}
                         />
 
-                        {/* Category & Concept tag */}
+                        {/* Category, Live & Concept tag */}
                         <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
                           <span
                             className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold text-white shadow-md"
@@ -110,6 +111,11 @@ export default function PortfolioPageClient({ initialItems }: { initialItems?: t
                           >
                             {item.category}
                           </span>
+                          {item.liveUrl && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-600/90 text-white backdrop-blur-sm border border-emerald-400/40 shadow-sm">
+                              <Globe size={10} /> Live Site
+                            </span>
+                          )}
                           {item.isConcept && (
                             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/85 text-white backdrop-blur-sm border border-amber-300/40 shadow-sm">
                               Concept Demo
@@ -135,7 +141,15 @@ export default function PortfolioPageClient({ initialItems }: { initialItems?: t
                       {/* Content */}
                       <div className="p-6 flex-1 flex flex-col justify-between">
                         <div>
-                          <p className="text-[#32A88A] text-xs font-bold uppercase tracking-wider mb-1.5">{item.client}</p>
+                          <div className="flex items-center justify-between mb-1.5">
+                            <p className="text-[#32A88A] text-xs font-bold uppercase tracking-wider">{item.client}</p>
+                            {item.liveUrl && (
+                              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600">
+                                <span>Live</span>
+                                <ExternalLink size={10} />
+                              </span>
+                            )}
+                          </div>
                           <h2
                             className="text-[#0F1C31] font-bold text-base mb-2 group-hover:text-[#477BDB] transition-colors leading-snug"
                             style={{ fontFamily: INTER_FONT }}

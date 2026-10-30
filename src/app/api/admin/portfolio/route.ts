@@ -31,6 +31,7 @@ export async function GET() {
         const rawMetrics = Array.isArray(p.metrics) ? p.metrics : [];
         const industry = (p as any).industry || rawMetrics.find((m: any) => m.label === '_industry')?.value || '';
         const serviceSlug = (p as any).serviceSlug || rawMetrics.find((m: any) => m.label === '_serviceSlug')?.value || 'web-app-development';
+        const liveUrl = (p as any).live_url || (p as any).liveUrl || rawMetrics.find((m: any) => m.label === '_liveUrl')?.value || '';
 
         return {
           ...p,
@@ -41,6 +42,8 @@ export async function GET() {
           category: p.category,
           industry,
           serviceSlug,
+          liveUrl,
+          live_url: liveUrl,
           thumbnail: p.thumbnail || DEFAULT_THUMBNAIL,
           challenge: p.challenge || '',
           solution: p.solution || '',
@@ -94,6 +97,8 @@ export async function POST(request: Request) {
       is_featured,
       is_published,
       order_index,
+      liveUrl,
+      live_url,
     } = body;
 
     if (!title?.trim()) {
@@ -110,6 +115,14 @@ export async function POST(request: Request) {
 
     if (!cleanSlug) {
       return NextResponse.json({ error: 'URL Slug is required and must contain alphanumeric characters.' }, { status: 400 });
+    }
+
+    // Pack liveUrl into metrics JSONB so no missing-column error can occur
+    const targetLiveUrl = (liveUrl || live_url || '').trim();
+    let metricsArray = Array.isArray(metrics) ? [...metrics] : [];
+    if (targetLiveUrl) {
+      metricsArray = metricsArray.filter((m: any) => m.label !== '_liveUrl');
+      metricsArray.push({ label: '_liveUrl', value: targetLiveUrl });
     }
 
     // Determine highest priority order index (place newly created project at top)
@@ -135,7 +148,7 @@ export async function POST(request: Request) {
       solution: solution?.trim() || '',
       outcome: outcome?.trim() || '',
       deliverables: Array.isArray(deliverables) ? deliverables : [],
-      metrics: Array.isArray(metrics) ? metrics : [],
+      metrics: metricsArray,
       technologies: Array.isArray(technologies) ? technologies : [],
       gallery: Array.isArray(gallery) && gallery.length > 0 ? gallery : [thumbnail?.trim() || DEFAULT_THUMBNAIL],
       is_concept: is_concept ?? false,
@@ -179,10 +192,22 @@ export async function PUT(request: Request) {
 
   try {
     const body = await request.json();
-    const { id, ...updates } = body;
+    const { id, liveUrl, live_url, ...rawUpdates } = body;
+    const updates: Record<string, any> = { ...rawUpdates };
 
     if (!id) {
       return NextResponse.json({ error: 'Project ID is required.' }, { status: 400 });
+    }
+
+    // Safely update liveUrl inside metrics JSONB
+    if (liveUrl !== undefined || live_url !== undefined) {
+      const targetLiveUrl = (liveUrl || live_url || '').trim();
+      let metricsArray = Array.isArray(updates.metrics) ? [...updates.metrics] : [];
+      metricsArray = metricsArray.filter((m: any) => m.label !== '_liveUrl');
+      if (targetLiveUrl) {
+        metricsArray.push({ label: '_liveUrl', value: targetLiveUrl });
+      }
+      updates.metrics = metricsArray;
     }
 
     const isUuid = UUID_REGEX.test(id);

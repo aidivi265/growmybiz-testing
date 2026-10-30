@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Plus, Edit2, Trash2, Star, Loader2, MessageSquare, X, Check } from 'lucide-react';
+import MediaUploadInput from './MediaUploadInput';
 import type { Testimonial } from '@/types';
 
 interface TestimonialFormState {
@@ -267,15 +268,15 @@ export default function TestimonialsPanel() {
         </div>
       )}
 
-      {/* Create / Edit Modal */}
+      {/* Create / Edit Modal (Protected from accidental backdrop closure) */}
       {isModalOpen && typeof document !== 'undefined' && createPortal(
         <div
           className="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn"
-          onClick={() => setIsModalOpen(false)}
+          role="dialog"
+          aria-modal="true"
         >
           <div
             className="bg-[#0f0f18] rounded-2xl border border-white/15 w-full max-w-lg p-5 sm:p-6 shadow-2xl relative my-auto text-white"
-            onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/[0.08]">
               <h3 className="text-base font-bold text-white tracking-tight">
@@ -338,6 +339,15 @@ export default function TestimonialsPanel() {
                   </select>
                 </div>
               </div>
+
+              {/* Client Photo / Avatar Upload */}
+              <MediaUploadInput
+                label="Client Photo / Headshot"
+                value={form.avatar}
+                onChange={(url) => setForm({ ...form, avatar: url })}
+                placeholder="Upload client photo or leave empty for initials"
+                helperText="Upload a client photo. Storage CDN will host it automatically."
+              />
 
               <div>
                 <label className="block text-xs font-medium text-white/60 mb-1">Client Quote / Feedback *</label>

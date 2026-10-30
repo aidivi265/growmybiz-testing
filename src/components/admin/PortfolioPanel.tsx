@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Plus, Edit2, Trash2, Eye, Loader2, Sparkles, X, FolderOpen, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, Loader2, Sparkles, X, FolderOpen, AlertCircle, CheckCircle2, Globe, ExternalLink } from 'lucide-react';
 import MediaUploadInput from './MediaUploadInput';
 import type { PortfolioItem } from '@/types';
 
@@ -14,6 +14,7 @@ interface PortfolioFormState {
   category: string;
   industry: string;
   serviceSlug: string;
+  liveUrl: string;
   year: string;
   thumbnail: string;
   challenge: string;
@@ -31,6 +32,7 @@ const DEFAULT_FORM: PortfolioFormState = {
   category: 'Web & App Development',
   industry: 'E-Commerce & D2C Brands',
   serviceSlug: 'web-app-development',
+  liveUrl: '',
   year: '2025',
   thumbnail: '/portfolio/ecommerce-ux.svg',
   challenge: '',
@@ -50,6 +52,7 @@ export default function PortfolioPanel() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [successToast, setSuccessToast] = useState<string | null>(null);
+  const [showCustomUpload, setShowCustomUpload] = useState(false);
 
   const [form, setForm] = useState<PortfolioFormState>(DEFAULT_FORM);
 
@@ -76,6 +79,7 @@ export default function PortfolioPanel() {
   const openCreateModal = () => {
     setEditingId(null);
     setFormError(null);
+    setShowCustomUpload(false);
     setForm({
       ...DEFAULT_FORM,
       year: String(new Date().getFullYear()),
@@ -86,9 +90,11 @@ export default function PortfolioPanel() {
   const openEditModal = (p: PortfolioItem) => {
     setEditingId(p.id);
     setFormError(null);
+    setShowCustomUpload(false);
     const metricsArr = Array.isArray(p.metrics) ? p.metrics : [];
     const ind = p.industry || metricsArr.find((m: any) => m.label === '_industry')?.value || '';
     const sSlug = p.serviceSlug || metricsArr.find((m: any) => m.label === '_serviceSlug')?.value || 'web-app-development';
+    const liveUrl = p.liveUrl || (p as any).live_url || metricsArr.find((m: any) => m.label === '_liveUrl')?.value || '';
 
     setForm({
       id: p.id,
@@ -98,6 +104,7 @@ export default function PortfolioPanel() {
       category: p.category || 'Web & App Development',
       industry: ind,
       serviceSlug: sSlug,
+      liveUrl,
       year: String(p.year || 2025),
       thumbnail: p.thumbnail || '/portfolio/ecommerce-ux.svg',
       challenge: p.challenge || '',
@@ -108,6 +115,25 @@ export default function PortfolioPanel() {
       is_featured: (p as any).is_featured ?? p.featured ?? true,
     });
     setIsModalOpen(true);
+  };
+
+  const handleLiveUrlChange = (val: string) => {
+    let cleanUrl = val.trim();
+    if (cleanUrl && !/^https?:\/\//i.test(cleanUrl)) {
+      cleanUrl = `https://${cleanUrl}`;
+    }
+
+    // High-resolution automated screenshot endpoint
+    const screenshotUrl = cleanUrl
+      ? `https://s0.wp.com/mshots/v1/${encodeURIComponent(cleanUrl)}?w=1280&h=800`
+      : '';
+
+    setForm((prev) => ({
+      ...prev,
+      liveUrl: val,
+      // If user provided a live URL, use the real-time screenshot as the primary cover photo
+      thumbnail: screenshotUrl || prev.thumbnail || '/portfolio/ecommerce-ux.svg',
+    }));
   };
 
   const handleTitleChange = (val: string) => {
@@ -151,6 +177,12 @@ export default function PortfolioPanel() {
         { label: '_serviceSlug', value: form.serviceSlug },
       ];
 
+      const cleanLiveUrl = form.liveUrl.trim();
+      if (cleanLiveUrl) {
+        const formattedLiveUrl = /^https?:\/\//i.test(cleanLiveUrl) ? cleanLiveUrl : `https://${cleanLiveUrl}`;
+        metrics.push({ label: '_liveUrl', value: formattedLiveUrl });
+      }
+
       const cleanSlug = form.slug
         .toLowerCase()
         .trim()
@@ -163,6 +195,7 @@ export default function PortfolioPanel() {
         title: form.title.trim(),
         client: form.client.trim(),
         category: form.category.trim(),
+        liveUrl: cleanLiveUrl ? (/^https?:\/\//i.test(cleanLiveUrl) ? cleanLiveUrl : `https://${cleanLiveUrl}`) : '',
         metrics,
         year: form.year.trim() || '2025',
         thumbnail: form.thumbnail.trim() || '/portfolio/ecommerce-ux.svg',
@@ -299,6 +332,7 @@ export default function PortfolioPanel() {
               {projects.map((p) => {
                 const metricsArr = Array.isArray(p.metrics) ? p.metrics : [];
                 const ind = p.industry || metricsArr.find((m: any) => m.label === '_industry')?.value;
+                const liveUrl = p.liveUrl || (p as any).live_url || metricsArr.find((m: any) => m.label === '_liveUrl')?.value;
                 const isConcept = (p as any).is_concept ?? p.isConcept ?? false;
 
                 return (
@@ -307,7 +341,22 @@ export default function PortfolioPanel() {
                       <div>
                         <p className="text-[11px] text-[#32A88A] font-bold uppercase tracking-wider">{p.client}</p>
                         <p className="font-semibold text-white">{p.title}</p>
-                        <p className="text-[10px] text-white/30 font-mono mt-0.5">/portfolio/{p.slug}</p>
+                        <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                          <span className="text-[10px] text-white/30 font-mono">/portfolio/{p.slug}</span>
+                          {liveUrl && (
+                            <a
+                              href={liveUrl.startsWith('http') ? liveUrl : `https://${liveUrl}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-400 hover:text-emerald-300 hover:underline"
+                              title={`Visit: ${liveUrl}`}
+                            >
+                              <Globe size={10} />
+                              <span>Live Site</span>
+                              <ExternalLink size={9} />
+                            </a>
+                          )}
+                        </div>
                       </div>
                     </td>
                     <td className="py-3 px-3">
@@ -530,14 +579,93 @@ export default function PortfolioPanel() {
                 </div>
               </div>
 
-              {/* Thumbnail / Mockup Upload */}
-              <MediaUploadInput
-                label="Thumbnail / Cover Mockup"
-                value={form.thumbnail}
-                onChange={(url) => setForm({ ...form, thumbnail: url })}
-                placeholder="Upload custom photo or enter URL"
-                helperText="Upload a screenshot, mockup, or image. Storage CDN will host it automatically."
-              />
+              {/* ── Live Website URL & Automated Screenshot Engine ── */}
+              <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/[0.07] via-[#151c28] to-[#0f172a] border border-emerald-500/25 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Globe size={15} className="text-emerald-400" />
+                    <span className="text-xs font-bold text-white tracking-wide">Live Website / Project URL</span>
+                    <span className="text-[10px] font-semibold text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+                      Auto Screenshot
+                    </span>
+                  </div>
+                  {form.liveUrl && (
+                    <a
+                      href={form.liveUrl.startsWith('http') ? form.liveUrl : `https://${form.liveUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] font-semibold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 hover:underline"
+                    >
+                      <span>Visit Live Link</span>
+                      <ExternalLink size={11} />
+                    </a>
+                  )}
+                </div>
+
+                <div>
+                  <input
+                    type="text"
+                    value={form.liveUrl}
+                    onChange={(e) => handleLiveUrlChange(e.target.value)}
+                    placeholder="e.g. https://urbancart.in or https://clientbrand.com"
+                    className="w-full bg-white/[0.06] border border-emerald-500/30 rounded-lg px-3.5 py-2.5 text-xs text-white placeholder-white/30 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 font-mono"
+                  />
+                  <p className="text-[11px] text-white/50 mt-1.5 leading-relaxed">
+                    💡 <strong className="text-white/80">Website Photo &amp; Live Link:</strong> Enter the project&apos;s website URL. Our system captures a real-time live screenshot to use as the project photo across the website, and adds a clickable &quot;Visit Live Website&quot; link for all visitors.
+                  </p>
+                </div>
+
+                {/* Screenshot Live Preview */}
+                {form.thumbnail && (
+                  <div className="rounded-xl overflow-hidden border border-white/10 bg-black/50 p-2.5 space-y-2">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="text-white/70 font-medium flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                        Website Photo Preview
+                      </span>
+                      {form.thumbnail.includes('mshots') ? (
+                        <span className="text-[10px] text-emerald-400/90 font-mono bg-emerald-500/10 px-2 py-0.5 rounded">
+                          Live Automated Screenshot
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-blue-400/90 font-mono bg-blue-500/10 px-2 py-0.5 rounded">
+                          Custom Cover Uploaded
+                        </span>
+                      )}
+                    </div>
+                    <div className="relative w-full h-36 rounded-lg overflow-hidden border border-white/10 bg-[#0d1117] flex items-center justify-center">
+                      <img
+                        src={form.thumbnail}
+                        alt="Project Preview"
+                        className="w-full h-full object-cover object-top"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Optional Custom Graphic Upload Accordion */}
+                <div className="pt-2 border-t border-white/[0.08]">
+                  <button
+                    type="button"
+                    onClick={() => setShowCustomUpload(!showCustomUpload)}
+                    className="text-[11px] text-white/50 hover:text-white/90 flex items-center gap-1.5 cursor-pointer transition-colors"
+                  >
+                    <span>{showCustomUpload ? '▲ Hide custom image upload' : '▼ Want to upload a custom mockup or logo instead? (Optional)'}</span>
+                  </button>
+
+                  {showCustomUpload && (
+                    <div className="mt-3 pt-2">
+                      <MediaUploadInput
+                        label="Custom Cover Mockup (Upload to Supabase Storage)"
+                        value={form.thumbnail}
+                        onChange={(url) => setForm({ ...form, thumbnail: url })}
+                        placeholder="Upload photo or enter URL"
+                        helperText="Upload custom design mockup or photo. It will override the automated screenshot."
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
 
               {/* Challenge */}
               <div>

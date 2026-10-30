@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, ArrowLeft } from 'lucide-react';
+import { ArrowRight, ArrowLeft, ExternalLink, Globe } from 'lucide-react';
 import { portfolioItems as defaultPortfolioItems } from '@/data';
 import { fetchPortfolio, fetchPortfolioBySlug, fetchPageVisibility } from '@/lib/dal';
 import { Breadcrumb } from '@/components/ui';
@@ -101,7 +101,21 @@ export default async function PortfolioItemPage({ params }: Props) {
             >
               {item.title}
             </h1>
-            <p className="text-white/40 text-sm mt-2">{item.client} · {item.year}</p>
+            <div className="flex items-center gap-3 mt-3 flex-wrap">
+              <p className="text-white/60 text-sm">{item.client} · {item.year}</p>
+              {item.liveUrl && (
+                <a
+                  href={item.liveUrl.startsWith('http') ? item.liveUrl : `https://${item.liveUrl}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/35 hover:bg-emerald-500/30 transition-all shadow-sm"
+                >
+                  <Globe size={13} className="text-emerald-400" />
+                  <span>Visit Live Website</span>
+                  <ExternalLink size={12} />
+                </a>
+              )}
+            </div>
 
             {item.isConcept && item.conceptDisclaimer && (
               <div className="mt-4 p-3.5 rounded-xl border border-amber-500/25 bg-amber-500/10 text-amber-200/90 text-xs leading-relaxed max-w-2xl flex items-start gap-2.5">
@@ -123,7 +137,7 @@ export default async function PortfolioItemPage({ params }: Props) {
 
               {/* Visual preview */}
               <div
-                className="rounded-2xl overflow-hidden border border-[#DDE3EC] bg-[#0A1320] relative"
+                className="rounded-2xl overflow-hidden border border-[#DDE3EC] bg-[#0A1320] relative group"
                 style={{
                   aspectRatio: '16/9',
                   boxShadow: '0 12px 40px rgba(15,28,49,0.12)',
@@ -134,9 +148,25 @@ export default async function PortfolioItemPage({ params }: Props) {
                   alt={item.title}
                   fill
                   sizes="(max-width: 1024px) 100vw, 66vw"
-                  className="w-full h-full object-cover object-top"
+                  className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
                   priority
+                  unoptimized={item.thumbnail.startsWith('http')}
                 />
+
+                {item.liveUrl && (
+                  <div className="absolute top-4 right-4 z-10">
+                    <a
+                      href={item.liveUrl.startsWith('http') ? item.liveUrl : `https://${item.liveUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-black/70 hover:bg-black/90 backdrop-blur-md border border-white/20 transition-all shadow-lg"
+                    >
+                      <Globe size={13} className="text-emerald-400" />
+                      <span>Live Site</span>
+                      <ExternalLink size={12} />
+                    </a>
+                  </div>
+                )}
               </div>
 
               {/* Challenge */}
@@ -219,6 +249,31 @@ export default async function PortfolioItemPage({ params }: Props) {
 
             {/* Right col — metadata sidebar */}
             <div className="space-y-6">
+
+              {/* Live Website Action Card */}
+              {item.liveUrl && (
+                <div className="p-5 rounded-2xl border border-emerald-500/30 bg-emerald-50/50 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      Live Project Available
+                    </span>
+                    <Globe size={14} className="text-emerald-600" />
+                  </div>
+                  <a
+                    href={item.liveUrl.startsWith('http') ? item.liveUrl : `https://${item.liveUrl}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl font-bold text-sm text-white bg-[#0F1C31] hover:bg-[#1A2B4A] transition-all shadow-md group"
+                  >
+                    <span>Visit Live Website</span>
+                    <ExternalLink size={15} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform text-emerald-400" />
+                  </a>
+                  <p className="text-[11px] text-[#6B7E95] text-center truncate">
+                    {item.liveUrl.replace(/^https?:\/\//, '')}
+                  </p>
+                </div>
+              )}
 
               {/* Project info card */}
               <div className="p-6 rounded-2xl border border-[#DDE3EC] bg-[#F7F9FC] space-y-4">

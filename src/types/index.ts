@@ -70,6 +70,7 @@ export interface PortfolioItem {
   category: string;
   industry?: string;
   serviceSlug?: string;
+  liveUrl?: string;
   tags: string[];
   thumbnail: string;
   images: string[];

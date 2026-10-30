@@ -5,7 +5,7 @@ const cspHeader = `
   default-src 'self';
   script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://*.vercel.app https://growmybizz.vercel.app https://*.growmybizz.vercel.app https://growmybizz.com https://*.growmybizz.com;
+  img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://*.wp.com https://s0.wp.com https://*.vercel.app https://growmybiz24.com https://*.growmybiz24.com https://growmybizz.vercel.app https://*.growmybizz.vercel.app https://growmybizz.com https://*.growmybizz.com;
   font-src 'self' https://fonts.gstatic.com data:;
   connect-src 'self' https://*.supabase.co https://va.vercel-scripts.com https://vitals.vercel-insights.com https://*.vercel.app https://growmybizz.vercel.app https://growmybizz.com https://*.growmybizz.com;
   frame-ancestors 'none';
@@ -38,11 +38,27 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "s0.wp.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.wp.com",
+      },
+      {
+        protocol: "https",
         hostname: "images.unsplash.com",
       },
       {
         protocol: "https",
         hostname: "**.vercel.app",
+      },
+      {
+        protocol: "https",
+        hostname: "growmybiz24.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.growmybiz24.com",
       },
       {
         protocol: "https",

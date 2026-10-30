@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Globe } from 'lucide-react';
 import { portfolioItems as defaultPortfolioItems } from '@/data/portfolio';
 import { SYNE_FONT } from '@/lib/fonts';
 import type { PortfolioItem } from '@/types';
@@ -75,6 +75,7 @@ export default function PortfolioPreview({ projects }: PortfolioPreviewProps) {
                 fill
                 sizes="(max-width: 1024px) 100vw, 65vw"
                 className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                unoptimized={main.thumbnail.startsWith('http')}
               />
 
               {/* Hover overlay */}
@@ -92,13 +93,18 @@ export default function PortfolioPreview({ projects }: PortfolioPreviewProps) {
 
               {/* Top meta */}
               <div className="absolute top-5 left-5 right-5 flex items-start justify-between">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span
                     className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold text-white shadow-md"
                     style={{ background: `${mainAccent}E0`, border: '1px solid rgba(255,255,255,0.25)' }}
                   >
                     {main.category}
                   </span>
+                  {main.liveUrl && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-600/90 text-white backdrop-blur-sm border border-emerald-400/40 shadow-sm">
+                      <Globe size={10} /> Live Site
+                    </span>
+                  )}
                   {main.isConcept && (
                     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/85 text-white backdrop-blur-sm border border-amber-300/40 shadow-sm">
                       Concept Demo
@@ -160,9 +166,10 @@ export default function PortfolioPreview({ projects }: PortfolioPreviewProps) {
                       fill
                       sizes="(max-width: 1024px) 100vw, 35vw"
                       className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      unoptimized={item.thumbnail.startsWith('http')}
                     />
 
-                    {/* Category & Concept tag */}
+                    {/* Category, Live & Concept tag */}
                     <div className="absolute top-4 left-4 flex items-center gap-1.5 flex-wrap">
                       <span
                         className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold text-white shadow-md"
@@ -170,6 +177,11 @@ export default function PortfolioPreview({ projects }: PortfolioPreviewProps) {
                       >
                         {item.category}
                       </span>
+                      {item.liveUrl && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-600/90 text-white backdrop-blur-sm border border-emerald-400/40 shadow-sm">
+                          <Globe size={9} /> Live
+                        </span>
+                      )}
                       {item.isConcept && (
                         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/85 text-white backdrop-blur-sm border border-amber-300/40 shadow-sm">
                           Demo

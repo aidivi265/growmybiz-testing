@@ -95,6 +95,7 @@ export async function fetchPortfolio(): Promise<PortfolioItem[]> {
         const rawMetrics = Array.isArray(p.metrics) ? p.metrics : [];
         const industry = (p as any).industry || rawMetrics.find((m: any) => m.label === '_industry')?.value;
         const serviceSlug = (p as any).serviceSlug || rawMetrics.find((m: any) => m.label === '_serviceSlug')?.value;
+        const liveUrl = (p as any).live_url || (p as any).liveUrl || rawMetrics.find((m: any) => m.label === '_liveUrl')?.value || '';
         const cleanMetrics = rawMetrics.filter((m: any) => !m.label?.startsWith('_'));
 
         return {
@@ -105,6 +106,7 @@ export async function fetchPortfolio(): Promise<PortfolioItem[]> {
           category: p.category,
           industry,
           serviceSlug,
+          liveUrl,
           tags: Array.isArray(p.technologies) ? p.technologies : [],
           thumbnail: p.thumbnail,
           images: Array.isArray(p.gallery) ? p.gallery : [p.thumbnail],
@@ -143,6 +145,7 @@ export async function fetchPortfolioBySlug(slug: string): Promise<PortfolioItem 
       const rawMetrics = Array.isArray(data.metrics) ? data.metrics : [];
       const industry = (data as any).industry || rawMetrics.find((m: any) => m.label === '_industry')?.value;
       const serviceSlug = (data as any).serviceSlug || rawMetrics.find((m: any) => m.label === '_serviceSlug')?.value;
+      const liveUrl = (data as any).live_url || (data as any).liveUrl || rawMetrics.find((m: any) => m.label === '_liveUrl')?.value || '';
       const cleanMetrics = rawMetrics.filter((m: any) => !m.label?.startsWith('_'));
 
       return {
@@ -153,6 +156,7 @@ export async function fetchPortfolioBySlug(slug: string): Promise<PortfolioItem 
         category: data.category,
         industry,
         serviceSlug,
+        liveUrl,
         tags: Array.isArray(data.technologies) ? data.technologies : [],
         thumbnail: data.thumbnail,
         images: Array.isArray(data.gallery) ? data.gallery : [data.thumbnail],
