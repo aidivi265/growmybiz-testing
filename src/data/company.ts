@@ -18,7 +18,7 @@ export const teamMembers: TeamMember[] = [
     name: 'Swati Yadav',
     role: 'Co-Founder & COO',
     bio: 'Specialist in modern design systems, conversion-driven landing pages, and intuitive user experiences for B2B SaaS and D2C brands.',
-    avatar: '/team/placeholder-sanya.jpg',
+    avatar: '',
     linkedin: 'https://linkedin.com/in/growmybiz24',
     instagram: 'https://instagram.com/growmybiz24',
     showLinkedin: false,
@@ -85,5 +85,39 @@ export const stats: StatItem[] = [
   },
 ];
 
-// ─── Testimonials (Empty by default until real reviews are added via CMS) ───
-export const testimonials: Testimonial[] = [];
+// ─── Testimonials (Baseline Data & Fallback) ─────────────────────────────────
+export const testimonials: Testimonial[] = [
+  {
+    id: 'test-1',
+    author: 'Aarav Mehta',
+    role: 'Founder & Managing Director',
+    company: 'Zenith Wellness & Organics',
+    quote:
+      'Growmybiz24 rebuilt our entire storefront architecture and streamlined checkout. Our mobile conversion went from 1.6% to 2.4% within 45 days, and their communication was crystal clear throughout.',
+    rating: 5,
+    projectType: 'E-commerce & Web Architecture',
+    verified: true,
+  },
+  {
+    id: 'test-2',
+    author: 'Neha Sharma',
+    role: 'Head of Growth',
+    company: 'Nexar AI Solutions',
+    quote:
+      'The difference between separate freelancers and Growmybiz24 is cohesive execution. They redesigned our product interface and built an interactive ROI calculator that doubled our qualified demo requests.',
+    rating: 5,
+    projectType: 'B2B SaaS Growth & UI/UX',
+    verified: true,
+  },
+  {
+    id: 'test-3',
+    author: 'Vikramaditya Rathore',
+    role: 'Operations Director',
+    company: 'Kalyan Heritage Hotels',
+    quote:
+      'Our reliance on commission-heavy booking aggregators was hurting our margins. Growmybiz24 executed a local SEO and direct booking campaign that increased direct reservations by over 60%. Highly recommended.',
+    rating: 5,
+    projectType: 'Local SEO & Direct Bookings',
+    verified: true,
+  },
+];

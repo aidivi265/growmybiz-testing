@@ -103,7 +103,10 @@ export async function POST(request: Request) {
       message: cleanMessage,
     };
 
-    const adminWhatsAppNumber = (process.env.ADMIN_WHATSAPP_NUMBER || '917290884480').replace(/[^0-9]/g, '');
+    let adminWhatsAppNumber = (process.env.ADMIN_WHATSAPP_NUMBER || '917290884480').replace(/[^0-9]/g, '');
+    if (adminWhatsAppNumber.length === 10) {
+      adminWhatsAppNumber = `91${adminWhatsAppNumber}`;
+    }
     const cleanClientPhone = sanitizedLead.phone ? sanitizedLead.phone.replace(/[^0-9]/g, '') : '';
 
     // Direct WhatsApp URLs
@@ -180,7 +183,7 @@ export async function POST(request: Request) {
     const cleanHeaderString = (str?: string) => (str || '').replace(/[^\x20-\x7E]/g, '').trim();
     const resendApiKey = cleanHeaderString(process.env.RESEND_API_KEY);
     const notificationEmail = cleanHeaderString(process.env.NOTIFICATION_EMAIL) || 'growmybiz24@gmail.com';
-    const fromEmail = (process.env.RESEND_FROM_EMAIL || 'Growmybiz24 <onboarding@resend.dev>').replace(/[\uFEFF]/g, '').trim();
+    const fromEmail = (process.env.RESEND_FROM_EMAIL || 'Growmybiz24 <hello@growmybiz24.com>').replace(/[\uFEFF]/g, '').trim();
 
     let emailDelivered = false;
     let emailDeliveryId: string | null = null;

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// ── 1. Known Scrapers, Bad Bots & AI Harvesting Crawlers ──────────────────────
+// ── 1. Known Aggressive Scrapers & Bad Bots ──────────────────────────────────
 const BANNED_SCRAPER_USER_AGENTS = [
   'bytespider',
   'gptbot',
@@ -20,7 +20,6 @@ const BANNED_SCRAPER_USER_AGENTS = [
   'aiohttp',
   'httpx',
   'libwww-perl',
-  'headlesschrome',
   'phantomjs',
   'selenium',
   'puppeteer',
@@ -33,12 +32,10 @@ const BANNED_SCRAPER_USER_AGENTS = [
   'megaindex',
   'seekport',
   'petalbot',
-  'yandexbot',
   'curl/',
   'wget/',
   'go-http-client',
   'apache-httpclient',
-  'okhttp',
 ];
 
 // In-Memory sliding-window rate limit store for edge requests
@@ -94,8 +91,9 @@ export function middleware(request: NextRequest) {
       !origin ||
       origin.includes(host) ||
       origin.includes('localhost') ||
+      origin.includes('127.0.0.1') ||
       origin.includes('growmybiz24') ||
-      origin.includes('growmybizz.vercel.app') ||
+      origin.includes('.vercel.app') ||
       origin.includes('growmybizz.com');
 
     if (!isAllowedOrigin) {

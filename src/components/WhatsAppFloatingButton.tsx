@@ -3,19 +3,17 @@
 import { useState, useEffect } from 'react';
 import { siteConfig } from '@/data/siteConfig';
 import { MessageCircle } from 'lucide-react';
+import { getClientSettings } from '@/lib/settingsClient';
 
 export default function WhatsAppFloatingButton() {
   const [whatsappUrl, setWhatsappUrl] = useState(siteConfig.whatsappUrl);
 
   useEffect(() => {
-    fetch('/api/settings')
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data?.settings?.whatsappUrl) {
-          setWhatsappUrl(data.settings.whatsappUrl);
-        }
-      })
-      .catch(() => {});
+    getClientSettings().then((data) => {
+      if (data?.settings?.whatsappUrl) {
+        setWhatsappUrl(data.settings.whatsappUrl);
+      }
+    });
   }, []);
 
   return (

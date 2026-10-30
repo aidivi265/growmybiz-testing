@@ -13,8 +13,10 @@ interface PortfolioPreviewProps {
 
 export default function PortfolioPreview({ projects }: PortfolioPreviewProps) {
   const pool = projects && projects.length > 0 ? projects : defaultPortfolioItems;
-  const featured = pool.filter((p) => p.featured && p.published).slice(0, 3);
-
+  let featured = pool.filter((p) => p.featured && p.published).slice(0, 3);
+  if (featured.length === 0) {
+    featured = pool.filter((p) => p.published).slice(0, 3);
+  }
 
   if (featured.length === 0) return null;
 

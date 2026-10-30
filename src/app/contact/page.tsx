@@ -3,8 +3,7 @@ import { notFound } from 'next/navigation';
 import ContactPageClient from './ContactPageClient';
 import { fetchServices, fetchSiteSettings, fetchPageVisibility } from '@/lib/dal';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Contact — Start a Project',

@@ -21,8 +21,7 @@ const DEFAULT_ABOUT = {
   mission: 'To engineer transparent, measurable digital solutions that scale businesses sustainably.',
 };
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 export default async function AboutPage() {
   const [members, values, settings, aboutCopy, visibility] = await Promise.all([

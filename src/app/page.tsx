@@ -18,8 +18,7 @@ import {
   fetchPageVisibility,
 } from '@/lib/dal';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Growmybiz24 — Digital Growth Partner',

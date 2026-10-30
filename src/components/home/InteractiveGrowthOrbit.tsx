@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import {
   Code2,
@@ -67,57 +67,81 @@ export function InteractiveGrowthOrbit({ config }: InteractiveGrowthOrbitProps) 
   const [scrollScale, setScrollScale] = useState(1);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
 
+  const mouseRafRef = useRef<number | null>(null);
+  const scrollRafRef = useRef<number | null>(null);
+
   const rawNodes = config?.nodes && config.nodes.length > 0 ? config.nodes : defaultOrbitConfig.nodes;
 
-  const activeNodes: OrbitalNode[] = rawNodes.map((n, i) => {
-    const layout = NODE_LAYOUT[i % NODE_LAYOUT.length];
-    const IconComp = (n.icon && ICON_MAP[n.icon]) || DEFAULT_ICONS[i % DEFAULT_ICONS.length];
-    return {
-      id: n.id || `node-${i}`,
-      label: n.label,
-      sub: n.sub,
-      icon: IconComp,
-      color: n.color || '#38bdf8',
-      glow: `${n.color || '#38bdf8'}66`,
-      angle: layout.angle,
-      distance: layout.distance,
-      size: n.size || layout.size,
-      delay: layout.delay,
-    };
-  });
+  const activeNodes: OrbitalNode[] = useMemo(() => {
+    return rawNodes.map((n, i) => {
+      const layout = NODE_LAYOUT[i % NODE_LAYOUT.length];
+      const IconComp = (n.icon && ICON_MAP[n.icon]) || DEFAULT_ICONS[i % DEFAULT_ICONS.length];
+      return {
+        id: n.id || `node-${i}`,
+        label: n.label,
+        sub: n.sub,
+        icon: IconComp,
+        color: n.color || '#38bdf8',
+        glow: `${n.color || '#38bdf8'}66`,
+        angle: layout.angle,
+        distance: layout.distance,
+        size: n.size || layout.size,
+        delay: layout.delay,
+      };
+    });
+  }, [rawNodes]);
 
-  // 3D Mouse parallax tilt handler
+  // 3D Mouse parallax tilt handler with requestAnimationFrame throttling
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+    const clientX = e.clientX;
+    const clientY = e.clientY;
 
-    const mouseX = e.clientX - centerX;
-    const mouseY = e.clientY - centerY;
+    if (mouseRafRef.current) cancelAnimationFrame(mouseRafRef.current);
+    mouseRafRef.current = requestAnimationFrame(() => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
 
-    // Normalised tilt (max ±16deg)
-    const tiltX = -(mouseY / (rect.height / 2)) * 14;
-    const tiltY = (mouseX / (rect.width / 2)) * 14;
+      const mouseX = clientX - centerX;
+      const mouseY = clientY - centerY;
 
-    setRotate({ x: tiltX, y: tiltY });
-    setCursorPos({ x: mouseX, y: mouseY });
+      // Normalised tilt (max ±14deg)
+      const tiltX = -(mouseY / (rect.height / 2)) * 14;
+      const tiltY = (mouseX / (rect.width / 2)) * 14;
+
+      setRotate({ x: tiltX, y: tiltY });
+      setCursorPos({ x: mouseX, y: mouseY });
+    });
   }, []);
 
   const handleMouseLeave = useCallback(() => {
+    if (mouseRafRef.current) cancelAnimationFrame(mouseRafRef.current);
     setRotate({ x: 0, y: 0 });
     setHoveredNode(null);
   }, []);
 
-  // Scroll expansion effect
+  // Scroll expansion effect with requestAnimationFrame
   useEffect(() => {
+    let ticking = false;
     const onScroll = () => {
-      const scrollY = window.scrollY;
-      const scale = 1 + Math.min(scrollY / 800, 0.25);
-      setScrollScale(scale);
+      if (!ticking) {
+        scrollRafRef.current = requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          const scale = 1 + Math.min(scrollY / 800, 0.25);
+          setScrollScale(scale);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (scrollRafRef.current) cancelAnimationFrame(scrollRafRef.current);
+      if (mouseRafRef.current) cancelAnimationFrame(mouseRafRef.current);
+    };
   }, []);
 
   return (

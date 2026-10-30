@@ -7,6 +7,7 @@ import { Menu, X, ChevronDown, ArrowRight } from 'lucide-react';
 import { navItems } from '@/data/navigation';
 import BrandLogo from '@/components/BrandLogo';
 import type { NavItem } from '@/types';
+import { getClientSettings } from '@/lib/settingsClient';
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -26,17 +27,14 @@ export default function Navbar() {
   const [activeServices, setActiveServices] = useState<{ id: string; title: string; slug: string }[]>([]);
 
   useEffect(() => {
-    fetch('/api/settings')
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data?.pageVisibility) {
-          setPageVisibility(data.pageVisibility);
-        }
-        if (data?.services && Array.isArray(data.services)) {
-          setActiveServices(data.services);
-        }
-      })
-      .catch(() => {});
+    getClientSettings().then((data) => {
+      if (data?.pageVisibility) {
+        setPageVisibility(data.pageVisibility);
+      }
+      if (data?.services && Array.isArray(data.services)) {
+        setActiveServices(data.services);
+      }
+    });
   }, []);
 
   const displayedNavItems: NavItem[] = navItems
@@ -83,12 +81,10 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const [prevPathname, setPrevPathname] = useState(pathname);
-  if (prevPathname !== pathname) {
-    setPrevPathname(pathname);
+  useEffect(() => {
     setMobileOpen(false);
     setActiveDropdown(null);
-  }
+  }, [pathname]);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';

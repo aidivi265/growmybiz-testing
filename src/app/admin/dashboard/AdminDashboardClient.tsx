@@ -273,7 +273,7 @@ function DashboardHome({ setSection }: { setSection: (s: string) => void }) {
           <div>
             <p className="text-xs text-white/40">Email Pipeline</p>
             <p className="text-sm font-semibold text-white">Resend API (Live)</p>
-            <p className="text-[11px] text-blue-400 mt-0.5">divyanshgupta103@gmail.com</p>
+            <p className="text-[11px] text-blue-400 mt-0.5">{siteConfig.email}</p>
           </div>
         </div>
 
@@ -284,7 +284,7 @@ function DashboardHome({ setSection }: { setSection: (s: string) => void }) {
           <div>
             <p className="text-xs text-white/40">Instant Alert Engine</p>
             <p className="text-sm font-semibold text-white">WhatsApp Direct Handoff</p>
-            <p className="text-[11px] text-emerald-400 font-mono mt-0.5">+91 98765 43210</p>
+            <p className="text-[11px] text-emerald-400 font-mono mt-0.5">{siteConfig.phone}</p>
           </div>
         </div>
       </div>

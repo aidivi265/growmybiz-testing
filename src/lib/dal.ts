@@ -127,7 +127,7 @@ export async function fetchPortfolio(): Promise<PortfolioItem[]> {
     console.warn('[DAL Notice] Supabase portfolio fetch fallback:', err);
   }
 
-  return [];
+  return staticPortfolio;
 }
 
 export async function fetchPortfolioBySlug(slug: string): Promise<PortfolioItem | null> {
@@ -171,13 +171,13 @@ export async function fetchPortfolioBySlug(slug: string): Promise<PortfolioItem 
       };
     }
     if (!error && !data) {
-      return null;
+      return staticPortfolio.find((p) => p.slug === slug) || null;
     }
   } catch {
-    // Fall through to null
+    // Fall through to static
   }
 
-  return null;
+  return staticPortfolio.find((p) => p.slug === slug) || null;
 }
 
 // ── 3. Blog & Insights Articles ──────────────────────────────────────────────
@@ -210,7 +210,7 @@ export async function fetchInsights(): Promise<BlogPost[]> {
     console.warn('[DAL Notice] Supabase articles fetch fallback:', err);
   }
 
-  return [];
+  return staticInsights;
 }
 
 export async function fetchInsightBySlug(slug: string): Promise<BlogPost | null> {
@@ -240,13 +240,13 @@ export async function fetchInsightBySlug(slug: string): Promise<BlogPost | null>
       };
     }
     if (!error && !data) {
-      return null;
+      return staticInsights.find((a) => a.slug === slug) || null;
     }
   } catch {
-    // Fall through to null
+    // Fall through to static
   }
 
-  return null;
+  return staticInsights.find((a) => a.slug === slug) || null;
 }
 
 // ── 4. Testimonials ──────────────────────────────────────────────────────────
@@ -257,13 +257,13 @@ export async function fetchTestimonials(): Promise<Testimonial[]> {
       .select('*')
       .order('order_index', { ascending: true });
 
-    if (!error && Array.isArray(data)) {
+    if (!error && Array.isArray(data) && data.length > 0) {
       return data.map((t) => ({
         id: t.id,
         author: t.name || t.author || 'Client',
         role: t.role || '',
         company: t.company || '',
-        quote: t.quote || '',
+        quote: t.quote || t.content || '',
         avatar: t.avatar || undefined,
         rating: t.rating || 5,
         projectType: 'Client Engagement',
@@ -274,7 +274,7 @@ export async function fetchTestimonials(): Promise<Testimonial[]> {
     console.warn('[DAL Notice] Supabase testimonials fetch fallback:', err);
   }
 
-  return [];
+  return staticTestimonials;
 }
 
 // ── 5. Site Settings ─────────────────────────────────────────────────────────

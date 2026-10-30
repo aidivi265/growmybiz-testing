@@ -5,9 +5,9 @@ const cspHeader = `
   default-src 'self';
   script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://growmybizz.vercel.app https://*.growmybizz.vercel.app https://growmybizz.com https://*.growmybizz.com;
+  img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://*.vercel.app https://growmybizz.vercel.app https://*.growmybizz.vercel.app https://growmybizz.com https://*.growmybizz.com;
   font-src 'self' https://fonts.gstatic.com data:;
-  connect-src 'self' https://*.supabase.co https://va.vercel-scripts.com https://vitals.vercel-insights.com https://growmybizz.com https://*.growmybizz.com;
+  connect-src 'self' https://*.supabase.co https://va.vercel-scripts.com https://vitals.vercel-insights.com https://*.vercel.app https://growmybizz.vercel.app https://growmybizz.com https://*.growmybizz.com;
   frame-ancestors 'none';
   base-uri 'self';
   form-action 'self';
@@ -39,6 +39,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.vercel.app",
       },
       {
         protocol: "https",
@@ -85,19 +89,25 @@ const nextConfig: NextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=()",
           },
-          // Isolation policies
-          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
-          { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
+          // Browser isolation & compatibility (supports in-app mobile browsers & webviews)
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
           { key: "X-DNS-Prefetch-Control", value: "on" },
           { key: "X-Permitted-Cross-Domain-Policies", value: "none" },
         ],
       },
-      // Dedicated anti-scraping and privacy protection for API routes
+      // Dedicated anti-scraping and privacy protection for API routes (except public settings)
       {
-        source: "/api/(.*)",
+        source: "/api/((?!settings).*)",
         headers: [
           { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive, nosnippet" },
           { key: "Cache-Control", value: "no-store, no-cache, must-revalidate, proxy-revalidate" },
+        ],
+      },
+      // Edge-cached public settings endpoint
+      {
+        source: "/api/settings",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=60, stale-while-revalidate=300" },
         ],
       },
       // Dedicated anti-indexing protection for Admin routes

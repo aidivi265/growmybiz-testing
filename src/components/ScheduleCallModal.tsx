@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Calendar, MessageSquare, Phone, X, CheckCircle } from 'lucide-react';
 import { siteConfig } from '@/data/siteConfig';
+import { getClientSettings } from '@/lib/settingsClient';
 
 interface ScheduleCallModalProps {
   isOpen: boolean;
@@ -28,19 +29,17 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
   }, []);
 
   useEffect(() => {
-    fetch('/api/settings')
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data?.settings?.whatsappNumber) {
-          const num = data.settings.whatsappNumber.replace(/[^0-9]/g, '');
-          setWhatsappUrl(
-            `https://wa.me/${num}?text=${encodeURIComponent(
-              'Hi! I would like to schedule a 15-minute discovery call for my business.'
-            )}`
-          );
-        }
-      })
-      .catch(() => {});
+    getClientSettings().then((data) => {
+      if (data?.settings?.whatsappNumber) {
+        let num = data.settings.whatsappNumber.replace(/[^0-9]/g, '');
+        if (num.length === 10) num = `91${num}`;
+        setWhatsappUrl(
+          `https://wa.me/${num}?text=${encodeURIComponent(
+            'Hi! I would like to schedule a 15-minute discovery call for my business.'
+          )}`
+        );
+      }
+    });
   }, []);
 
   // Lock body scroll and listen for Escape key

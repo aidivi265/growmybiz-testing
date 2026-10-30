@@ -19,8 +19,7 @@ const THUMB_GRADIENTS = [
 ];
 const THUMB_ACCENTS = ['#477BDB', '#32A88A', '#6477C8'];
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 export async function generateStaticParams() {
   const dynamicPortfolio = await fetchPortfolio();

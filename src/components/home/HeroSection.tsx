@@ -43,7 +43,8 @@ export default function HeroSection({ initialSlides, orbitConfig }: HeroSectionP
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [resetTimer]);
 
-  const cur = slides[slide] || slides[0];
+  const cur = slides[slide] || slides[0] || heroSlides[0];
+  const headingLines = (cur?.heading || 'We turn digital ideas\ninto growth.').split('\n');
 
   return (
     <section
@@ -107,7 +108,7 @@ export default function HeroSection({ initialSlides, orbitConfig }: HeroSectionP
                 color: '#FFFFFF',
               }}
             >
-              {cur.heading.split('\n').map((line, i) => (
+              {headingLines.map((line, i) => (
                 <span key={i} className="block">
                   {i === 0 ? (
                     <span style={{ color: '#FFFFFF' }}>{line}</span>

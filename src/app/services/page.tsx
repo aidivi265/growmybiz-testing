@@ -13,8 +13,7 @@ export const metadata: Metadata = {
     'Six disciplines, one connected team. Web, design, marketing, content, AI and more — built around your goals.',
 };
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 export default async function ServicesPage() {
   const [services, visibility] = await Promise.all([

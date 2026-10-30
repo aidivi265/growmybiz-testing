@@ -8,6 +8,7 @@ import { services as defaultServices } from '@/data/services';
 import { SYNE_FONT } from '@/lib/fonts';
 import ScheduleCallButton from '@/components/ScheduleCallButton';
 import BrandLogo from '@/components/BrandLogo';
+import { getClientSettings } from '@/lib/settingsClient';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -32,23 +33,20 @@ export default function Footer() {
   });
 
   useEffect(() => {
-    fetch('/api/settings')
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data?.settings) {
-          setConfig(data.settings);
-        }
-        if (data?.ctaContent) {
-          setCta(data.ctaContent);
-        }
-        if (data?.services && data.services.length > 0) {
-          setServicesList(data.services);
-        }
-        if (data?.pageVisibility) {
-          setPageVisibility(data.pageVisibility);
-        }
-      })
-      .catch(() => {});
+    getClientSettings().then((data) => {
+      if (data?.settings) {
+        setConfig(data.settings);
+      }
+      if (data?.ctaContent) {
+        setCta(data.ctaContent);
+      }
+      if (data?.services && data.services.length > 0) {
+        setServicesList(data.services);
+      }
+      if (data?.pageVisibility) {
+        setPageVisibility(data.pageVisibility);
+      }
+    });
   }, []);
 
   const rawSocial = config.social || {};
