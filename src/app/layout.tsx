@@ -92,60 +92,62 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'ProfessionalService',
-      '@id': `${baseUrl}/#organization`,
-      name: 'Growmybiz24',
-      alternateName: 'Growmybiz24 Digital Agency',
-      url: baseUrl,
-      logo: `${baseUrl}/brand-logo-white-bg.png`,
-      image: `${baseUrl}/brand-logo-white-bg.png`,
-      description: siteConfig.description,
-      telephone: siteConfig.phone,
-      email: siteConfig.email,
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: 'New Delhi',
-        addressCountry: 'IN',
-      },
-      sameAs: [
-        siteConfig.social.linkedin,
-        siteConfig.social.instagram,
-        siteConfig.social.twitter,
-        siteConfig.social.youtube,
-      ],
-      priceRange: '₹₹₹',
-      currenciesAccepted: 'INR, USD, EUR, GBP',
-      paymentAccepted: 'UPI, Net Banking, Credit Card, Bank Transfer',
-      openingHoursSpecification: [
-        {
-          '@type': 'OpeningHoursSpecification',
-          dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-          opens: '09:00',
-          closes: '20:00',
-        },
-      ],
-    },
-    {
-      '@type': 'WebSite',
-      '@id': `${baseUrl}/#website`,
-      url: baseUrl,
-      name: 'Growmybiz24',
-      publisher: {
-        '@id': `${baseUrl}/#organization`,
-      },
-    },
-  ],
-};
-
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const [siteSettings, pageVisibility] = await Promise.all([
     fetchSiteSettings(),
     fetchPageVisibility(),
   ]);
+
+  const visibleSameAs = [
+    siteSettings.socialVisibility?.linkedin !== false && (siteSettings.social?.linkedin || siteConfig.social.linkedin),
+    siteSettings.socialVisibility?.instagram !== false && (siteSettings.social?.instagram || siteConfig.social.instagram),
+    siteSettings.socialVisibility?.twitter !== false && (siteSettings.social?.twitter || siteConfig.social.twitter),
+    siteSettings.socialVisibility?.youtube !== false && (siteSettings.social?.youtube || siteConfig.social.youtube),
+  ].filter(Boolean) as string[];
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'ProfessionalService',
+        '@id': `${baseUrl}/#organization`,
+        name: siteSettings.siteName || 'Growmybiz24',
+        alternateName: 'Growmybiz24 Digital Agency',
+        url: baseUrl,
+        logo: `${baseUrl}/brand-logo-white-bg.png`,
+        image: `${baseUrl}/brand-logo-white-bg.png`,
+        description: siteSettings.description || siteConfig.description,
+        telephone: siteSettings.phone || siteConfig.phone,
+        email: siteSettings.email || siteConfig.email,
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: 'New Delhi',
+          addressCountry: 'IN',
+        },
+        sameAs: visibleSameAs,
+        priceRange: '₹₹₹',
+        currenciesAccepted: 'INR, USD, EUR, GBP',
+        paymentAccepted: 'UPI, Net Banking, Credit Card, Bank Transfer',
+        openingHoursSpecification: [
+          {
+            '@type': 'OpeningHoursSpecification',
+            dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            opens: '09:00',
+            closes: '20:00',
+          },
+        ],
+      },
+      {
+        '@type': 'WebSite',
+        '@id': `${baseUrl}/#website`,
+        url: baseUrl,
+        name: siteSettings.siteName || 'Growmybiz24',
+        publisher: {
+          '@id': `${baseUrl}/#organization`,
+        },
+      },
+    ],
+  };
 
   return (
     <html
