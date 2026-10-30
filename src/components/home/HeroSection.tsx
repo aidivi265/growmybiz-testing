@@ -12,9 +12,18 @@ import InteractiveGrowthOrbit from './InteractiveGrowthOrbit';
 interface HeroSectionProps {
   initialSlides?: HeroSlide[];
   orbitConfig?: OrbitConfig;
+  servicesCount?: number;
+  offeringsCount?: number;
+  portfolioCount?: number;
 }
 
-export default function HeroSection({ initialSlides, orbitConfig }: HeroSectionProps) {
+export default function HeroSection({
+  initialSlides,
+  orbitConfig,
+  servicesCount = 6,
+  offeringsCount = 30,
+  portfolioCount,
+}: HeroSectionProps) {
   const slides = (initialSlides && initialSlides.length > 0) ? initialSlides : heroSlides;
   const [slide, setSlide] = useState(0);
   const [fading, setFading] = useState(false);
@@ -163,11 +172,11 @@ export default function HeroSection({ initialSlides, orbitConfig }: HeroSectionP
             {/* Trust strip */}
             <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-8 sm:mb-10">
               {[
-                { val: '6', label: 'service disciplines' },
-                { val: '30+', label: 'services offered' },
+                { val: String(servicesCount || 6), label: 'service disciplines' },
+                { val: `${offeringsCount || 30}+`, label: 'services offered' },
                 { val: 'India', label: '+ global delivery' },
               ].map((stat) => (
-                <div key={stat.val} className="flex items-center gap-2">
+                <div key={stat.label} className="flex items-center gap-2">
                   <span
                     style={{
                       fontFamily: SYNE_FONT,
@@ -176,8 +185,8 @@ export default function HeroSection({ initialSlides, orbitConfig }: HeroSectionP
                       color: '#fff',
                     }}
                   >{stat.val}</span>
-                  <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.45)' }}>{stat.label}</span>
-                  <span style={{ color: 'rgba(255,255,255,0.15)', marginLeft: '2px' }}>·</span>
+                  <span style={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.78)' }}>{stat.label}</span>
+                  <span style={{ color: 'rgba(255,255,255,0.25)', marginLeft: '2px' }}>·</span>
                 </div>
               ))}
             </div>
@@ -194,7 +203,7 @@ export default function HeroSection({ initialSlides, orbitConfig }: HeroSectionP
                       height: '3px',
                       borderRadius: '2px',
                       width: i === slide ? '32px' : '10px',
-                      background: i === slide ? '#477BDB' : 'rgba(255,255,255,0.15)',
+                      background: i === slide ? '#477BDB' : 'rgba(255,255,255,0.25)',
                       border: 'none',
                       cursor: 'pointer',
                       transition: 'all 0.3s ease',
@@ -204,9 +213,9 @@ export default function HeroSection({ initialSlides, orbitConfig }: HeroSectionP
               </div>
               <span style={{
                 fontFamily: SYNE_FONT,
-                fontSize: '0.65rem',
+                fontSize: '0.6875rem',
                 fontWeight: 700,
-                color: 'rgba(255,255,255,0.3)',
+                color: 'rgba(255,255,255,0.65)',
                 letterSpacing: '0.1em',
               }}>
                 {String(slide + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
@@ -215,7 +224,7 @@ export default function HeroSection({ initialSlides, orbitConfig }: HeroSectionP
           </div>
 
           {/* ── RIGHT — Interactive 3D Growth Orbit (Active on Desktop/Laptop, Hidden on Mobile UI) ── */}
-          <div className="hidden lg:flex flex-col justify-center items-end flex-1 shrink-0 py-8 lg:py-12 z-20">
+          <div className="hidden lg:flex flex-col justify-center items-center flex-1 shrink-0 py-8 lg:py-12 z-20">
             <InteractiveGrowthOrbit config={orbitConfig} />
           </div>
 

@@ -70,7 +70,7 @@ export default function ProcessPreview({ steps }: { steps?: ProcessStep[] }) {
             </h2>
           </div>
           <div className="lg:text-right">
-            <p className="text-white/40 text-sm leading-relaxed mb-4 max-w-[300px] lg:ml-auto">
+            <p className="text-slate-200 text-sm leading-relaxed mb-4 max-w-[300px] lg:ml-auto">
               A six-step delivery process that keeps scope, communication and expectations aligned from start to finish.
             </p>
             <Link
@@ -79,8 +79,8 @@ export default function ProcessPreview({ steps }: { steps?: ProcessStep[] }) {
               style={{
                 padding: '8px 16px',
                 borderRadius: '10px',
-                border: '1px solid rgba(255,255,255,0.15)',
-                color: 'rgba(255,255,255,0.60)',
+                border: '1px solid rgba(255,255,255,0.25)',
+                color: 'rgba(255,255,255,0.85)',
               }}
             >
               Full process breakdown <ArrowRight size={13} />
@@ -97,8 +97,8 @@ export default function ProcessPreview({ steps }: { steps?: ProcessStep[] }) {
                 key={step.id}
                 className={`reveal-on-scroll stagger-${i + 1} interactive-glow-card group relative flex flex-col rounded-2xl p-4 transition-all duration-300`}
                 style={{
-                  background: 'rgba(255,255,255,0.035)',
-                  border: `1px solid rgba(255,255,255,0.07)`,
+                  background: 'rgba(255,255,255,0.05)',
+                  border: `1px solid rgba(255,255,255,0.10)`,
                 }}
               >
                 {/* Accent top bar */}
@@ -125,9 +125,9 @@ export default function ProcessPreview({ steps }: { steps?: ProcessStep[] }) {
                   </div>
                   <div
                     className="w-6 h-6 rounded-lg flex items-center justify-center"
-                    style={{ background: 'rgba(255,255,255,0.05)' }}
+                    style={{ background: 'rgba(255,255,255,0.08)' }}
                   >
-                    <Icon name={step.icon} size={11} style={{ color: 'rgba(255,255,255,0.30)' }} />
+                    <Icon name={step.icon} size={11} style={{ color: 'rgba(255,255,255,0.60)' }} />
                   </div>
                 </div>
 
@@ -137,7 +137,7 @@ export default function ProcessPreview({ steps }: { steps?: ProcessStep[] }) {
                 >
                   {step.title}
                 </h3>
-                <p className="text-white/35 text-[11px] leading-relaxed line-clamp-3 mt-auto">
+                <p className="text-slate-300 text-[11px] leading-relaxed line-clamp-3 mt-auto">
                   {step.description}
                 </p>
               </div>
@@ -149,8 +149,8 @@ export default function ProcessPreview({ steps }: { steps?: ProcessStep[] }) {
         <div
           className="mt-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-2xl"
           style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.08)',
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.12)',
           }}
         >
           <div className="flex items-center gap-4">
@@ -162,7 +162,7 @@ export default function ProcessPreview({ steps }: { steps?: ProcessStep[] }) {
             </div>
             <div>
               <p className="text-white font-semibold text-sm">Transparent from day one</p>
-              <p className="text-white/35 text-xs mt-0.5">Scope, milestones and deliverables are agreed in writing before any work begins.</p>
+              <p className="text-slate-300 text-xs mt-0.5">Scope, milestones and deliverables are agreed in writing before any work begins.</p>
             </div>
           </div>
           <Link

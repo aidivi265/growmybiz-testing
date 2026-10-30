@@ -99,13 +99,13 @@ export default function TestimonialsSection({ testimonials: propTestimonials }: 
               <div className="pt-4 border-t border-white/10 flex items-center justify-between">
                 <div>
                   <h4 className="text-white font-bold text-sm leading-tight">{t.author}</h4>
-                  <p className="text-white/40 text-xs mt-0.5">
+                  <p className="text-slate-300 text-xs mt-0.5">
                     {t.role} · <span className="text-[#6AADFF] font-medium">{t.company}</span>
                   </p>
                 </div>
                 <span
-                  className="text-[11px] font-semibold px-2.5 py-1 rounded-lg text-white/50"
-                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+                  className="text-[11px] font-semibold px-2.5 py-1 rounded-lg text-slate-200"
+                  style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}
                 >
                   {t.projectType}
                 </span>

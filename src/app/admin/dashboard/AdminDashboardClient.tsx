@@ -198,23 +198,51 @@ export default function AdminDashboardClient() {
 // ─── Dashboard Home ───────────────────────────────────────────────────────────
 function DashboardHome({ setSection }: { setSection: (s: string) => void }) {
   const [leads, setLeads] = useState<InquiryRecord[]>([]);
+  const [servicesCount, setServicesCount] = useState<number>(services.length);
+  const [portfolioCount, setPortfolioCount] = useState<number>(portfolioItems.length);
+  const [blogCount, setBlogCount] = useState<number>(blogPosts.length);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchLiveCounts = async () => {
+    setRefreshing(true);
+    try {
+      const [leadsRes, servicesRes, portfolioRes, blogRes] = await Promise.allSettled([
+        fetch('/api/admin/inquiries').then((res) => (res.ok ? res.json() : { leads: [] })),
+        fetch('/api/admin/services').then((res) => (res.ok ? res.json() : { services: [] })),
+        fetch('/api/admin/portfolio').then((res) => (res.ok ? res.json() : { projects: [] })),
+        fetch('/api/admin/insights').then((res) => (res.ok ? res.json() : { articles: [] })),
+      ]);
+
+      if (leadsRes.status === 'fulfilled' && Array.isArray(leadsRes.value?.leads)) {
+        setLeads(leadsRes.value.leads);
+      }
+      if (servicesRes.status === 'fulfilled' && Array.isArray(servicesRes.value?.services)) {
+        setServicesCount(servicesRes.value.services.length);
+      }
+      if (portfolioRes.status === 'fulfilled' && Array.isArray(portfolioRes.value?.projects)) {
+        setPortfolioCount(portfolioRes.value.projects.length);
+      }
+      if (blogRes.status === 'fulfilled' && Array.isArray(blogRes.value?.articles)) {
+        setBlogCount(blogRes.value.articles.length > 0 ? blogRes.value.articles.length : blogPosts.length);
+      }
+    } catch (err) {
+      console.warn('Failed to fetch live admin stats:', err);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
 
   useEffect(() => {
-    fetch('/api/admin/inquiries')
-      .then((res) => (res.ok ? res.json() : { leads: [] }))
-      .then((data) => {
-        setLeads(data.leads || []);
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    fetchLiveCounts();
   }, []);
 
   const stats = [
     { label: 'Inbound Inquiries', count: leads.length, section: 'leads', highlight: true },
-    { label: 'Services', count: services.length, section: 'services' },
-    { label: 'Portfolio Items', count: portfolioItems.length, section: 'portfolio' },
-    { label: 'Blog Posts', count: blogPosts.length, section: 'blog' },
+    { label: 'Services', count: servicesCount, section: 'services' },
+    { label: 'Portfolio Items', count: portfolioCount, section: 'portfolio' },
+    { label: 'Blog Posts', count: blogCount, section: 'blog' },
   ];
 
   return (
@@ -222,15 +250,26 @@ function DashboardHome({ setSection }: { setSection: (s: string) => void }) {
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold text-white mb-1">Growmybiz24 Mission Control</h2>
-          <p className="text-white/40 text-sm">Real-time database records and content management powered by Supabase.</p>
+          <p className="text-white/60 text-sm">Real-time database records and content management powered by Supabase.</p>
         </div>
-        <button
-          onClick={() => setSection('leads')}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[#3b82d4] hover:bg-[#2563eb] transition-all shrink-0"
-        >
-          <Inbox size={14} />
-          <span>View Inquiries ({leads.length})</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={fetchLiveCounts}
+            disabled={refreshing}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-white/80 bg-white/[0.05] hover:bg-white/[0.10] border border-white/10 transition-all shrink-0 disabled:opacity-50"
+            title="Refresh database counts"
+          >
+            <RefreshCw size={13} className={refreshing ? 'animate-spin text-[#3b82d4]' : ''} />
+            <span>{refreshing ? 'Syncing...' : 'Refresh'}</span>
+          </button>
+          <button
+            onClick={() => setSection('leads')}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[#3b82d4] hover:bg-[#2563eb] transition-all shrink-0"
+          >
+            <Inbox size={14} />
+            <span>View Inquiries ({leads.length})</span>
+          </button>
+        </div>
       </div>
 
       {/* Stat Grid */}

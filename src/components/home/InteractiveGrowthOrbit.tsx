@@ -47,12 +47,12 @@ const ICON_MAP: Record<string, React.ComponentType<{ size?: number; className?: 
 const DEFAULT_ICONS = [Code2, Bot, TrendingUp, Palette, Zap, Shield];
 
 const NODE_LAYOUT = [
-  { angle: 320, distance: 175, delay: '0s', size: 'lg' as const },
-  { angle: 45, distance: 180, delay: '1.2s', size: 'lg' as const },
-  { angle: 140, distance: 185, delay: '2.4s', size: 'md' as const },
-  { angle: 220, distance: 170, delay: '0.8s', size: 'md' as const },
-  { angle: 95, distance: 125, delay: '1.8s', size: 'sm' as const },
-  { angle: 270, distance: 130, delay: '3s', size: 'sm' as const },
+  { angle: 330, distance: 145, delay: '0s', size: 'md' as const },
+  { angle: 35, distance: 148, delay: '1.2s', size: 'md' as const },
+  { angle: 145, distance: 145, delay: '2.4s', size: 'md' as const },
+  { angle: 215, distance: 142, delay: '0.8s', size: 'md' as const },
+  { angle: 90, distance: 120, delay: '1.8s', size: 'sm' as const },
+  { angle: 270, distance: 120, delay: '3s', size: 'sm' as const },
 ];
 
 interface InteractiveGrowthOrbitProps {
@@ -150,7 +150,7 @@ export function InteractiveGrowthOrbit({ config }: InteractiveGrowthOrbitProps) 
         ref={containerRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className="relative w-full max-w-[500px] h-[480px] lg:h-[520px] flex items-center justify-center select-none"
+        className="relative w-full max-w-[540px] h-[480px] lg:h-[520px] flex items-center justify-center select-none overflow-visible"
         style={{ perspective: 1000 }}
       >
         {/* ── 3D Tilting Stage ── */}
@@ -242,7 +242,7 @@ export function InteractiveGrowthOrbit({ config }: InteractiveGrowthOrbitProps) 
                 {config?.centerLabel || 'Growmybiz24'}
               </span>
               {config?.centerSubtitle && (
-                <span className="text-white/40 text-[9px] font-medium block mt-0.5">
+                <span className="text-white/70 text-[9px] font-medium block mt-0.5">
                   {config.centerSubtitle}
                 </span>
               )}
@@ -331,13 +331,13 @@ export function InteractiveGrowthOrbit({ config }: InteractiveGrowthOrbitProps) 
                 {/* Node Text Content */}
                 <div className="flex flex-col text-left pr-1 min-w-0">
                   <span
-                    className="font-bold text-white text-xs sm:text-[13px] tracking-tight leading-none group-hover:text-white transition-colors truncate"
+                    className="font-bold text-white text-xs sm:text-[13px] tracking-tight leading-none group-hover:text-white transition-colors whitespace-nowrap"
                     style={{ fontFamily: SYNE_FONT }}
                   >
                     {node.label}
                   </span>
                   <span
-                    className="text-[10px] sm:text-[11px] font-medium leading-tight mt-1 truncate"
+                    className="text-[10px] sm:text-[11px] font-medium leading-tight mt-1 whitespace-nowrap"
                     style={{ color: node.color }}
                   >
                     {node.sub}

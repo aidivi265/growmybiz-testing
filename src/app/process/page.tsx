@@ -92,15 +92,15 @@ export default async function ProcessPage() {
                   <div className="flex items-center gap-3 mb-2">
                     <h2 className="text-white font-semibold text-lg">{step.title}</h2>
                     <div className="w-7 h-7 rounded-lg bg-white/[0.03] flex items-center justify-center">
-                      <Icon name={step.icon} size={13} className="text-white/30" />
+                      <Icon name={step.icon} size={13} className="text-white/60" />
                     </div>
                   </div>
-                  <p className="text-white/50 text-sm leading-relaxed mb-4">{step.description}</p>
+                  <p className="text-slate-200 text-sm leading-relaxed mb-4">{step.description}</p>
 
                   {/* Details */}
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {step.details.map((detail) => (
-                      <li key={detail} className="flex items-start gap-2 text-xs text-white/30">
+                      <li key={detail} className="flex items-start gap-2 text-xs text-slate-300">
                         <span className="w-1 h-1 rounded-full bg-[#477BDB]/50 mt-1.5 shrink-0" />
                         {detail}
                       </li>

@@ -237,7 +237,7 @@ export default function InsightsPreview({ posts: propPosts }: InsightsPreviewPro
                 >
                   Ready to grow your digital presence?
                 </p>
-                <p style={{ color: 'rgba(255,255,255,0.40)', fontSize: '0.75rem', lineHeight: 1.6, marginBottom: '16px' }}>
+                <p style={{ color: 'rgba(255,255,255,0.80)', fontSize: '0.8125rem', lineHeight: 1.6, marginBottom: '16px' }}>
                   Tell us what you need. We will suggest the right approach.
                 </p>
                 <Link href="/contact" className="btn btn-primary btn-sm w-full justify-center">

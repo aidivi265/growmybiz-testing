@@ -158,9 +158,9 @@ export default function ServicesSection({ services: propServices }: ServicesSect
           className="mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-6 py-4 rounded-2xl"
           style={{ background: 'linear-gradient(135deg, #0F1C31 0%, #1A2B4A 100%)', border: '1px solid rgba(255,255,255,0.06)' }}
         >
-          <p className="text-white/60 text-sm">
+          <p className="text-white/90 text-sm">
             Not sure which service fits?{' '}
-            <span className="text-white/40">Tell us your goal and we will suggest the right approach.</span>
+            <span className="text-slate-200">Tell us your goal and we will suggest the right approach.</span>
           </p>
           <Link href="/contact" className="btn btn-primary btn-sm shrink-0">
             Let&apos;s talk <ArrowRight size={13} />

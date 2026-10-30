@@ -220,11 +220,11 @@ export default async function BlogPostPage({ params }: Props) {
                 <span className="w-1.5 h-1.5 rounded-full" style={{ background: cat.dot }} />
                 {post.category}
               </span>
-              <div className="flex items-center gap-1.5 text-white/35 text-xs">
+              <div className="flex items-center gap-1.5 text-slate-300 text-xs">
                 <Clock size={11} />
                 {post.readTime} min read
               </div>
-              <div className="text-white/35 text-xs">{formatDate(post.publishedAt)}</div>
+              <div className="text-slate-300 text-xs">{formatDate(post.publishedAt)}</div>
             </div>
             <h1
               style={{

@@ -330,7 +330,7 @@ export default function PortfolioPageClient({ initialItems }: { initialItems?: P
               <div className="flex items-center gap-3 text-xs text-white/60">
                 <span>
                   Showing <strong className="text-white">{filtered.length}</strong> of{' '}
-                  <span className="text-white/40">{publishedItems.length}</span> projects
+                  <span className="text-white/80">{publishedItems.length}</span> projects
                 </span>
                 {isFiltered && (
                   <button

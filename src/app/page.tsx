@@ -49,9 +49,20 @@ export default async function HomePage() {
     fetchPageVisibility(),
   ]);
 
+  const totalOfferings = services.reduce(
+    (acc, s) => acc + (Array.isArray(s.offerings) ? s.offerings.length : 0),
+    0
+  );
+
   return (
     <>
-      <HeroSection initialSlides={heroSlides} orbitConfig={orbitConfig} />
+      <HeroSection
+        initialSlides={heroSlides}
+        orbitConfig={orbitConfig}
+        servicesCount={services.length}
+        offeringsCount={totalOfferings > 0 ? totalOfferings : 30}
+        portfolioCount={portfolio.length}
+      />
 
       {/* Services Section */}
       {visibility.services !== false && services.length > 0 && (

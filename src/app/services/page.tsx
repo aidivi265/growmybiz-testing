@@ -91,7 +91,7 @@ export default async function ServicesPage() {
                         className="text-white/20 group-hover:text-white/60 transition-colors shrink-0 mt-0.5"
                       />
                     </div>
-                    <p className="text-white/45 text-sm leading-relaxed mb-4">
+                    <p className="text-slate-200 text-sm leading-relaxed mb-4">
                       {service.shortDescription}
                     </p>
 
@@ -100,13 +100,13 @@ export default async function ServicesPage() {
                       {service.offerings.slice(0, 4).map((o) => (
                         <span
                           key={o.id}
-                          className="text-xs px-2.5 py-1 rounded-lg border border-white/[0.06] text-white/35"
+                          className="text-xs px-2.5 py-1 rounded-lg border border-white/10 bg-white/[0.04] text-slate-300"
                         >
                           {o.title}
                         </span>
                       ))}
                       {service.offerings.length > 4 && (
-                        <span className="text-xs px-2.5 py-1 rounded-lg border border-white/[0.06] text-white/25">
+                        <span className="text-xs px-2.5 py-1 rounded-lg border border-blue-500/20 bg-blue-500/10 text-[#6AADFF] font-medium">
                           +{service.offerings.length - 4} more
                         </span>
                       )}

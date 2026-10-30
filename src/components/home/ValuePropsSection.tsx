@@ -58,7 +58,7 @@ export default function ValuePropsSection({ items }: { items?: ValueProp[] }) {
               </span>
             </h2>
 
-            <p style={{ color: 'rgba(255,255,255,0.45)', lineHeight: 1.75, maxWidth: '340px', marginBottom: '2rem', fontSize: '0.9375rem' }}>
+            <p style={{ color: 'rgba(255,255,255,0.85)', lineHeight: 1.75, maxWidth: '340px', marginBottom: '2rem', fontSize: '0.9375rem' }}>
               These principles must be earned through delivery. We state them so you can hold us to them.
             </p>
 
@@ -67,8 +67,8 @@ export default function ValuePropsSection({ items }: { items?: ValueProp[] }) {
             </Link>
 
             {/* Small horizontal rule */}
-            <div className="mt-10 h-px w-20" style={{ background: 'rgba(255,255,255,0.08)' }} />
-            <p className="mt-4 text-white/20 text-xs leading-relaxed">
+            <div className="mt-10 h-px w-20" style={{ background: 'rgba(255,255,255,0.18)' }} />
+            <p className="mt-4 text-slate-300 text-xs leading-relaxed">
               Every commitment below applies<br />on every project, no exceptions.
             </p>
           </div>
@@ -82,8 +82,8 @@ export default function ValuePropsSection({ items }: { items?: ValueProp[] }) {
                   key={vp.id}
                   className={`reveal-on-scroll stagger-${i + 1} interactive-glow-card group flex items-start gap-5 p-6 rounded-2xl transition-all duration-300`}
                   style={{
-                    background: 'rgba(255,255,255,0.04)',
-                    border: '1px solid rgba(255,255,255,0.07)',
+                    background: 'rgba(255,255,255,0.065)',
+                    border: '1px solid rgba(255,255,255,0.12)',
                   }}
                   // Pure CSS hover via Tailwind — no JS handler
                 >
@@ -97,9 +97,9 @@ export default function ValuePropsSection({ items }: { items?: ValueProp[] }) {
                     </div>
                     <span style={{
                       fontFamily: SYNE_FONT,
-                      fontSize: '0.58rem',
+                      fontSize: '0.625rem',
                       fontWeight: 800,
-                      color: 'rgba(255,255,255,0.18)',
+                      color: 'rgba(255,255,255,0.45)',
                       letterSpacing: '0.06em',
                     }}>
                       {String(i + 1).padStart(2, '0')}
@@ -113,7 +113,7 @@ export default function ValuePropsSection({ items }: { items?: ValueProp[] }) {
                     >
                       {vp.title}
                     </h3>
-                    <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.875rem', lineHeight: 1.7 }}>
+                    <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '0.875rem', lineHeight: 1.7 }}>
                       {vp.description}
                     </p>
                   </div>
