@@ -4,6 +4,7 @@ import { inter, syne } from '@/lib/fonts';
 import LayoutShell from '@/components/LayoutShell';
 import { siteConfig } from '@/data/siteConfig';
 import { Analytics } from '@vercel/analytics/next';
+import GoogleAnalytics from '@/components/GoogleAnalytics';
 import { fetchSiteSettings, fetchPageVisibility } from '@/lib/dal';
 
 export const viewport: Viewport = {
@@ -35,8 +36,8 @@ export const metadata: Metadata = {
   authors: [{ name: siteConfig.siteName, url: baseUrl }],
   creator: siteConfig.siteName,
   metadataBase: new URL(baseUrl),
-  alternates: {
-    canonical: '/',
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
   },
   icons: {
     icon: [
@@ -170,6 +171,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {children}
         </LayoutShell>
         <Analytics />
+        <GoogleAnalytics measurementId={siteSettings?.googleAnalyticsId} />
       </body>
     </html>
   );

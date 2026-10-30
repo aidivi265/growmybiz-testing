@@ -303,7 +303,7 @@ export async function POST(request: Request) {
           <!-- Footer -->
           <tr>
             <td style="background-color: #F8FAFC; padding: 18px 30px; border-top: 1px solid #E2E8F0; text-align: center;">
-              <p style="margin: 0; color: #94A3B8; font-size: 12px;">Growmybiz24 Automated Lead Capture · <a href="https://growmybizz.vercel.app/admin" style="color: #477BDB; text-decoration: none;">Open Admin CMS</a></p>
+              <p style="margin: 0; color: #94A3B8; font-size: 12px;">Growmybiz24 Automated Lead Capture · <a href="https://growmybiz24.com/admin" style="color: #477BDB; text-decoration: none;">Open Admin CMS</a></p>
             </td>
           </tr>
 
@@ -420,7 +420,7 @@ export async function POST(request: Request) {
               <p style="color: #64748B; font-size: 13px; line-height: 1.6; margin: 0;">
                 Warm regards,<br>
                 <strong style="color: #0F1C31;">Divyansh Gupta & The Growmybiz24 Team</strong><br>
-                <a href="https://growmybizz.vercel.app" style="color: #477BDB; text-decoration: none; font-size: 12px;">growmybiz24.com</a>
+                <a href="https://growmybiz24.com" style="color: #477BDB; text-decoration: none; font-size: 12px;">growmybiz24.com</a>
               </p>
             </td>
           </tr>
@@ -469,6 +469,7 @@ export async function POST(request: Request) {
         leadId: sanitizedLead.id,
         persisted: supabasePersisted,
         emailDelivered,
+        whatsappActionUrl: clientToAgencyWhatsAppUrl,
         whatsappConnectUrl: clientToAgencyWhatsAppUrl,
       },
       {

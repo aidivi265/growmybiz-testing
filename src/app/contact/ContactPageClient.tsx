@@ -8,6 +8,7 @@ import { siteConfig } from '@/data/siteConfig';
 import { Input, Textarea, Select, Breadcrumb } from '@/components/ui';
 import type { EnquiryFormData, Service } from '@/types';
 import { SYNE_FONT } from '@/lib/fonts';
+import { trackGAEvent } from '@/components/GoogleAnalytics';
 
 const INITIAL: EnquiryFormData = {
   name: '',
@@ -98,9 +99,18 @@ export default function ContactPageClient({
         return;
       }
 
-      if (data.whatsappActionUrl) {
-        setWhatsappActionUrl(data.whatsappActionUrl);
+      const resolvedWhatsAppUrl = data.whatsappActionUrl || data.whatsappConnectUrl;
+      if (resolvedWhatsAppUrl) {
+        setWhatsappActionUrl(resolvedWhatsAppUrl);
       }
+
+      // Google Analytics 4 conversion event
+      trackGAEvent('generate_lead', {
+        event_category: 'Contact Form',
+        event_label: form.service || 'General Inquiry',
+        value: form.budget || 'Unspecified',
+      });
+
       setSubmitted(true);
     } catch {
       setServerError(`Unable to connect to the server. Please try again or email us directly at ${config.email}.`);
@@ -181,6 +191,12 @@ export default function ContactPageClient({
                     href={whatsappActionUrl || config.whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => {
+                      trackGAEvent('contact', {
+                        event_category: 'WhatsApp',
+                        event_label: 'Post-submission fast-track',
+                      });
+                    }}
                     className="inline-flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl text-sm font-bold text-white bg-[#25D366] hover:bg-[#20ba59] transition-all shadow-md hover:shadow-lg active:scale-[0.99]"
                   >
                     <MessageSquare size={16} />

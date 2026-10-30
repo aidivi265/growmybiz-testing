@@ -224,6 +224,7 @@ export function Input({ label, error, hint, className, id, ...props }: InputProp
         </label>
       )}
       <input id={inputId}
+        aria-invalid={Boolean(error)}
         className={clsx(
           'w-full px-4 py-3 rounded-xl border text-sm transition-colors',
           'bg-white text-[#0F1C31] placeholder-[#6B7E95]',
@@ -291,6 +292,7 @@ export function Select({ label, error, options, className, id, ...props }: Selec
         </label>
       )}
       <select id={inputId}
+        aria-invalid={Boolean(error)}
         className={clsx(
           'w-full px-4 py-3 rounded-xl border text-sm transition-colors',
           'bg-white text-[#0F1C31]',

@@ -282,7 +282,7 @@ export default function SeoPanel() {
                   <Search size={12} className="text-[#8ab4f8]" /> Google Search Result Simulation
                 </div>
                 <div className="text-[12px] text-[#bdc1c6] flex items-center gap-1 font-sans">
-                  <span>https://growmybizz.vercel.app</span>
+                  <span>https://growmybiz24.com</span>
                   <span>›</span>
                   <span className="text-[#9aa0a6]">{currentRoute.route_path.replace(/^\//, '') || 'home'}</span>
                 </div>
@@ -313,7 +313,7 @@ export default function SeoPanel() {
                   </div>
                   <div className="p-3 space-y-1">
                     <div className="text-[10px] uppercase tracking-wider text-white/40 font-mono">
-                      growmybizz.vercel.app
+                      growmybiz24.com
                     </div>
                     <div className="text-xs font-semibold text-white truncate">
                       {currentRoute.meta_title}

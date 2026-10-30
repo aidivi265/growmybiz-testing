@@ -8,6 +8,15 @@ export const revalidate = 300;
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description: 'How Growmybiz24 collects, uses and protects your personal information.',
+  alternates: {
+    canonical: '/legal/privacy-policy',
+  },
+  openGraph: {
+    title: 'Privacy Policy | Growmybiz24',
+    description: 'How Growmybiz24 collects, uses and protects your personal information.',
+    url: '/legal/privacy-policy',
+    type: 'website',
+  },
 };
 
 export default function PrivacyPolicyPage() {

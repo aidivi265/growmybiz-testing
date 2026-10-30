@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { Calendar, MessageSquare, Phone, X, CheckCircle } from 'lucide-react';
 import { siteConfig } from '@/data/siteConfig';
 import { getClientSettings } from '@/lib/settingsClient';
+import { trackGAEvent } from '@/components/GoogleAnalytics';
 
 interface ScheduleCallModalProps {
   isOpen: boolean;
@@ -86,6 +87,12 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
           timeline: 'Immediate',
           message: `Client requested a scheduled strategy call. Preferred slot: ${preferredTime}. Direct contact provided: ${cleanInput}`,
         }),
+      });
+      // GA4 conversion tracking
+      trackGAEvent('schedule_appointment', {
+        event_category: 'Lead Capture',
+        event_label: preferredTime,
+        method: isEmail ? 'Email' : 'Phone',
       });
       setSubmitted(true);
     } catch {

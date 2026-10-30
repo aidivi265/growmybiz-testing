@@ -6,8 +6,17 @@ import { siteConfig } from '@/data';
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: 'Disclaimer',
-  description: 'General information, performance disclaimers, and legal notices for Growmybiz24.',
+  title: 'Legal Disclaimer',
+  description: 'General legal disclaimers regarding representations and warranties of Growmybiz24 services.',
+  alternates: {
+    canonical: '/legal/disclaimer',
+  },
+  openGraph: {
+    title: 'Legal Disclaimer | Growmybiz24',
+    description: 'General legal disclaimers regarding representations and warranties of Growmybiz24 services.',
+    url: '/legal/disclaimer',
+    type: 'website',
+  },
 };
 
 export default function DisclaimerPage() {

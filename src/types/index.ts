@@ -15,6 +15,8 @@ export interface SiteConfig {
   address: string;
   whatsappNumber?: string;
   whatsappUrl?: string;
+  googleAnalyticsId?: string;
+  googleSiteVerification?: string;
   social: {
     instagram?: string;
     linkedin?: string;

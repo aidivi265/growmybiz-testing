@@ -11,6 +11,24 @@ export const metadata: Metadata = {
   title: 'Digital Growth Services | Web, Branding, Marketing & AI',
   description:
     'Six connected disciplines: Web & Mobile Engineering, Conversion UI/UX, Performance Marketing, AI Automation, and Content Architecture.',
+  alternates: {
+    canonical: '/services',
+  },
+  openGraph: {
+    title: 'Digital Growth Services | Growmybiz24',
+    description:
+      'Six connected disciplines: Web & Mobile Engineering, Conversion UI/UX, Performance Marketing, AI Automation, and Content Architecture.',
+    url: '/services',
+    type: 'website',
+    images: [
+      {
+        url: '/brand-logo-white-bg.png',
+        width: 1200,
+        height: 630,
+        alt: 'Growmybiz24 Digital Growth Services',
+      },
+    ],
+  },
 };
 
 export const revalidate = 60;

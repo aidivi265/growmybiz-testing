@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { siteConfig } from '@/data/siteConfig';
 import { MessageCircle } from 'lucide-react';
 import { getClientSettings } from '@/lib/settingsClient';
+import { trackGAEvent } from '@/components/GoogleAnalytics';
 
 export default function WhatsAppFloatingButton() {
   const [whatsappUrl, setWhatsappUrl] = useState(siteConfig.whatsappUrl);
@@ -26,6 +27,12 @@ export default function WhatsAppFloatingButton() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with Growmybiz24 on WhatsApp"
+        onClick={() => {
+          trackGAEvent('contact', {
+            event_category: 'WhatsApp',
+            event_label: 'Floating Action Button',
+          });
+        }}
         className="w-13 h-13 rounded-2xl flex items-center justify-center text-white shadow-2xl transition-all duration-300 hover:scale-108 active:scale-95"
         style={{
           background: 'linear-gradient(135deg, #25D366 0%, #128C7E 100%)',

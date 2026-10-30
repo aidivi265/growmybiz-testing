@@ -7,7 +7,16 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Accessibility Statement',
-  description: 'Our commitment to digital accessibility and inclusive design standards at Growmybiz24.',
+  description: 'Our commitment to digital accessibility for all users.',
+  alternates: {
+    canonical: '/legal/accessibility',
+  },
+  openGraph: {
+    title: 'Accessibility Statement | Growmybiz24',
+    description: 'Our commitment to digital accessibility for all users.',
+    url: '/legal/accessibility',
+    type: 'website',
+  },
 };
 
 export default function AccessibilityStatementPage() {

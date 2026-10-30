@@ -14,9 +14,7 @@ export default function robots(): MetadataRoute.Robots {
           '/admin/',
           '/api',
           '/api/',
-          '/_next/',
           '/private/',
-          '/*.json$',
         ],
       },
       // 2. Explicitly ban aggressive commercial AI training scrapers & data miners

@@ -7,7 +7,16 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
-  description: 'Terms and conditions governing use of Growmybiz24 services and website.',
+  description: 'The terms and conditions governing the use of Growmybiz24 services and website.',
+  alternates: {
+    canonical: '/legal/terms-of-service',
+  },
+  openGraph: {
+    title: 'Terms of Service | Growmybiz24',
+    description: 'The terms and conditions governing the use of Growmybiz24 services and website.',
+    url: '/legal/terms-of-service',
+    type: 'website',
+  },
 };
 
 export default function TermsOfServicePage() {

@@ -3,11 +3,11 @@ import type { NextConfig } from "next";
 // Content Security Policy (CSP) - Hardened production policy
 const cspHeader = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com;
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://www.googletagmanager.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://*.wp.com https://s0.wp.com https://*.vercel.app https://growmybiz24.com https://*.growmybiz24.com https://growmybizz.vercel.app https://*.growmybizz.vercel.app https://growmybizz.com https://*.growmybizz.com;
+  img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://*.wp.com https://s0.wp.com https://*.vercel.app https://growmybiz24.com https://*.growmybiz24.com https://growmybizz.vercel.app https://*.growmybizz.vercel.app https://growmybizz.com https://*.growmybizz.com https://www.googletagmanager.com https://www.google-analytics.com;
   font-src 'self' https://fonts.gstatic.com data:;
-  connect-src 'self' https://*.supabase.co https://va.vercel-scripts.com https://vitals.vercel-insights.com https://*.vercel.app https://growmybizz.vercel.app https://growmybizz.com https://*.growmybizz.com;
+  connect-src 'self' https://*.supabase.co https://va.vercel-scripts.com https://vitals.vercel-insights.com https://*.vercel.app https://growmybiz24.com https://*.growmybiz24.com https://growmybizz.vercel.app https://growmybizz.com https://*.growmybizz.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://region1.google-analytics.com;
   frame-ancestors 'none';
   base-uri 'self';
   form-action 'self';
@@ -77,6 +77,18 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: true,
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
+  },
+
+  // Canonical Domain Redirects (Consolidate www traffic to apex domain)
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.growmybiz24.com' }],
+        destination: 'https://growmybiz24.com/:path*',
+        permanent: true,
+      },
+    ];
   },
 
   // Comprehensive Cybersecurity & Anti-Scraping Headers

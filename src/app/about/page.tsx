@@ -12,6 +12,23 @@ import { SYNE_FONT } from '@/lib/fonts';
 export const metadata: Metadata = {
   title: 'About Us | Founders, Engineering Culture & Mission',
   description: 'Who we are, what we believe, and how we work. Growmybiz24 — your digital growth partner.',
+  alternates: {
+    canonical: '/about',
+  },
+  openGraph: {
+    title: 'About Us | Founders, Engineering Culture & Mission | Growmybiz24',
+    description: 'Who we are, what we believe, and how we work. Growmybiz24 — your digital growth partner.',
+    url: '/about',
+    type: 'website',
+    images: [
+      {
+        url: '/brand-logo-white-bg.png',
+        width: 1200,
+        height: 630,
+        alt: 'Growmybiz24 Leadership & Mission',
+      },
+    ],
+  },
 };
 
 const DEFAULT_ABOUT = {
@@ -127,7 +144,7 @@ export default async function AboutPage() {
               <p className="text-white/60 text-sm font-semibold">
                 {settings?.siteName || siteConfig.siteName}
               </p>
-              <p className="text-white/30 text-xs mt-1">{settings?.tagline || siteConfig.tagline}</p>
+              <p className="text-white/60 text-xs mt-1">{settings?.tagline || siteConfig.tagline}</p>
             </div>
           </div>
         </div>
@@ -150,7 +167,7 @@ export default async function AboutPage() {
                 </div>
                 <div>
                   <h3 className="text-white font-semibold mb-1.5">{vp.title}</h3>
-                  <p className="text-white/40 text-sm leading-relaxed">{vp.description}</p>
+                  <p className="text-white/70 text-sm leading-relaxed">{vp.description}</p>
                 </div>
               </div>
             </Card>
@@ -258,12 +275,12 @@ export default async function AboutPage() {
                 <segment.icon size={16} className="text-white/40" />
               </div>
               <h3 className="text-white text-sm font-semibold mb-1.5">{segment.title}</h3>
-              <p className="text-white/35 text-sm leading-relaxed">{segment.desc}</p>
+              <p className="text-white/70 text-sm leading-relaxed">{segment.desc}</p>
             </div>
           ))}
         </div>
         <div className="mt-10 text-center">
-          <p className="text-white/30 text-sm">Market focus: India first, with delivery designed to support international clients.</p>
+          <p className="text-white/60 text-sm">Market focus: India first, with delivery designed to support international clients.</p>
         </div>
       </Section>
     </>

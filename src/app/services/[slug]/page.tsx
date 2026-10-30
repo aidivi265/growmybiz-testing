@@ -28,9 +28,33 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const service = (await fetchServiceBySlug(slug)) || defaultServices.find((s) => s.slug === slug);
   if (!service) return {};
+  const pageUrl = `/services/${slug}`;
   return {
-    title: service.title,
-    description: service.shortDescription,
+    title: `${service.title} | Digital Growth Services | Growmybiz24`,
+    description: service.shortDescription || service.description,
+    alternates: {
+      canonical: pageUrl,
+    },
+    openGraph: {
+      title: `${service.title} | Growmybiz24`,
+      description: service.shortDescription || service.description,
+      url: pageUrl,
+      type: 'website',
+      images: [
+        {
+          url: '/brand-logo-white-bg.png',
+          width: 1200,
+          height: 630,
+          alt: service.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${service.title} | Growmybiz24`,
+      description: service.shortDescription || service.description,
+      images: ['/brand-logo-white-bg.png'],
+    },
   };
 }
 
@@ -55,8 +79,67 @@ export default async function ServicePage({ params }: Props) {
   const serviceCategories = allCategories[slug] || defaultServiceCategories[slug] || [];
 
 
+    const serviceJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: service.title,
+    description: service.shortDescription || service.description,
+    provider: {
+      '@type': 'ProfessionalService',
+      name: 'Growmybiz24',
+      url: 'https://growmybiz24.com',
+    },
+    areaServed: 'Global',
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: `${service.title} Offerings`,
+      itemListElement: (service.offerings || []).map((o, idx) => ({
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: o.title,
+          description: o.description,
+        },
+        position: idx + 1,
+      })),
+    },
+  };
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://growmybiz24.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Services',
+        item: 'https://growmybiz24.com/services',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: service.title,
+        item: `https://growmybiz24.com/services/${slug}`,
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       {/* ── Page Header ── */}
       <div
         className="pt-24 pb-14 relative overflow-hidden"
@@ -98,7 +181,7 @@ export default async function ServicePage({ params }: Props) {
               >
                 {service.title}
               </h1>
-              <p className="text-white/50 leading-relaxed max-w-2xl">{service.description}</p>
+              <p className="text-white/70 leading-relaxed max-w-2xl">{service.description}</p>
               <div className="flex flex-wrap items-center gap-3 mt-6">
                 <Link href="/contact" className="btn btn-primary btn-md">
                   Discuss this service <ArrowRight size={14} />
@@ -126,7 +209,7 @@ export default async function ServicePage({ params }: Props) {
               className="p-6 hover:border-white/[0.12] transition-colors"
             >
               <h2 className="text-white font-semibold mb-2">{o.title}</h2>
-              <p className="text-white/45 text-sm leading-relaxed">{o.description}</p>
+              <p className="text-white/70 text-sm leading-relaxed">{o.description}</p>
             </Card>
           ))}
         </div>
@@ -305,7 +388,7 @@ export default async function ServicePage({ params }: Props) {
               </div>
               <div className="min-w-0">
                 <p className="text-white text-xs font-medium leading-tight truncate">{s.title}</p>
-                <p className="text-white/30 text-xs mt-0.5 truncate">{s.offerings.length} services</p>
+                <p className="text-white/60 text-xs mt-0.5 truncate">{s.offerings.length} services</p>
               </div>
               <ArrowRight size={14} className="text-white/20 group-hover:text-white/50 transition-colors ml-auto shrink-0" />
             </Link>

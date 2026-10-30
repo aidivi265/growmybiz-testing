@@ -24,6 +24,24 @@ export const metadata: Metadata = {
   title: 'Growmybiz24 — Digital Solutions for a Bigger Tomorrow | Web, Design & AI Growth Agency',
   description:
     'Full-service digital growth agency in India. We engineer custom web platforms, scalable SaaS products, high-converting brand identities, and custom AI automation for global businesses.',
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'Growmybiz24 — Digital Solutions for a Bigger Tomorrow',
+    description:
+      'Full-service digital growth agency in India. We engineer custom web platforms, scalable SaaS products, high-converting brand identities, and custom AI automation.',
+    url: '/',
+    type: 'website',
+    images: [
+      {
+        url: '/brand-logo-white-bg.png',
+        width: 1200,
+        height: 630,
+        alt: 'Growmybiz24 — Digital Solutions for a Bigger Tomorrow',
+      },
+    ],
+  },
 };
 
 export default async function HomePage() {

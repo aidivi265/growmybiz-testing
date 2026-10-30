@@ -13,6 +13,24 @@ export const metadata: Metadata = {
   title: 'Our Agile 6-Step Delivery Process | Growmybiz24',
   description:
     'How we build and scale digital products: a transparent, predictable discovery-to-launch framework with zero guesswork.',
+  alternates: {
+    canonical: '/process',
+  },
+  openGraph: {
+    title: 'Our Agile 6-Step Delivery Process | Growmybiz24',
+    description:
+      'How we build and scale digital products: a transparent, predictable discovery-to-launch framework with zero guesswork.',
+    url: '/process',
+    type: 'website',
+    images: [
+      {
+        url: '/brand-logo-white-bg.png',
+        width: 1200,
+        height: 630,
+        alt: 'Growmybiz24 Agile Delivery Framework',
+      },
+    ],
+  },
 };
 
 export default async function ProcessPage() {

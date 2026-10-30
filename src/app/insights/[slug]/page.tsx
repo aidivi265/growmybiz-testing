@@ -23,7 +23,36 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = (await fetchInsightBySlug(slug)) || defaultBlogPosts.find((p) => p.slug === slug);
   if (!post) return {};
-  return { title: post.title, description: post.excerpt };
+  const pageUrl = `/insights/${slug}`;
+  return {
+    title: `${post.title} | Growmybiz24 Insights`,
+    description: post.excerpt,
+    alternates: {
+      canonical: pageUrl,
+    },
+    openGraph: {
+      title: `${post.title} | Growmybiz24`,
+      description: post.excerpt,
+      url: pageUrl,
+      type: 'article',
+      publishedTime: post.publishedAt,
+      authors: [post.author || 'Divyansh Gupta'],
+      images: [
+        {
+          url: '/brand-logo-white-bg.png',
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${post.title} | Growmybiz24`,
+      description: post.excerpt,
+      images: ['/brand-logo-white-bg.png'],
+    },
+  };
 }
 
 function formatDate(dateStr: string) {
@@ -194,8 +223,66 @@ export default async function BlogPostPage({ params }: Props) {
     .filter((p) => p.published && p.id !== post.id && p.category === post.category)
     .slice(0, 2);
 
+    const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.publishedAt,
+    dateModified: post.publishedAt,
+    author: {
+      '@type': 'Person',
+      name: post.author || 'Divyansh Gupta',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Growmybiz24',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://growmybiz24.com/brand-logo-white-bg.png',
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://growmybiz24.com/insights/${slug}`,
+    },
+  };
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://growmybiz24.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Insights',
+        item: 'https://growmybiz24.com/insights',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: post.title,
+        item: `https://growmybiz24.com/insights/${slug}`,
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       {/* ── Page Header ── */}
       <div
         className="pt-24 pb-14 relative overflow-hidden"

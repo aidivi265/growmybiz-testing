@@ -7,7 +7,16 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Cookie Policy',
-  description: 'Learn how Growmybiz24 uses cookies and tracking technologies to improve your experience.',
+  description: 'How Growmybiz24 uses cookies and similar technologies on our website.',
+  alternates: {
+    canonical: '/legal/cookie-policy',
+  },
+  openGraph: {
+    title: 'Cookie Policy | Growmybiz24',
+    description: 'How Growmybiz24 uses cookies and similar technologies on our website.',
+    url: '/legal/cookie-policy',
+    type: 'website',
+  },
 };
 
 export default function CookiePolicyPage() {

@@ -31,7 +31,36 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const item = (await fetchPortfolioBySlug(slug)) || defaultPortfolioItems.find((p) => p.slug === slug);
   if (!item) return {};
-  return { title: item.title, description: item.challenge };
+  const pageUrl = `/portfolio/${slug}`;
+  const desc = item.challenge || item.approach || item.outcome || `Case study on ${item.title} by Growmybiz24.`;
+  const imgUrl = item.thumbnail || (item.images && item.images[0]) || '/brand-logo-white-bg.png';
+  return {
+    title: `${item.title} | Case Study | Growmybiz24`,
+    description: desc,
+    alternates: {
+      canonical: pageUrl,
+    },
+    openGraph: {
+      title: `${item.title} | Growmybiz24 Case Study`,
+      description: desc,
+      url: pageUrl,
+      type: 'article',
+      images: [
+        {
+          url: imgUrl,
+          width: 1200,
+          height: 630,
+          alt: item.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${item.title} | Growmybiz24`,
+      description: desc,
+      images: [imgUrl],
+    },
+  };
 }
 
 export default async function PortfolioItemPage({ params }: Props) {
@@ -55,8 +84,57 @@ export default async function PortfolioItemPage({ params }: Props) {
     .filter((p) => p.published && p.id !== item.id && p.category === item.category)
     .slice(0, 2);
 
+    const caseStudyJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    headline: item.title,
+    description: item.challenge || item.approach || item.outcome,
+    author: {
+      '@type': 'Organization',
+      name: 'Growmybiz24',
+      url: 'https://growmybiz24.com',
+    },
+    image: item.thumbnail
+      ? (item.thumbnail.startsWith('http') ? item.thumbnail : `https://growmybiz24.com${item.thumbnail}`)
+      : 'https://growmybiz24.com/brand-logo-white-bg.png',
+    url: `https://growmybiz24.com/portfolio/${slug}`,
+  };
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://growmybiz24.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Portfolio',
+        item: 'https://growmybiz24.com/portfolio',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: item.title,
+        item: `https://growmybiz24.com/portfolio/${slug}`,
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(caseStudyJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       {/* ── Page Header ── */}
       <div
         className="pt-24 pb-14 relative overflow-hidden"

@@ -7,7 +7,16 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Refund & Cancellation Policy',
-  description: 'Clear commercial guidelines on project milestone payments, cancellations, and refunds for Growmybiz24 clients.',
+  description: 'Our policies regarding payments, milestones, cancellations and refunds.',
+  alternates: {
+    canonical: '/legal/refund-policy',
+  },
+  openGraph: {
+    title: 'Refund & Cancellation Policy | Growmybiz24',
+    description: 'Our policies regarding payments, milestones, cancellations and refunds.',
+    url: '/legal/refund-policy',
+    type: 'website',
+  },
 };
 
 export default function RefundPolicyPage() {
