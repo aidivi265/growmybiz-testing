@@ -7,7 +7,8 @@ const cspHeader = `
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://*.wp.com https://s0.wp.com https://*.vercel.app https://growmybiz24.com https://*.growmybiz24.com https://growmybizz.vercel.app https://*.growmybizz.vercel.app https://growmybizz.com https://*.growmybizz.com https://www.googletagmanager.com https://www.google-analytics.com;
   font-src 'self' https://fonts.gstatic.com data:;
-  connect-src 'self' https://*.supabase.co https://va.vercel-scripts.com https://vitals.vercel-insights.com https://*.vercel.app https://growmybiz24.com https://*.growmybiz24.com https://growmybizz.vercel.app https://growmybizz.com https://*.growmybizz.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://region1.google-analytics.com;
+  connect-src 'self' ws: wss: http://localhost:* https://localhost:* https://*.supabase.co https://va.vercel-scripts.com https://vitals.vercel-insights.com https://*.vercel.app https://growmybiz24.com https://*.growmybiz24.com https://growmybizz.vercel.app https://growmybizz.com https://*.growmybizz.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://region1.google-analytics.com;
+  frame-src 'self' https://www.figma.com;
   frame-ancestors 'none';
   base-uri 'self';
   form-action 'self';
@@ -107,11 +108,15 @@ const nextConfig: NextConfig = {
           { key: "X-XSS-Protection", value: "1; mode=block" },
           // Referrer Policy
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          // Strict Transport Security (HSTS) - 2 years + subdomains + preload
-          {
-            key: "Strict-Transport-Security",
-            value: "max-age=63072000; includeSubDomains; preload",
-          },
+          // Strict Transport Security (HSTS) - Enabled in production only to avoid local HTTP redirection issues
+          ...(process.env.NODE_ENV === "production"
+            ? [
+                {
+                  key: "Strict-Transport-Security",
+                  value: "max-age=63072000; includeSubDomains; preload",
+                },
+              ]
+            : []),
           // Restrict browser features & sensors
           {
             key: "Permissions-Policy",

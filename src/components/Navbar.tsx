@@ -3,9 +3,10 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Menu, X, ChevronDown, ArrowRight } from 'lucide-react';
+import { Menu, X, ChevronDown, ArrowRight, MessageSquare, LayoutDashboard } from 'lucide-react';
 import { navItems } from '@/data/navigation';
 import BrandLogo from '@/components/BrandLogo';
+import QuickInquiryModal from '@/components/QuickInquiryModal';
 import type { NavItem } from '@/types';
 import { getClientSettings } from '@/lib/settingsClient';
 
@@ -15,6 +16,7 @@ interface NavbarProps {
 
 export default function Navbar({ initialVisibility }: NavbarProps = {}) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [inquiryModalOpen, setInquiryModalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
@@ -130,9 +132,24 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
             </div>
 
             {/* ── Right actions ── */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               <Link
-                href="/contact"
+                href="/portal"
+                className="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#3D4F63] hover:text-[#0F1C31] hover:bg-[#F0F4FA] transition-colors"
+              >
+                <LayoutDashboard size={13} className="text-[#477BDB]" />
+                Client Portal
+              </Link>
+              <button
+                type="button"
+                onClick={() => setInquiryModalOpen(true)}
+                className="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#477BDB] border border-[#477BDB]/30 hover:bg-[#EBF1FB] transition-colors"
+              >
+                <MessageSquare size={13} />
+                Inquire
+              </button>
+              <Link
+                href="/start-project"
                 className="hidden lg:inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all duration-200 hover:shadow-[0_4px_16px_rgba(71,123,219,0.40)] hover:-translate-y-0.5"
                 style={{ background: 'linear-gradient(135deg, #477BDB 0%, #6477C8 100%)' }}
               >
@@ -231,18 +248,46 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
           </nav>
 
           {/* Drawer footer CTA */}
-          <div className="p-4 border-t border-[#E8EDF4]">
+          <div className="p-4 border-t border-[#E8EDF4] space-y-2">
             <Link
-              href="/contact"
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-sm text-white transition-all"
+              href="/start-project"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-sm text-white transition-all shadow-md"
               style={{ background: 'linear-gradient(135deg, #477BDB, #6477C8)' }}
             >
               Start a Project
               <ArrowRight size={14} />
             </Link>
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <Link
+                href="/portal"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold text-[#0F1C31] bg-[#F7F9FC] border border-[#E8EDF4]"
+              >
+                <LayoutDashboard size={13} className="text-[#477BDB]" />
+                Client Portal
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileOpen(false);
+                  setInquiryModalOpen(true);
+                }}
+                className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold text-[#477BDB] bg-[#EBF1FB]"
+              >
+                <MessageSquare size={13} />
+                Quick Inquire
+              </button>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Quick Inquiry Modal */}
+      <QuickInquiryModal
+        isOpen={inquiryModalOpen}
+        onClose={() => setInquiryModalOpen(false)}
+      />
     </>
   );
 }

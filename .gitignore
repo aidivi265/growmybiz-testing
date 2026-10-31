@@ -19,6 +19,9 @@
 
 # Local Leads Storage
 .leads/
+.projects/
+scripts/run-security-audit.mjs
+projects_schema.sql
 
 # production
 /build

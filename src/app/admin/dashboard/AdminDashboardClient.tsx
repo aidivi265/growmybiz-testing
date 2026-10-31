@@ -27,9 +27,11 @@ import {
   Check,
   Share2,
   FileText,
+  Sparkles,
 } from 'lucide-react';
 import type { InquiryRecord } from '@/lib/supabase';
 import BrandLogo from '@/components/BrandLogo';
+import ProjectsPanel from '@/components/admin/ProjectsPanel';
 import ServicesPanel from '@/components/admin/ServicesPanel';
 import PortfolioPanel from '@/components/admin/PortfolioPanel';
 import BlogPanel from '@/components/admin/BlogPanel';
@@ -45,6 +47,7 @@ import { invalidateClientSettings } from '@/lib/settingsClient';
 // ─── Admin Nav Items ──────────────────────────────────────────────────────────
 const adminNav = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { id: 'projects', label: 'Client Projects & Portal', icon: Sparkles },
   { id: 'leads', label: 'Inbound Inquiries', icon: Inbox },
   { id: 'site-config', label: 'Site Settings', icon: Settings },
   { id: 'seo', label: 'SEO & Socials', icon: Share2 },
@@ -178,6 +181,7 @@ export default function AdminDashboardClient() {
         {/* Content */}
         <main className="flex-1 overflow-y-auto p-5 lg:p-7">
           {activeSection === 'dashboard' && <DashboardHome setSection={setActiveSection} />}
+          {activeSection === 'projects' && <ProjectsPanel />}
           {activeSection === 'leads' && <LeadsPanel />}
           {activeSection === 'site-config' && <SiteConfigPanel />}
           {activeSection === 'seo' && <SeoPanel />}
