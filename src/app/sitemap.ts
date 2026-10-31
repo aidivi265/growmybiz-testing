@@ -2,7 +2,8 @@ import type { MetadataRoute } from 'next';
 import { fetchServices, fetchPortfolio, fetchInsights } from '@/lib/dal';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://growmybiz24.com';
+  const rawBaseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://growmybiz24.com';
+  const baseUrl = rawBaseUrl.replace(/^[\uFEFF\s]+|[\uFEFF\s]+$/g, '');
   const currentDate = new Date().toISOString();
 
   const [services, portfolioItems, blogPosts] = await Promise.all([

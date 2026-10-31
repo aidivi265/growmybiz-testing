@@ -13,7 +13,8 @@ export const viewport: Viewport = {
   themeColor: '#0F1C31',
 };
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://growmybiz24.com';
+const rawBaseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://growmybiz24.com';
+const baseUrl = rawBaseUrl.replace(/^[\uFEFF\s]+|[\uFEFF\s]+$/g, '');
 
 export const metadata: Metadata = {
   title: {
