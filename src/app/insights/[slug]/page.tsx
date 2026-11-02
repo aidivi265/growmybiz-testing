@@ -6,6 +6,7 @@ import { blogPosts as defaultBlogPosts } from '@/data';
 import { fetchInsights, fetchInsightBySlug, fetchPageVisibility } from '@/lib/dal';
 import { Breadcrumb } from '@/components/ui';
 import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
+import MarkdownRenderer from '@/components/insights/MarkdownRenderer';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -70,138 +71,7 @@ const CAT_CONFIG: Record<string, { bg: string; text: string; dot: string }> = {
 };
 const DEFAULT_CAT = { bg: '#EBF1FB', text: '#2A5DBF', dot: '#477BDB' };
 
-// Rich markdown inline token renderer (bold, italic, links, code)
-function renderInline(text: string): React.ReactNode {
-  const tokens: React.ReactNode[] = [];
-  const regex = /(\[([^\]]+)\]\(([^)]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`)/g;
-  let lastIndex = 0;
-  let match: RegExpExecArray | null;
-
-  while ((match = regex.exec(text)) !== null) {
-    if (match.index > lastIndex) {
-      tokens.push(text.slice(lastIndex, match.index));
-    }
-
-    if (match[2] && match[3]) {
-      const isInternal = match[3].startsWith('/') || match[3].startsWith('#');
-      tokens.push(
-        isInternal ? (
-          <Link key={match.index} href={match[3]} className="text-[#477BDB] font-semibold hover:underline">
-            {match[2]}
-          </Link>
-        ) : (
-          <a
-            key={match.index}
-            href={match[3]}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#477BDB] font-semibold hover:underline"
-          >
-            {match[2]}
-          </a>
-        )
-      );
-    } else if (match[4]) {
-      tokens.push(
-        <strong key={match.index} className="font-bold text-[#0F1C31]">
-          {match[4]}
-        </strong>
-      );
-    } else if (match[5]) {
-      tokens.push(
-        <em key={match.index} className="italic text-[#3D4F63]">
-          {match[5]}
-        </em>
-      );
-    } else if (match[6]) {
-      tokens.push(
-        <code
-          key={match.index}
-          className="px-1.5 py-0.5 rounded-md bg-[#F1F5F9] border border-[#E2E8F0] font-mono text-[0.875em] text-[#0F1C31]"
-        >
-          {match[6]}
-        </code>
-      );
-    }
-
-    lastIndex = regex.lastIndex;
-  }
-
-  if (lastIndex < text.length) {
-    tokens.push(text.slice(lastIndex));
-  }
-
-  return tokens.length > 0 ? tokens : text;
-}
-
-// Rich markdown-like block renderer
-function renderContent(content: string) {
-  return content.split('\n\n').map((block, i) => {
-    if (block.startsWith('# ')) {
-      return (
-        <h1 key={i} style={{ fontFamily: SYNE_FONT, fontWeight: 800, fontSize: '1.75rem', letterSpacing: '-0.025em', color: '#0F1C31', marginTop: '2.5rem', marginBottom: '0.875rem' }}>
-          {renderInline(block.slice(2))}
-        </h1>
-      );
-    }
-    if (block.startsWith('## ')) {
-      return (
-        <h2 key={i} style={{ fontFamily: SYNE_FONT, fontWeight: 800, fontSize: '1.3rem', letterSpacing: '-0.02em', color: '#0F1C31', marginTop: '2.2rem', marginBottom: '0.75rem' }}>
-          {renderInline(block.slice(3))}
-        </h2>
-      );
-    }
-    if (block.startsWith('### ')) {
-      return (
-        <h3 key={i} style={{ fontFamily: SYNE_FONT, fontWeight: 700, fontSize: '1.15rem', color: '#0F1C31', marginTop: '1.8rem', marginBottom: '0.625rem' }}>
-          {renderInline(block.slice(4))}
-        </h3>
-      );
-    }
-    if (block.startsWith('> ')) {
-      return (
-        <blockquote
-          key={i}
-          className="border-l-4 border-[#477BDB] pl-4 py-2 my-4 bg-[#F8FAFC] rounded-r-xl text-[#3D4F63] italic text-[0.95rem] leading-relaxed"
-        >
-          {renderInline(block.slice(2).replace(/\n>\s*/g, ' '))}
-        </blockquote>
-      );
-    }
-    if (block.startsWith('- ') || block.includes('\n- ')) {
-      const items = block.split('\n').filter((l) => l.startsWith('- ')).map((l) => l.slice(2));
-      return (
-        <ul key={i} style={{ listStyle: 'none', padding: 0, margin: '0.75rem 0 1rem 0' }}>
-          {items.map((item, j) => (
-            <li key={j} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem', color: '#3D4F63', fontSize: '0.9375rem', marginBottom: '0.5rem', lineHeight: 1.7 }}>
-              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#477BDB', marginTop: '0.6rem', flexShrink: 0, display: 'block' }} />
-              <div>{renderInline(item)}</div>
-            </li>
-          ))}
-        </ul>
-      );
-    }
-    if (block.match(/^\d+\./)) {
-      const items = block.split('\n').filter((l) => l.match(/^\d+\./)).map((l) => l.replace(/^\d+\.\s/, ''));
-      return (
-        <ol key={i} style={{ listStyle: 'none', padding: 0, margin: '0.75rem 0 1rem 0' }}>
-          {items.map((item, j) => (
-            <li key={j} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', color: '#3D4F63', fontSize: '0.9375rem', marginBottom: '0.5rem', lineHeight: 1.7 }}>
-              <span style={{ fontFamily: SYNE_FONT, fontWeight: 800, color: '#477BDB', fontSize: '0.875rem', flexShrink: 0, minWidth: '1.25rem' }}>{j + 1}.</span>
-              <div>{renderInline(item)}</div>
-            </li>
-          ))}
-        </ol>
-      );
-    }
-    if (block.trim() === '') return null;
-    return (
-      <p key={i} style={{ color: '#3D4F63', lineHeight: 1.8, marginBottom: '1rem', fontSize: '1rem' }}>
-        {renderInline(block)}
-      </p>
-    );
-  });
-}
+// High-fidelity Markdown rendering is handled by @/components/insights/MarkdownRenderer
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
@@ -337,7 +207,7 @@ export default async function BlogPostPage({ params }: Props) {
 
             {/* ── Article body ── */}
             <article className="lg:col-span-3">
-              {renderContent(post.content)}
+              <MarkdownRenderer content={post.content} />
 
               {/* Tags */}
               <div className="mt-10 pt-6 border-t border-[#DDE3EC] flex flex-wrap gap-2">

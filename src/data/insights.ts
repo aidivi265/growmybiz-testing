@@ -159,6 +159,33 @@ If you have data in spreadsheets or reports that you spend time manually reviewi
 **Code assistance for non-developers**
 AI coding tools allow people with basic technical knowledge to build small automations, scripts and integrations that previously required a developer.
 
+## Practical AI ROI Comparison
+
+| AI Initiative | Practical Value | Implementation Effort | Expected Payoff |
+| :--- | :---: | :---: | ---: |
+| Customer Support Bot | High | Low to Medium | 1–2 Months |
+| Automated Lead Routing | Very High | Low | Immediate |
+| Full Copy Replacement | Low | High (Brand Risk) | Negative |
+| Workflow Automation | High | Low | Immediate |
+
+\`\`\`typescript
+// Example: Serverless webhook dispatching instant lead alerts
+export async function alertSalesTeam(lead: { name: string; budget: string; service: string }) {
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: \`Bearer \${process.env.RESEND_API_KEY}\`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: 'Growmybiz24 Alerts <alerts@growmybiz24.com>',
+      to: 'team@growmybiz24.com',
+      subject: \`New Lead: \${lead.name} — \${lead.service} (\${lead.budget})\`,
+    }),
+  });
+}
+\`\`\`
+
 ## Where AI disappoints
 
 **Strategy and original thinking**
