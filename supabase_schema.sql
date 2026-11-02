@@ -111,6 +111,37 @@ CREATE TABLE IF NOT EXISTS public.admin_audit_logs (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- 9. Inbound Inquiries Table (Contact Form Leads & Discovery Calls)
+CREATE TABLE IF NOT EXISTS public.inquiries (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMPTZ DEFAULT now(),
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    phone TEXT,
+    company TEXT,
+    service TEXT DEFAULT 'General Inquiry',
+    budget TEXT DEFAULT 'Not specified',
+    timeline TEXT DEFAULT 'Not specified',
+    message TEXT NOT NULL,
+    status TEXT DEFAULT 'new', -- 'new', 'contacted', 'qualified', 'closed'
+    notes TEXT
+);
+
+-- 10. Site Settings Table (Branding, Contact Details, Social Links)
+CREATE TABLE IF NOT EXISTS public.site_settings (
+    id TEXT PRIMARY KEY,
+    site_name TEXT,
+    tagline TEXT,
+    description TEXT,
+    email TEXT,
+    phone TEXT,
+    address TEXT,
+    whatsapp_number TEXT,
+    whatsapp_url TEXT,
+    social JSONB DEFAULT '{}'::jsonb,
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
 -- ==============================================================================
 -- Idempotent Column Alterations (Guarantees safety on pre-existing tables)
 -- ==============================================================================
@@ -134,6 +165,9 @@ ALTER TABLE IF EXISTS public.portfolio_projects ALTER COLUMN solution DROP NOT N
 ALTER TABLE IF EXISTS public.portfolio_projects ALTER COLUMN outcome DROP NOT NULL;
 
 ALTER TABLE IF EXISTS public.articles ADD COLUMN IF NOT EXISTS is_published BOOLEAN DEFAULT true;
+ALTER TABLE IF EXISTS public.inquiries ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'new';
+ALTER TABLE IF EXISTS public.inquiries ADD COLUMN IF NOT EXISTS notes TEXT;
+ALTER TABLE IF EXISTS public.site_settings ADD COLUMN IF NOT EXISTS whatsapp_url TEXT;
 
 -- Ensure existing rows have is_published set to true
 UPDATE public.testimonials SET is_published = true WHERE is_published IS NULL;
@@ -149,6 +183,8 @@ ALTER TABLE public.testimonials ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.page_content ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.seo_metadata ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.admin_audit_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.inquiries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
 
 -- Allow Public Read Access for Published Content
 DO $$
@@ -170,6 +206,12 @@ BEGIN
 
     DROP POLICY IF EXISTS "Public can view seo metadata" ON public.seo_metadata;
     CREATE POLICY "Public can view seo metadata" ON public.seo_metadata FOR SELECT USING (true);
+
+    DROP POLICY IF EXISTS "Public can view site settings" ON public.site_settings;
+    CREATE POLICY "Public can view site settings" ON public.site_settings FOR SELECT USING (true);
+
+    DROP POLICY IF EXISTS "Public can insert inquiries" ON public.inquiries;
+    CREATE POLICY "Public can insert inquiries" ON public.inquiries FOR INSERT WITH CHECK (true);
 END $$;
 
 -- Allow Service Role & Authenticated Admins Full CRUD Access
@@ -195,6 +237,12 @@ BEGIN
 
     DROP POLICY IF EXISTS "Service role full access on admin_audit_logs" ON public.admin_audit_logs;
     CREATE POLICY "Service role full access on admin_audit_logs" ON public.admin_audit_logs FOR ALL USING (true);
+
+    DROP POLICY IF EXISTS "Service role full access on inquiries" ON public.inquiries;
+    CREATE POLICY "Service role full access on inquiries" ON public.inquiries FOR ALL USING (true);
+
+    DROP POLICY IF EXISTS "Service role full access on site_settings" ON public.site_settings;
+    CREATE POLICY "Service role full access on site_settings" ON public.site_settings FOR ALL USING (true);
 END $$;
 
 -- 9. Auto-updated_at trigger function
@@ -216,6 +264,9 @@ BEGIN
 
     DROP TRIGGER IF EXISTS set_updated_at_articles ON public.articles;
     CREATE TRIGGER set_updated_at_articles BEFORE UPDATE ON public.articles FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+    DROP TRIGGER IF EXISTS set_updated_at_site_settings ON public.site_settings;
+    CREATE TRIGGER set_updated_at_site_settings BEFORE UPDATE ON public.site_settings FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 END $$;
 
 -- ==============================================================================
@@ -540,4 +591,49 @@ VALUES ('/contact', 'Contact Us | Start Your Project with Growmybizz', 'Get in t
 ON CONFLICT (route_path) DO UPDATE SET
   meta_title = EXCLUDED.meta_title,
   meta_description = EXCLUDED.meta_description;
+
+-- ==============================================================================
+-- Global Site Settings Initial Seed
+-- ==============================================================================
+INSERT INTO public.site_settings (id, site_name, tagline, description, email, phone, address, whatsapp_number, whatsapp_url, social)
+VALUES (
+    'global',
+    'Growmybiz24',
+    'Digital Solutions for a Bigger Tomorrow',
+    'Full-service digital agency — web, design, marketing, content and AI services for businesses that want to grow.',
+    'hello@growmybiz24.com',
+    '+91 72908 84480',
+    'New Delhi, India (Global Delivery)',
+    '+91 72908 84480',
+    'https://wa.me/917290884480?text=Hi%20Growmybiz24%20team,%20I%20would%20like%20to%20discuss%20a%20new%20project.',
+    '{"linkedin": "https://linkedin.com/company/growmybiz24", "instagram": "https://instagram.com/growmybiz24", "twitter": "https://x.com/growmybiz24", "youtube": "https://youtube.com/@growmybiz24", "_visibility": {"linkedin": true, "instagram": true, "twitter": true, "youtube": true}}'::jsonb
+)
+ON CONFLICT (id) DO UPDATE SET
+    site_name = EXCLUDED.site_name,
+    tagline = EXCLUDED.tagline,
+    description = EXCLUDED.description,
+    email = EXCLUDED.email,
+    phone = EXCLUDED.phone,
+    address = EXCLUDED.address,
+    whatsapp_number = EXCLUDED.whatsapp_number,
+    whatsapp_url = EXCLUDED.whatsapp_url;
+
+-- ==============================================================================
+-- Storage Bucket & Policies (growmybizz-media)
+-- ==============================================================================
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('growmybizz-media', 'growmybizz-media', true)
+ON CONFLICT (id) DO NOTHING;
+
+DO $$
+BEGIN
+    DROP POLICY IF EXISTS "Public can view media" ON storage.objects;
+    CREATE POLICY "Public can view media" ON storage.objects FOR SELECT USING (bucket_id = 'growmybizz-media');
+
+    DROP POLICY IF EXISTS "Service role full access on storage" ON storage.objects;
+    CREATE POLICY "Service role full access on storage" ON storage.objects FOR ALL USING (bucket_id = 'growmybizz-media');
+EXCEPTION
+    WHEN undefined_table THEN
+        NULL; -- Non-fatal if storage schema is not present in local pg
+END $$;
 
