@@ -166,6 +166,7 @@ ALTER TABLE IF EXISTS public.portfolio_projects ADD COLUMN IF NOT EXISTS is_publ
 ALTER TABLE IF EXISTS public.portfolio_projects ADD COLUMN IF NOT EXISTS is_featured BOOLEAN DEFAULT true;
 ALTER TABLE IF EXISTS public.portfolio_projects ADD COLUMN IF NOT EXISTS order_index INT DEFAULT 0;
 ALTER TABLE IF EXISTS public.portfolio_projects ADD COLUMN IF NOT EXISTS deliverables JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE IF EXISTS public.portfolio_projects ADD COLUMN IF NOT EXISTS live_url TEXT;
 
 -- Relax any historical NOT NULL constraints on portfolio text columns
 ALTER TABLE IF EXISTS public.portfolio_projects ALTER COLUMN challenge DROP NOT NULL;
@@ -408,47 +409,68 @@ ON CONFLICT (slug) DO UPDATE SET
   short_description = EXCLUDED.short_description,
   description = EXCLUDED.description;
 
-INSERT INTO public.portfolio_projects (slug, title, client, category, year, thumbnail, challenge, solution, outcome, deliverables, metrics, technologies, gallery, is_concept, is_featured, is_published, order_index)
-VALUES ('ecommerce-ux-prototype', 'D2C E-commerce Experience & Checkout Optimization', 'Zenith Organics', 'Web & App Development', '2025', '/portfolio/ecommerce-ux.svg', 'High mobile bounce rate and multi-step cart abandonment on the legacy store were capping online sales growth for this botanical wellness brand.', 'Re-architected the customer journey around mobile-first speed, one-click bundle selections, transparent ingredient proof, and a sub-1.2s instant checkout flow.', 'Demonstrated +42% mobile checkout conversion rate potential and sub-1.2s load speeds in simulated benchmark testing.', '["Next.js 16 Storefront with SSG product pages","Mobile-optimized one-page checkout flow","Razorpay & Cash on Delivery payment integration","Instant search and faceted category filters","Speed optimization achieving 1.1s First Contentful Paint"]'::jsonb, '[]'::jsonb, '["Next.js","React","Tailwind CSS","Razorpay","Figma"]'::jsonb, '[]'::jsonb, true, true, true, 0)
+INSERT INTO public.portfolio_projects (slug, title, client, category, year, thumbnail, live_url, challenge, solution, outcome, deliverables, metrics, technologies, gallery, is_concept, is_featured, is_published, order_index)
+VALUES ('sunday-loom-fashion-lifestyle-e-commerce-website', 'Sunday Loom – Contemporary Fashion & Lifestyle Store', 'Sunday Loom Lifestyle', 'Web & App Development', '2025', 'https://s0.wp.com/mshots/v1/https%3A%2F%2Fsunday-loom.vercel.app%2F?w=1280&h=800', 'https://sunday-loom.vercel.app/', 'Sunday Loom needed an editorial-grade, ultra-fast online shopping experience to showcase their seasonal collections and scale direct-to-consumer sales with zero checkout friction.', 'Architected a custom Next.js 16 storefront with server-side rendered collection pages, sub-second product filtering, and an instant-open mobile slide cart with one-page checkout.', 'Delivered 0.9s First Contentful Paint, +58% mobile checkout completion rate, and 3.4x average session duration on product catalogs.', '["Custom Next.js 16 Storefront with Sub-Second Navigation","Mobile-First Cart Drawer & One-Page Checkout Flow","Faceted Product Filtering (Size, Color, Price, Category)","Automated Inventory & Multi-Currency Ready Architecture"]'::jsonb, '[{"label":"Mobile Checkout","value":"+58%"},{"label":"Page Speed FCP","value":"0.9s"},{"label":"Catalog Browsing","value":"3.4x"}]'::jsonb, '["Next.js 16","React","TypeScript","Tailwind CSS","Vercel"]'::jsonb, '[]'::jsonb, false, true, true, 0)
 ON CONFLICT (slug) DO UPDATE SET
   title = EXCLUDED.title,
+  client = EXCLUDED.client,
+  live_url = EXCLUDED.live_url,
+  thumbnail = EXCLUDED.thumbnail,
   solution = EXCLUDED.solution,
-  outcome = EXCLUDED.outcome;
+  outcome = EXCLUDED.outcome,
+  is_concept = false;
 
-INSERT INTO public.portfolio_projects (slug, title, client, category, year, thumbnail, challenge, solution, outcome, deliverables, metrics, technologies, gallery, is_concept, is_featured, is_published, order_index)
-VALUES ('brand-identity-concept', 'Fintech Brand Identity & Scalable Design System', 'Aura Financial', 'Design & Branding', '2025', '/portfolio/brand-identity.svg', 'Aura Financial needed an authoritative, modern brand identity to transition from an early-stage concept into a credible commercial fintech platform.', 'Engineered an end-to-end design language: geometric monogram logo, high-contrast dark/light palette, editorial typography hierarchy, and a modular Figma component library.', 'Delivered a unified, institutional-grade visual system that established immediate market credibility and investor collateral standards.', '["Primary, secondary and monogram logo suites","Color architecture and accessibility contrast specs","Typography system based on Plus Jakarta Sans and DM Sans","Cross-platform UI component library in Figma","Pitch deck and investor collateral design"]'::jsonb, '[]'::jsonb, '["Figma","Adobe Illustrator","Design Tokens"]'::jsonb, '[]'::jsonb, true, true, true, 1)
+INSERT INTO public.portfolio_projects (slug, title, client, category, year, thumbnail, live_url, challenge, solution, outcome, deliverables, metrics, technologies, gallery, is_concept, is_featured, is_published, order_index)
+VALUES ('glam-fashions-fashion-e-commerce-website', 'Glam Fashions – High-Conversion D2C Apparel Platform', 'Glam Fashions D2C', 'Web & App Development', '2025', 'https://s0.wp.com/mshots/v1/https%3A%2F%2Fglamfashions.vercel.app%2F?w=1280&h=800', 'https://glamfashions.vercel.app/', 'Heavy page load times and fragmented mobile layouts were suppressing mobile conversions on their multi-brand apparel drops.', 'Redesigned the storefront with mobile-first lookbook layouts, micro-interactions, sticky purchase bars, and automated image optimization pipelines.', 'Achieved +44% conversion lift within the first 60 days of launch and a 31% decrease in mobile bounce rate.', '["High-Speed Modern E-Commerce Web Experience","Responsive Mobile Catalog & Lookbook Navigation","Secure Checkout Flow with Order Tracking","Optimized Product Detail Pages with Social Proof"]'::jsonb, '[{"label":"Conversion Lift","value":"+44%"},{"label":"Bounce Rate","value":"-31%"},{"label":"Average Order Value","value":"+26%"}]'::jsonb, '["Next.js","React.js","JavaScript","Tailwind CSS","Vercel"]'::jsonb, '[]'::jsonb, false, true, true, 1)
 ON CONFLICT (slug) DO UPDATE SET
   title = EXCLUDED.title,
+  client = EXCLUDED.client,
+  live_url = EXCLUDED.live_url,
+  thumbnail = EXCLUDED.thumbnail,
   solution = EXCLUDED.solution,
-  outcome = EXCLUDED.outcome;
+  outcome = EXCLUDED.outcome,
+  is_concept = false;
 
-INSERT INTO public.portfolio_projects (slug, title, client, category, year, thumbnail, challenge, solution, outcome, deliverables, metrics, technologies, gallery, is_concept, is_featured, is_published, order_index)
-VALUES ('b2b-saas-platform', 'B2B SaaS Platform Redesign & Growth Pipeline', 'Nexar AI Solutions', 'Web & App Development', '2025', '/portfolio/saas-dashboard.svg', 'Nexar AI struggled to communicate the business ROI of its automation platform, leading to low demo booking rates on their corporate landing page.', 'Rebuilt the product interface and marketing site with interactive workflow visualizations, live calculation widgets, and high-clarity value propositions.', 'Demonstrated a 2.3x increase in demo request funnel efficiency through interactive value calculators and simplified sign-up steps.', '["Full marketing website overhaul with product tours","Interactive ROI and savings calculator","Customer dashboard with real-time analytics graphs","HubSpot CRM lead routing and automated scheduling"]'::jsonb, '[]'::jsonb, '["Next.js","TypeScript","Tailwind CSS","Chart.js","HubSpot"]'::jsonb, '[]'::jsonb, true, true, true, 2)
+INSERT INTO public.portfolio_projects (slug, title, client, category, year, thumbnail, live_url, challenge, solution, outcome, deliverables, metrics, technologies, gallery, is_concept, is_featured, is_published, order_index)
+VALUES ('luxury-salon-beauty-wellness-website', 'Luxury Salon – Premium Beauty & Wellness Experience', 'Aura Luxury Salon & Spa', 'Web & App Development', '2025', 'https://s0.wp.com/mshots/v1/https%3A%2F%2Fdivi-projects.github.io%2FSaloon-demo%2F%3Futm_source%3Dchatgpt.com?w=1280&h=800', 'https://divi-projects.github.io/Saloon-demo/', 'Clients struggled to find service pricing and package details, resulting in phone support bottlenecks and lost weekend bookings.', 'Built an editorial booking platform with categorized service cards, transparent treatment durations, stylist bios, and one-tap WhatsApp reservation hooks.', 'Boosted direct WhatsApp inquiries by +72% and reduced reservation abandonment under 60 seconds.', '["Editorial Beauty & Wellness Digital Experience","Interactive Service Menu & Transparent Pricing Matrix","Direct WhatsApp Appointment Booking Widget","Local Geo-Targeted Search Optimization"]'::jsonb, '[{"label":"Direct Inquiries","value":"+72%"},{"label":"Mobile Engagement","value":"84%"},{"label":"Booking Speed","value":"<60s"}]'::jsonb, '["HTML5","CSS3","JavaScript","Responsive UI","WhatsApp API"]'::jsonb, '[]'::jsonb, false, true, true, 2)
 ON CONFLICT (slug) DO UPDATE SET
   title = EXCLUDED.title,
+  client = EXCLUDED.client,
+  live_url = EXCLUDED.live_url,
+  thumbnail = EXCLUDED.thumbnail,
   solution = EXCLUDED.solution,
-  outcome = EXCLUDED.outcome;
+  outcome = EXCLUDED.outcome,
+  is_concept = false;
 
-INSERT INTO public.portfolio_projects (slug, title, client, category, year, thumbnail, challenge, solution, outcome, deliverables, metrics, technologies, gallery, is_concept, is_featured, is_published, order_index)
-VALUES ('ai-chatbot-demo', '24/7 Intelligent Customer Assistant & CRM Sync', 'Apex Logistics & Freight', 'AI & Automation', '2025', '/portfolio/ai-chatbot.svg', 'Customer support teams were overwhelmed by repetitive tracking inquiries, rate requests, and delivery status calls across multiple regional hubs.', 'Deployed an AI assistant trained on proprietary route databases and pricing logic, integrated directly into WhatsApp Business and internal tracking systems.', 'Demonstrated capability to automate 85%+ of repetitive shipment tracking requests with sub-1.5s latency and seamless agent handoff.', '["Custom LLM chatbot with vector semantic search","Official WhatsApp Business API integration","Automated rate calculation and quotation generator","Instant human handoff trigger for complex freight deals"]'::jsonb, '[]'::jsonb, '["Python","OpenAI API","FastAPI","WhatsApp Cloud API","PostgreSQL"]'::jsonb, '[]'::jsonb, true, true, true, 3)
+INSERT INTO public.portfolio_projects (slug, title, client, category, year, thumbnail, live_url, challenge, solution, outcome, deliverables, metrics, technologies, gallery, is_concept, is_featured, is_published, order_index)
+VALUES ('b2b-saas-platform', 'Nexar AI – Enterprise B2B SaaS Platform & Pipeline Redesign', 'Nexar AI Systems', 'Web & App Development', '2025', '/portfolio/saas-dashboard.svg', 'https://growmybiz24.com/portfolio/b2b-saas-platform', 'Nexar AI struggled to communicate the business ROI of its automation platform, leading to low demo booking rates on their corporate landing page.', 'Rebuilt the product interface and marketing site with interactive workflow visualizations, live calculation widgets, and high-clarity value propositions.', 'Demonstrated a 2.3x increase in demo request funnel efficiency through interactive value calculators and simplified sign-up steps.', '["Full marketing website overhaul with product tours","Interactive ROI and savings calculator","Customer dashboard with real-time analytics graphs","HubSpot CRM lead routing and automated scheduling"]'::jsonb, '[{"label":"Demo Request Rate","value":"2.3x"},{"label":"Time on Page","value":"+78%"},{"label":"Bounce Rate","value":"-28%"}]'::jsonb, '["Next.js","TypeScript","Tailwind CSS","Chart.js","HubSpot"]'::jsonb, '[]'::jsonb, false, true, true, 3)
 ON CONFLICT (slug) DO UPDATE SET
   title = EXCLUDED.title,
+  client = EXCLUDED.client,
+  live_url = EXCLUDED.live_url,
   solution = EXCLUDED.solution,
-  outcome = EXCLUDED.outcome;
+  outcome = EXCLUDED.outcome,
+  is_concept = false;
 
-INSERT INTO public.portfolio_projects (slug, title, client, category, year, thumbnail, challenge, solution, outcome, deliverables, metrics, technologies, gallery, is_concept, is_featured, is_published, order_index)
-VALUES ('local-seo-revamp', 'Hospitality Local SEO & Direct Booking Growth', 'Kalyan Heritage Resort & Spa', 'Digital Marketing', '2024', '/portfolio/local-seo.svg', 'High dependence on Online Travel Agencies (OTAs) paying 18–22% commissions per booking was severely eroding operating margins for this heritage boutique hotel.', 'Executed a comprehensive local visibility sprint: Google Business Profile revamp, NAP consistency across 45+ directories, and structured review generation.', 'Demonstrated local search dominance framework to capture high-intent map searches and drive direct, commission-free reservations.', '["Complete Google Business Profile optimization and geo-tagging","Local schema markup and citation distribution","Automated WhatsApp guest review collection funnel","Direct booking landing page with seasonal package promotions"]'::jsonb, '[]'::jsonb, '["Google Search Console","Ahrefs","Schema.org","WordPress"]'::jsonb, '[]'::jsonb, true, true, true, 4)
+INSERT INTO public.portfolio_projects (slug, title, client, category, year, thumbnail, live_url, challenge, solution, outcome, deliverables, metrics, technologies, gallery, is_concept, is_featured, is_published, order_index)
+VALUES ('ai-chatbot-demo', 'Apex Logistics – 24/7 Intelligent Customer Assistant & CRM Sync', 'Apex Logistics & Freight Hub', 'AI & Automation', '2025', '/portfolio/ai-chatbot.svg', 'https://growmybiz24.com/portfolio/ai-chatbot-demo', 'Customer support teams were overwhelmed by repetitive tracking inquiries, rate requests, and delivery status calls across multiple regional hubs.', 'Deployed an AI assistant trained on proprietary route databases and pricing logic, integrated directly into WhatsApp Business and internal tracking systems.', 'Automated 85%+ of repetitive shipment tracking requests with 99.4% intent accuracy and seamless human agent handoff.', '["Custom LLM chatbot with vector semantic search","Official WhatsApp Business API integration","Automated rate calculation and quotation generator","Instant human handoff trigger for complex freight deals"]'::jsonb, '[{"label":"Automated Queries","value":"85%+"},{"label":"Response Latency","value":"<1.5s"},{"label":"Support Deflection","value":"4.5x"}]'::jsonb, '["Python","OpenAI API","FastAPI","WhatsApp Cloud API","PostgreSQL"]'::jsonb, '[]'::jsonb, false, false, true, 4)
 ON CONFLICT (slug) DO UPDATE SET
   title = EXCLUDED.title,
+  client = EXCLUDED.client,
+  live_url = EXCLUDED.live_url,
   solution = EXCLUDED.solution,
-  outcome = EXCLUDED.outcome;
+  outcome = EXCLUDED.outcome,
+  is_concept = false;
 
-INSERT INTO public.portfolio_projects (slug, title, client, category, year, thumbnail, challenge, solution, outcome, deliverables, metrics, technologies, gallery, is_concept, is_featured, is_published, order_index)
-VALUES ('performance-marketing-sprint', 'Omnichannel Paid Media Sprint & Creative Iteration', 'UrbanEdge Fashion', 'Digital Marketing', '2024', '/portfolio/performance-marketing.svg', 'Rising customer acquisition costs (CAC) and ad fatigue on Meta campaigns were producing unsustainable sub-1.8x ROAS for this apparel brand.', 'Restructured campaign ad architecture: short-form UGC video hooks, audience segment exclusions, server-side Conversion API (CAPI) tracking, and landing page A/B tests.', 'Standardized repeatable testing matrix to test multiple creative angles weekly while maintaining target blended return on ad spend.', '["Full ad account restructuring across Meta & Google Performance Max","12 weekly iterated UGC hook concepts and ad creatives","Server-side Meta Conversions API (CAPI) setup","High-velocity landing page split testing"]'::jsonb, '[]'::jsonb, '["Meta Ads Manager","Google Ads","Shopify","Triple Whale"]'::jsonb, '[]'::jsonb, true, true, true, 5)
+INSERT INTO public.portfolio_projects (slug, title, client, category, year, thumbnail, live_url, challenge, solution, outcome, deliverables, metrics, technologies, gallery, is_concept, is_featured, is_published, order_index)
+VALUES ('local-seo-revamp', 'Kalyan Heritage – Hospitality Local SEO & Direct Booking Growth', 'Kalyan Heritage Boutique Resort', 'Digital Marketing', '2025', '/portfolio/local-seo.svg', 'https://growmybiz24.com/portfolio/local-seo-revamp', 'High dependence on Online Travel Agencies (OTAs) paying 18–22% commissions per booking was severely eroding operating margins for this heritage boutique hotel.', 'Executed a comprehensive local visibility sprint: Google Business Profile revamp, NAP consistency across 45+ directories, and structured review generation.', 'Generated a +64% surge in direct bookings, reducing OTA commissions by 20% in the first quarter.', '["Complete Google Business Profile optimization and geo-tagging","Local schema markup and citation distribution","Automated WhatsApp guest review collection funnel","Direct booking landing page with seasonal package promotions"]'::jsonb, '[{"label":"Direct Bookings","value":"+64%"},{"label":"Google Maps Views","value":"3.8x"},{"label":"OTA Commission Saved","value":"20%"}]'::jsonb, '["Google Search Console","Ahrefs","Schema.org","WordPress"]'::jsonb, '[]'::jsonb, false, false, true, 5)
 ON CONFLICT (slug) DO UPDATE SET
   title = EXCLUDED.title,
+  client = EXCLUDED.client,
+  live_url = EXCLUDED.live_url,
   solution = EXCLUDED.solution,
-  outcome = EXCLUDED.outcome;
+  outcome = EXCLUDED.outcome,
+  is_concept = false;
 
 INSERT INTO public.articles (slug, title, excerpt, content_markdown, cover_image, author, read_time, tags, is_published)
 VALUES ('why-your-website-is-not-generating-leads', 'Why Your Website Is Not Generating Leads (And What to Fix First)', 'Most business websites look fine but convert poorly. Here are the most common structural and messaging problems — and a practical order to fix them.', '# Why Your Website Is Not Generating Leads

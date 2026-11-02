@@ -409,9 +409,13 @@ export default function PortfolioPageClient({ initialItems }: { initialItems?: P
                               <Globe size={10} /> Live Site
                             </span>
                           )}
-                          {item.isConcept && (
+                          {!item.isConcept ? (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-600/85 text-white backdrop-blur-sm border border-blue-400/30 shadow-sm">
+                              Client Delivery
+                            </span>
+                          ) : (
                             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/85 text-white backdrop-blur-sm border border-amber-300/40 shadow-sm">
-                              Concept Demo
+                              Framework Demo
                             </span>
                           )}
                         </div>

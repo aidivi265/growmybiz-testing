@@ -105,9 +105,14 @@ export default function PortfolioPreview({ projects }: PortfolioPreviewProps) {
                       <Globe size={10} /> Live Site
                     </span>
                   )}
+                  {!main.isConcept && (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-600/85 text-white backdrop-blur-sm border border-blue-400/30 shadow-sm">
+                      Client Delivery
+                    </span>
+                  )}
                   {main.isConcept && (
                     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/85 text-white backdrop-blur-sm border border-amber-300/40 shadow-sm">
-                      Concept Demo
+                      Framework Demo
                     </span>
                   )}
                 </div>
@@ -180,6 +185,11 @@ export default function PortfolioPreview({ projects }: PortfolioPreviewProps) {
                       {item.liveUrl && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-600/90 text-white backdrop-blur-sm border border-emerald-400/40 shadow-sm">
                           <Globe size={9} /> Live
+                        </span>
+                      )}
+                      {!item.isConcept && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-blue-600/85 text-white backdrop-blur-sm border border-blue-400/30 shadow-sm">
+                          Client Work
                         </span>
                       )}
                       {item.isConcept && (

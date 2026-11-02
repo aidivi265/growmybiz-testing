@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, ArrowLeft, ExternalLink, Globe } from 'lucide-react';
+import { ArrowRight, ArrowLeft, ExternalLink, Globe, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { portfolioItems as defaultPortfolioItems } from '@/data';
 import { fetchPortfolio, fetchPortfolioBySlug, fetchPageVisibility } from '@/lib/dal';
 import { Breadcrumb } from '@/components/ui';
@@ -158,12 +158,17 @@ export default async function PortfolioItemPage({ params }: Props) {
               >
                 {item.category}
               </span>
-              {(item.isConcept || item.client === 'Concept Project') && (
+              {!item.isConcept && item.client !== 'Concept Project' ? (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold text-emerald-300 bg-emerald-500/20 border border-emerald-500/40 shadow-xs">
+                  <CheckCircle2 size={13} className="text-emerald-400" />
+                  Verified Client Project
+                </span>
+              ) : (
                 <span
                   className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold text-amber-200"
                   style={{ background: 'rgba(245,158,11,0.2)', border: '1px solid rgba(245,158,11,0.3)' }}
                 >
-                  Concept Demonstration
+                  Technical Framework Demo
                 </span>
               )}
             </div>
@@ -213,38 +218,52 @@ export default async function PortfolioItemPage({ params }: Props) {
             {/* Left 2 cols — case study narrative */}
             <div className="lg:col-span-2 space-y-10">
 
-              {/* Visual preview */}
+              {/* Visual preview - High-Fidelity Browser Window Frame */}
               <div
-                className="rounded-2xl overflow-hidden border border-[#DDE3EC] bg-[#0A1320] relative group"
-                style={{
-                  aspectRatio: '16/9',
-                  boxShadow: '0 12px 40px rgba(15,28,49,0.12)',
-                }}
+                className="rounded-2xl overflow-hidden border border-slate-700/80 bg-[#0F1C31] shadow-2xl group transition-all"
               >
-                <Image
-                  src={item.thumbnail}
-                  alt={item.title}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 66vw"
-                  className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
-                  priority
-                  unoptimized={item.thumbnail.startsWith('http')}
-                />
+                {/* Browser Window Chrome */}
+                <div className="flex items-center justify-between px-4 py-2.5 bg-[#0A1220] border-b border-slate-800 text-slate-400 select-none">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-1.5 mr-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 inline-block" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block" />
+                    </div>
+                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-slate-900/80 border border-slate-800 text-[11px] font-mono text-slate-300 max-w-[280px] sm:max-w-[420px] truncate">
+                      <span className="text-emerald-400 text-[10px]">🔒</span>
+                      <span className="truncate">{item.liveUrl ? item.liveUrl.replace(/^https?:\/\//, '') : `growmybiz24.com/portfolio/${item.slug}`}</span>
+                    </div>
+                  </div>
 
-                {item.liveUrl && (
-                  <div className="absolute top-4 right-4 z-10">
+                  {item.liveUrl && (
                     <a
                       href={item.liveUrl.startsWith('http') ? item.liveUrl : `https://${item.liveUrl}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-black/70 hover:bg-black/90 backdrop-blur-md border border-white/20 transition-all shadow-lg"
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 transition-colors shadow-sm"
                     >
-                      <Globe size={13} className="text-emerald-400" />
-                      <span>Live Site</span>
+                      <span>Open Live Site</span>
                       <ExternalLink size={12} />
                     </a>
-                  </div>
-                )}
+                  )}
+                </div>
+
+                {/* Viewport Image */}
+                <div
+                  className="relative w-full overflow-hidden bg-[#0C1626]"
+                  style={{ aspectRatio: '16/9' }}
+                >
+                  <Image
+                    src={item.thumbnail}
+                    alt={item.title}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 66vw"
+                    className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
+                    priority
+                    unoptimized={item.thumbnail.startsWith('http')}
+                  />
+                </div>
               </div>
 
               {/* Challenge */}
