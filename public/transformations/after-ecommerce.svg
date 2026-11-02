@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B132B"/>
+      <stop offset="100%" stop-color="#1C2541"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#477BDB"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bgGrad)"/>
+  <!-- Modern Sleek Nav -->
+  <rect width="800" height="65" fill="#0F172A" fill-opacity="0.8"/>
+  <rect x="35" y="20" width="150" height="26" fill="url(#accentGrad)" rx="6"/>
+  <text x="110" y="37" font-family="system-ui, sans-serif" font-size="12" fill="#FFFFFF" font-weight="bold" text-anchor="middle">SUNDAY LOOM LUXURY</text>
+  <text x="320" y="37" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">Shop Collection</text>
+  <text x="440" y="37" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">Artisan Lookbook</text>
+  <text x="570" y="37" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">Sustainability</text>
+  <rect x="680" y="18" width="90" height="30" fill="url(#accentGrad)" rx="8"/>
+  <text x="725" y="37" font-family="system-ui, sans-serif" font-size="11" fill="#FFFFFF" font-weight="bold" text-anchor="middle">Cart (3)</text>
+  <!-- Hero Showcase Cards -->
+  <rect x="35" y="85" width="460" height="340" fill="#1E293B" rx="16" stroke="#334155"/>
+  <rect x="55" y="105" width="420" height="210" fill="#0F172A" rx="12"/>
+  <circle cx="265" cy="210" r="50" fill="#477BDB" fill-opacity="0.15"/>
+  <text x="265" y="215" font-family="system-ui, sans-serif" font-size="14" fill="#38BDF8" font-weight="bold" text-anchor="middle">Sub-second Next.js Dynamic Hero</text>
+  <text x="55" y="345" font-family="system-ui, sans-serif" font-size="18" fill="#FFFFFF" font-weight="bold">Artisan Heritage Silk Kurta Collection</text>
+  <text x="55" y="370" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">100% Organic Handwoven Mulberry Silk • 1-Click Fast Checkout</text>
+  <text x="55" y="405" font-family="system-ui, sans-serif" font-size="16" fill="#10B981" font-weight="bold">₹6,499</text>
+  <rect x="360" y="385" width="115" height="32" fill="#10B981" rx="8"/>
+  <text x="417" y="405" font-family="system-ui, sans-serif" font-size="12" fill="#000000" font-weight="bold" text-anchor="middle">Instant Buy ⚡</text>
+  <!-- Quick Analytics Side Panel -->
+  <rect x="515" y="85" width="255" height="340" fill="#1E293B" rx="16" stroke="#334155"/>
+  <text x="535" y="115" font-family="system-ui, sans-serif" font-size="13" fill="#FFFFFF" font-weight="bold">Live Edge Performance</text>
+  <rect x="535" y="135" width="215" height="55" fill="#0F172A" rx="10" stroke="#10B981" stroke-opacity="0.3"/>
+  <text x="550" y="157" font-family="system-ui, sans-serif" font-size="10" fill="#94A3B8">Edge Page Load Speed</text>
+  <text x="550" y="178" font-family="system-ui, sans-serif" font-size="18" fill="#10B981" font-weight="bold">0.42s (Sub-second)</text>
+  <rect x="535" y="200" width="215" height="55" fill="#0F172A" rx="10" stroke="#477BDB" stroke-opacity="0.3"/>
+  <text x="550" y="222" font-family="system-ui, sans-serif" font-size="10" fill="#94A3B8">Conversion Rate</text>
+  <text x="550" y="243" font-family="system-ui, sans-serif" font-size="18" fill="#38BDF8" font-weight="bold">4.82% (+338% Lift)</text>
+  <rect x="535" y="265" width="215" height="55" fill="#0F172A" rx="10" stroke="#A855F7" stroke-opacity="0.3"/>
+  <text x="550" y="287" font-family="system-ui, sans-serif" font-size="10" fill="#94A3B8">Monthly Store Revenue</text>
+  <text x="550" y="308" font-family="system-ui, sans-serif" font-size="18" fill="#C084FC" font-weight="bold">₹28.4 Lakhs/mo</text>
+  <!-- Badge -->
+  <rect x="35" y="440" width="370" height="38" fill="#064E3B" stroke="#10B981" rx="8"/>
+  <text x="50" y="464" font-family="system-ui, sans-serif" font-size="13" fill="#34D399" font-weight="bold">✅ 0.4s Edge Speed • 4.8% Conversion • 4.2x Revenue</text>
+</svg>

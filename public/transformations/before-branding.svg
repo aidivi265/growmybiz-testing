@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <rect width="800" height="500" fill="#E2E8F0"/>
+  <!-- Cluttered amateur logo -->
+  <rect x="250" y="100" width="300" height="180" fill="#FFFFFF" stroke="#CBD5E1" rx="8"/>
+  <text x="400" y="160" font-family="Impact" font-size="36" fill="#EF4444" text-anchor="middle">APEX BIZ 2017</text>
+  <text x="400" y="200" font-family="Comic Sans MS, cursive" font-size="14" fill="#64748B" text-anchor="middle">~ World Class Solutions for Everything ~</text>
+  <rect x="320" y="225" width="160" height="30" fill="#F59E0B" rx="4"/>
+  <text x="400" y="245" font-family="Arial" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="bold">Click Here Now</text>
+  <rect x="100" y="320" width="600" height="80" fill="#FEF2F2" rx="10" stroke="#F87171"/>
+  <text x="400" y="355" font-family="Arial" font-size="14" fill="#B91C1C" text-anchor="middle" font-weight="bold">❌ Inconsistent Fonts • No Color Palette • 0 Brand Recognition</text>
+  <text x="400" y="378" font-family="Arial" font-size="12" fill="#EF4444" text-anchor="middle">Client struggled to command premium enterprise pricing.</text>
+</svg>

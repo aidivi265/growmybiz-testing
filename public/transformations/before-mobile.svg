@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <rect width="800" height="500" fill="#1E293B"/>
+  <!-- Phone Frame Mockup -->
+  <rect x="275" y="40" width="250" height="420" rx="36" fill="#0F172A" stroke="#475569" stroke-width="4"/>
+  <rect x="350" y="52" width="100" height="14" rx="7" fill="#334155"/>
+  <!-- Screen content: Clunky webview -->
+  <rect x="290" y="75" width="220" height="365" fill="#F8FAFC" rx="16"/>
+  <rect x="290" y="75" width="220" height="45" fill="#CBD5E1"/>
+  <text x="400" y="102" font-family="Arial" font-size="12" fill="#334155" text-anchor="middle" font-weight="bold">WebView Browser Bar</text>
+  <!-- Warning badge -->
+  <rect x="300" y="130" width="200" height="50" fill="#FEE2E2" rx="8" stroke="#EF4444"/>
+  <text x="400" y="152" font-family="Arial" font-size="11" fill="#DC2626" font-weight="bold" text-anchor="middle">⚠️ Laggy 22fps Scroll</text>
+  <text x="400" y="170" font-family="Arial" font-size="10" fill="#B91C1C" text-anchor="middle">Failed Apple Store Review</text>
+  <!-- Content placeholders -->
+  <rect x="305" y="195" width="190" height="70" fill="#E2E8F0" rx="6"/>
+  <text x="400" y="235" font-family="Arial" font-size="10" fill="#64748B" text-anchor="middle">[Unresponsive Mobile View]</text>
+  <rect x="305" y="280" width="190" height="40" fill="#E2E8F0" rx="6"/>
+  <!-- App Store Stars -->
+  <text x="400" y="350" font-family="Arial" font-size="16" fill="#EF4444" text-anchor="middle">★☆☆☆☆ (1.8/5)</text>
+  <text x="400" y="375" font-family="Arial" font-size="11" fill="#64748B" text-anchor="middle">High battery drain &amp; crashes</text>
+  <!-- Left & Right callouts -->
+  <rect x="40" y="180" width="200" height="80" fill="#450A0A" rx="12" stroke="#EF4444"/>
+  <text x="140" y="210" font-family="Arial" font-size="12" fill="#FCA5A5" text-anchor="middle" font-weight="bold">❌ Clunky Web Wrapper</text>
+  <text x="140" y="235" font-family="Arial" font-size="11" fill="#FECACA" text-anchor="middle">3.2s tap lag • 64% churn</text>
+  <rect x="560" y="180" width="200" height="80" fill="#450A0A" rx="12" stroke="#EF4444"/>
+  <text x="660" y="210" font-family="Arial" font-size="12" fill="#FCA5A5" text-anchor="middle" font-weight="bold">❌ Broken Push Notifications</text>
+  <text x="660" y="235" font-family="Arial" font-size="11" fill="#FECACA" text-anchor="middle">0 re-engagement capability</text>
+</svg>

@@ -570,5 +570,29 @@ export async function fetchEstimatorConfig(): Promise<EstimatorConfig> {
   return defaultEstimatorConfig;
 }
 
+import { defaultBeforeAfterShowcases, type BeforeAfterShowcase } from '@/data/beforeAfterShowcase';
+export { defaultBeforeAfterShowcases };
+export type { BeforeAfterShowcase };
+
+// ── 18. Before & After Interactive Showcase ──────────────────────────────────
+export async function fetchBeforeAfterShowcases(): Promise<BeforeAfterShowcase[]> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('page_content')
+      .select('data')
+      .eq('id', 'before_after_showcase')
+      .maybeSingle();
+
+    if (!error && data?.data && Array.isArray((data.data as any)?.items)) {
+      return (data.data as any).items as BeforeAfterShowcase[];
+    }
+  } catch (err) {
+    console.warn('[DAL Notice] Before & After showcase fetch fallback:', err);
+  }
+
+  return defaultBeforeAfterShowcases;
+}
+
+
 
 

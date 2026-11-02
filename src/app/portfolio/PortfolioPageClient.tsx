@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { ArrowUpRight, Globe, ExternalLink, Search, X, Sparkles, Filter, Layers } from 'lucide-react';
 import { portfolioItems as defaultPortfolioItems } from '@/data/portfolio';
 import { Breadcrumb } from '@/components/ui';
+import BeforeAfterSlider from '@/components/ui/BeforeAfterSlider';
+import type { BeforeAfterShowcase } from '@/data/beforeAfterShowcase';
 import { SYNE_FONT, INTER_FONT } from '@/lib/fonts';
 import type { PortfolioItem } from '@/types';
 
@@ -77,7 +79,12 @@ function matchesService(item: PortfolioItem, serviceSlug: string): boolean {
   return def.aliases.some((alias) => catLower.includes(alias) || itemSlugLower.includes(alias));
 }
 
-export default function PortfolioPageClient({ initialItems }: { initialItems?: PortfolioItem[] }) {
+interface PortfolioPageClientProps {
+  initialItems?: PortfolioItem[];
+  beforeAfterItems?: BeforeAfterShowcase[];
+}
+
+export default function PortfolioPageClient({ initialItems, beforeAfterItems }: PortfolioPageClientProps) {
   const items = initialItems && initialItems.length > 0 ? initialItems : defaultPortfolioItems;
 
   const [activeService, setActiveService] = useState<string>('All');
@@ -473,6 +480,16 @@ export default function PortfolioPageClient({ initialItems }: { initialItems?: P
               })}
             </div>
           )}
+
+          {/* Interactive Before & After Transformation Slider */}
+          <div className="mt-16 -mx-4 sm:-mx-6 lg:-mx-10 rounded-3xl overflow-hidden shadow-2xl">
+            <BeforeAfterSlider
+              initialItems={beforeAfterItems}
+              eyebrow="BEFORE VS AFTER COMPARISON"
+              title="Side-by-side redesign & growth proof."
+              subtitle="Drag the slider to see how outdated websites, clunky apps, and sluggish ad funnels transform into high-velocity revenue platforms."
+            />
+          </div>
 
           {/* Trust signal / transparency note */}
           <div className="mt-12 flex items-start gap-3 p-5 rounded-2xl border border-[#DDE3EC] bg-white shadow-sm">

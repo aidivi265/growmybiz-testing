@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import PortfolioPageClient from './PortfolioPageClient';
-import { fetchPortfolio, fetchPageVisibility } from '@/lib/dal';
+import { fetchPortfolio, fetchPageVisibility, fetchBeforeAfterShowcases } from '@/lib/dal';
 
 export const revalidate = 60;
 
@@ -30,14 +30,15 @@ export const metadata: Metadata = {
 };
 
 export default async function PortfolioPage() {
-  const [items, visibility] = await Promise.all([
+  const [items, visibility, beforeAfterItems] = await Promise.all([
     fetchPortfolio(),
     fetchPageVisibility(),
+    fetchBeforeAfterShowcases(),
   ]);
 
   if (visibility.portfolio === false) {
     notFound();
   }
 
-  return <PortfolioPageClient initialItems={items} />;
+  return <PortfolioPageClient initialItems={items} beforeAfterItems={beforeAfterItems} />;
 }

@@ -6,6 +6,7 @@ import TestimonialsSection from '@/components/home/TestimonialsSection';
 import ProcessPreview from '@/components/home/ProcessPreview';
 import ValuePropsSection from '@/components/home/ValuePropsSection';
 import InsightsPreview from '@/components/home/InsightsPreview';
+import BeforeAfterSlider from '@/components/ui/BeforeAfterSlider';
 import {
   fetchHeroSlides,
   fetchOrbitConfig,
@@ -16,6 +17,7 @@ import {
   fetchValueProps,
   fetchInsights,
   fetchPageVisibility,
+  fetchBeforeAfterShowcases,
 } from '@/lib/dal';
 
 export const revalidate = 60;
@@ -55,6 +57,7 @@ export default async function HomePage() {
     valueProps,
     insights,
     visibility,
+    beforeAfterShowcases,
   ] = await Promise.all([
     fetchHeroSlides(),
     fetchOrbitConfig(),
@@ -65,6 +68,7 @@ export default async function HomePage() {
     fetchValueProps(),
     fetchInsights(),
     fetchPageVisibility(),
+    fetchBeforeAfterShowcases(),
   ]);
 
   const totalOfferings = services.reduce(
@@ -93,6 +97,10 @@ export default async function HomePage() {
       {/* Value Propositions / Why Us */}
       <div style={{ height: '2px', background: 'linear-gradient(90deg, #0F1C31, #1A2B4A, #0F1C31)' }} />
       <ValuePropsSection items={valueProps} />
+
+      {/* Interactive Before & After Transformation Slider */}
+      <div style={{ height: '2px', background: 'linear-gradient(90deg, #1A2B4A, #243B66, #1A2B4A)' }} />
+      <BeforeAfterSlider initialItems={beforeAfterShowcases} />
 
       {/* Portfolio Preview */}
       {visibility.portfolio !== false && portfolio.length > 0 && (
