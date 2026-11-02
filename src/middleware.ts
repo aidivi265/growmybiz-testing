@@ -54,7 +54,63 @@ function isRateLimited(key: string, limit: number, windowMs: number): boolean {
   return entry.count > limit;
 }
 
-export function middleware(request: NextRequest) {
+// ── Web Crypto HMAC Session Verifier for Edge Middleware ──────────────────────
+const SESSION_SECRET =
+  process.env.ADMIN_SESSION_SECRET ||
+  'growmybizz_super_secret_session_key_2025_prod_secure';
+
+function base64UrlToUint8Array(base64url: string): Uint8Array {
+  let base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+  while (base64.length % 4 !== 0) {
+    base64 += '=';
+  }
+  const binaryString = atob(base64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes;
+}
+
+async function verifyAdminSessionEdge(token?: string | null): Promise<boolean> {
+  if (!token || !token.includes('.')) return false;
+
+  const [payloadBase64, signature] = token.split('.');
+  if (!payloadBase64 || !signature) return false;
+
+  try {
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      'raw',
+      enc.encode(SESSION_SECRET),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['verify']
+    );
+
+    const sigBytes = base64UrlToUint8Array(signature);
+    const dataBytes = enc.encode(payloadBase64);
+
+    const isSigValid = await crypto.subtle.verify(
+      'HMAC',
+      key,
+      sigBytes as BufferSource,
+      dataBytes as BufferSource
+    );
+    if (!isSigValid) return false;
+
+    // Verify expiration timestamp
+    const payloadBytes = base64UrlToUint8Array(payloadBase64);
+    const payloadJson = new TextDecoder().decode(payloadBytes);
+    const payload = JSON.parse(payloadJson);
+
+    return typeof payload.exp === 'number' && payload.exp > Date.now();
+  } catch {
+    return false;
+  }
+}
+
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const userAgent = (request.headers.get('user-agent') || '').toLowerCase();
   const ip =
@@ -145,16 +201,53 @@ export function middleware(request: NextRequest) {
   }
 
   // ── 5. Admin Dashboard Edge Route Gate ─────────────────────────────────────
-  if (pathname.startsWith('/admin/dashboard')) {
+  if (pathname.startsWith('/admin/dashboard') || pathname === '/admin') {
     const sessionCookie = request.cookies.get('gmb_admin_session')?.value;
-    if (!sessionCookie || !sessionCookie.includes('.')) {
+    const isValid = await verifyAdminSessionEdge(sessionCookie);
+    if (!isValid) {
       const loginUrl = new URL('/admin/login', request.url);
-      loginUrl.searchParams.set('redirect', pathname);
-      return NextResponse.redirect(loginUrl);
+      if (pathname.startsWith('/admin/dashboard')) {
+        loginUrl.searchParams.set('redirect', pathname);
+      }
+      const redirectResponse = NextResponse.redirect(loginUrl);
+      if (sessionCookie) {
+        redirectResponse.cookies.delete('gmb_admin_session');
+      }
+      return redirectResponse;
     }
   }
 
-  // ── 6. Inject Security Headers on All Outgoing Responses ───────────────────
+  // If already authenticated and visiting login page, redirect to dashboard
+  if (pathname === '/admin/login') {
+    const sessionCookie = request.cookies.get('gmb_admin_session')?.value;
+    if (sessionCookie && (await verifyAdminSessionEdge(sessionCookie))) {
+      return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+    }
+  }
+
+  // ── 6. Protected Admin APIs Edge Gate ──────────────────────────────────────
+  if (
+    pathname.startsWith('/api/admin/') &&
+    pathname !== '/api/admin/login' &&
+    pathname !== '/api/admin/logout'
+  ) {
+    const sessionCookie = request.cookies.get('gmb_admin_session')?.value;
+    const isValid = await verifyAdminSessionEdge(sessionCookie);
+    if (!isValid) {
+      return new NextResponse(
+        JSON.stringify({ error: 'Unauthorized: Invalid or expired admin session token.' }),
+        {
+          status: 401,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Robots-Tag': 'noindex, nofollow, noarchive',
+          },
+        }
+      );
+    }
+  }
+
+  // ── 7. Inject Security Headers on All Outgoing Responses ───────────────────
   const response = NextResponse.next();
 
   // Anti-indexing & scraping protection for sensitive paths
