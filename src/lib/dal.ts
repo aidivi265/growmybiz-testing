@@ -547,4 +547,28 @@ export async function fetchPageVisibility(): Promise<PageVisibility> {
   return defaultPageVisibility;
 }
 
+import { defaultEstimatorConfig, type EstimatorConfig } from '@/data/estimatorConfig';
+export { defaultEstimatorConfig };
+export type { EstimatorConfig };
+
+// ── 17. Interactive Project Estimator Config ──────────────────────────────────
+export async function fetchEstimatorConfig(): Promise<EstimatorConfig> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('page_content')
+      .select('data')
+      .eq('id', 'estimator_config')
+      .maybeSingle();
+
+    if (!error && data?.data && Array.isArray((data.data as any)?.categories)) {
+      return data.data as EstimatorConfig;
+    }
+  } catch (err) {
+    console.warn('[DAL Notice] Estimator config fetch fallback:', err);
+  }
+
+  return defaultEstimatorConfig;
+}
+
+
 

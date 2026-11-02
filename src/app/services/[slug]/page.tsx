@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Calculator } from 'lucide-react';
 import { services as defaultServices } from '@/data';
 import { fetchServices, fetchServiceBySlug, fetchPortfolio, fetchServiceCategories, fetchPageVisibility } from '@/lib/dal';
 import { Section, SectionHeader, Card, Breadcrumb } from '@/components/ui';
@@ -211,6 +211,13 @@ export default async function ServicePage({ params }: Props) {
                   Discuss this service <ArrowRight size={14} />
                 </Link>
                 <ScheduleCallButton />
+                <Link
+                  href="/estimator"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-xs text-white bg-white/10 hover:bg-white/20 border border-white/10 transition-all hover:-translate-y-0.5"
+                >
+                  <Calculator size={14} className="text-emerald-400" />
+                  Estimate Scope & Cost
+                </Link>
               </div>
             </div>
           </div>

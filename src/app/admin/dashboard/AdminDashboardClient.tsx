@@ -42,6 +42,8 @@ import ProcessPanel from '@/components/admin/ProcessPanel';
 import TeamPanel from '@/components/admin/TeamPanel';
 import PageCopyPanel from '@/components/admin/PageCopyPanel';
 import LegalPanel from '@/components/admin/LegalPanel';
+import EstimatorPanel from '@/components/admin/EstimatorPanel';
+import { Calculator } from 'lucide-react';
 import { invalidateClientSettings } from '@/lib/settingsClient';
 
 // ─── Admin Nav Items ──────────────────────────────────────────────────────────
@@ -50,6 +52,7 @@ const adminNav = [
   { id: 'projects', label: 'Client Projects & Portal', icon: Sparkles },
   { id: 'leads', label: 'Inbound Inquiries', icon: Inbox },
   { id: 'site-config', label: 'Site Settings', icon: Settings },
+  { id: 'estimator', label: 'Cost Estimator CMS', icon: Calculator },
   { id: 'seo', label: 'SEO & Socials', icon: Share2 },
   { id: 'hero', label: 'Hero Slides', icon: Globe },
   { id: 'services', label: 'Services', icon: Briefcase },
@@ -184,6 +187,7 @@ export default function AdminDashboardClient() {
           {activeSection === 'projects' && <ProjectsPanel />}
           {activeSection === 'leads' && <LeadsPanel />}
           {activeSection === 'site-config' && <SiteConfigPanel />}
+          {activeSection === 'estimator' && <EstimatorPanel />}
           {activeSection === 'seo' && <SeoPanel />}
           {activeSection === 'hero' && <HeroPanel />}
           {activeSection === 'services' && <ServicesPanel />}

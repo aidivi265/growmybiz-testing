@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Calculator, Sparkles } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { fetchServices, fetchPageVisibility } from '@/lib/dal';
 import { Section, Card, Breadcrumb } from '@/components/ui';
@@ -134,6 +134,33 @@ export default async function ServicesPage() {
               </Card>
             </Link>
           ))}
+        </div>
+
+        {/* ── Interactive Cost Estimator Callout Banner ── */}
+        <div className="mt-12 p-8 rounded-3xl bg-gradient-to-r from-blue-900/30 via-emerald-950/20 to-purple-950/30 border border-blue-500/20 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="max-w-2xl space-y-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-mono font-semibold">
+                <Calculator size={13} />
+                <span>Instant Scope & Investment Calculator</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-bold font-syne text-white tracking-tight">
+                Want to know your exact project investment upfront?
+              </h2>
+              <p className="text-sm text-gray-300 leading-relaxed">
+                Use our 5-step interactive cost estimator. Select deliverables across Web, Mobile, AI, Branding, and Marketing to lock in a transparent quote.
+              </p>
+            </div>
+            <Link
+              href="/estimator"
+              className="inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-500 text-black font-bold text-sm hover:opacity-95 active:scale-[0.98] transition-all shadow-xl shadow-emerald-950/50 shrink-0"
+            >
+              <Calculator size={16} />
+              <span>Launch Cost Estimator</span>
+              <ArrowRight size={15} />
+            </Link>
+          </div>
         </div>
       </Section>
 
