@@ -69,7 +69,7 @@ export async function POST(request: Request) {
     }
 
     const cleanEmail = (email || '').trim().toLowerCase();
-    if (!isValidEmail(cleanEmail)) {
+    if (!isValidEmail(cleanEmail) || cleanEmail.endsWith('@phone.growmybiz24.com')) {
       return NextResponse.json(
         { error: 'Please provide a valid email address.' },
         { status: 400 }
@@ -370,7 +370,7 @@ export async function POST(request: Request) {
         }
 
         // 9. Automated Confirmation Receipt to Client
-        if (sanitizedLead.email && !sanitizedLead.email.endsWith('@phone.growmybiz24.com')) {
+        if (sanitizedLead.email && isValidEmail(sanitizedLead.email)) {
           try {
             const htmlClientConfirmation = `
 <!DOCTYPE html>

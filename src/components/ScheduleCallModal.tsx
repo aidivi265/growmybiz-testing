@@ -14,7 +14,9 @@ interface ScheduleCallModalProps {
 
 export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
   const [name, setName] = useState('');
-  const [phoneOrEmail, setPhoneOrEmail] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [error, setError] = useState('');
   const [preferredTime, setPreferredTime] = useState('Morning (10 AM - 1 PM)');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -65,39 +67,59 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
 
   const handleCallbackRequest = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !phoneOrEmail.trim()) return;
+    setError('');
 
-    const cleanInput = phoneOrEmail.trim();
-    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanInput);
-    const digitsOnly = cleanInput.replace(/[^0-9]/g, '');
+    const cleanName = name.trim();
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPhone = phone.trim();
+
+    if (!cleanName) {
+      setError('Please provide your full name.');
+      return;
+    }
+
+    if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      setError('Please provide a valid work or personal email address.');
+      return;
+    }
+
+    if (!cleanPhone || cleanPhone.replace(/[^0-9]/g, '').length < 7) {
+      setError('Please provide a valid phone or WhatsApp number (at least 7 digits).');
+      return;
+    }
 
     setLoading(true);
     try {
-      await fetch('/api/contact', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: name.trim(),
-          email: isEmail
-            ? cleanInput.toLowerCase()
-            : `${digitsOnly || 'callback'}@phone.growmybiz24.com`,
-          phone: isEmail ? null : cleanInput,
+          name: cleanName,
+          email: cleanEmail,
+          phone: cleanPhone,
           service: 'Discovery Strategy Call',
           budget: 'Flexible',
           timeline: 'Immediate',
-          message: `Client requested a scheduled strategy call. Preferred slot: ${preferredTime}. Direct contact provided: ${cleanInput}`,
+          message: `Client requested a scheduled strategy call.\nPreferred slot: ${preferredTime}\nDirect Phone/WhatsApp: ${cleanPhone}\nEmail: ${cleanEmail}`,
         }),
       });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Failed to submit request. Please reach out via WhatsApp.');
+        setLoading(false);
+        return;
+      }
+
       // GA4 conversion tracking
       trackGAEvent('schedule_appointment', {
         event_category: 'Lead Capture',
         event_label: preferredTime,
-        method: isEmail ? 'Email' : 'Phone',
+        method: 'Form Submission',
       });
       setSubmitted(true);
     } catch {
-      // Still show success fallback to WhatsApp
-      setSubmitted(true);
+      setError('Connection issue. Please message us directly on WhatsApp.');
     } finally {
       setLoading(false);
     }
@@ -208,6 +230,13 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
             </div>
 
             <form onSubmit={handleCallbackRequest} className="space-y-3">
+              {error && (
+                <div className="p-2.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-300 text-xs flex items-center gap-2">
+                  <span>⚠️</span>
+                  <span>{error}</span>
+                </div>
+              )}
+
               <div>
                 <label className="block text-xs font-medium text-white/80 mb-1" style={{ color: '#e2e8f0' }}>
                   Your Full Name
@@ -224,14 +253,28 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
 
               <div>
                 <label className="block text-xs font-medium text-white/80 mb-1" style={{ color: '#e2e8f0' }}>
-                  Phone Number or Email Address
+                  Email Address <span className="text-white/40 font-normal">(for calendar invite & proposal)</span>
                 </label>
                 <input
-                  type="text"
+                  type="email"
                   required
-                  value={phoneOrEmail}
-                  onChange={(e) => setPhoneOrEmail(e.target.value)}
-                  placeholder="e.g. +91 98765 43210 or name@company.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="e.g. name@company.com"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/15 text-white placeholder-white/35 text-xs sm:text-sm focus:outline-none focus:border-[#477BDB] focus:ring-1 focus:ring-[#477BDB] transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-white/80 mb-1" style={{ color: '#e2e8f0' }}>
+                  Phone / WhatsApp Number <span className="text-white/40 font-normal">(for call & updates)</span>
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="e.g. +91 98765 43210"
                   className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/15 text-white placeholder-white/35 text-xs sm:text-sm focus:outline-none focus:border-[#477BDB] focus:ring-1 focus:ring-[#477BDB] transition-colors"
                 />
               </div>
