@@ -593,6 +593,33 @@ export async function fetchBeforeAfterShowcases(): Promise<BeforeAfterShowcase[]
   return defaultBeforeAfterShowcases;
 }
 
+import { defaultBookingConfig, type BookingConfig } from '@/data/bookingConfig';
+export { defaultBookingConfig };
+export type { BookingConfig };
+
+// ── 19. Live Calendar & Booking Config ───────────────────────────────────────
+export async function fetchBookingConfig(): Promise<BookingConfig> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('page_content')
+      .select('data')
+      .eq('id', 'booking_config')
+      .maybeSingle();
+
+    if (!error && data?.data && typeof data.data === 'object' && 'provider' in (data.data as any)) {
+      return {
+        ...defaultBookingConfig,
+        ...(data.data as BookingConfig),
+      };
+    }
+  } catch (err) {
+    console.warn('[DAL Notice] Booking config fetch fallback:', err);
+  }
+
+  return defaultBookingConfig;
+}
+
+
 
 
 
