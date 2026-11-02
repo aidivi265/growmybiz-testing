@@ -18,7 +18,7 @@ export async function POST(
     // 1. IP Rate Limiting
     const forwardedFor = request.headers.get('x-forwarded-for');
     const ip = forwardedFor ? forwardedFor.split(',')[0].trim() : '127.0.0.1';
-    const rateCheck = checkRateLimit(`pay_sim_${ip}`, {
+    const rateCheck = await checkRateLimit(`pay_sim_${ip}`, {
       limit: 10,
       windowMs: 5 * 60 * 1000,
     });

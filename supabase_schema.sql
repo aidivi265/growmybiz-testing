@@ -142,6 +142,14 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
     updated_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- 11. Persistent Rate Limits Table (Serverless Sliding Window Protection)
+CREATE TABLE IF NOT EXISTS public.rate_limits (
+    key TEXT PRIMARY KEY,
+    count INT NOT NULL DEFAULT 1,
+    reset_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
 -- ==============================================================================
 -- Idempotent Column Alterations (Guarantees safety on pre-existing tables)
 -- ==============================================================================
@@ -185,6 +193,7 @@ ALTER TABLE public.seo_metadata ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.admin_audit_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.inquiries ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.rate_limits ENABLE ROW LEVEL SECURITY;
 
 -- Allow Public Read Access for Published Content
 DO $$
@@ -243,6 +252,9 @@ BEGIN
 
     DROP POLICY IF EXISTS "Service role full access on site_settings" ON public.site_settings;
     CREATE POLICY "Service role full access on site_settings" ON public.site_settings FOR ALL USING (true);
+
+    DROP POLICY IF EXISTS "Service role full access on rate_limits" ON public.rate_limits;
+    CREATE POLICY "Service role full access on rate_limits" ON public.rate_limits FOR ALL USING (true);
 END $$;
 
 -- 9. Auto-updated_at trigger function
@@ -267,7 +279,89 @@ BEGIN
 
     DROP TRIGGER IF EXISTS set_updated_at_site_settings ON public.site_settings;
     CREATE TRIGGER set_updated_at_site_settings BEFORE UPDATE ON public.site_settings FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+    DROP TRIGGER IF EXISTS set_updated_at_rate_limits ON public.rate_limits;
+    CREATE TRIGGER set_updated_at_rate_limits BEFORE UPDATE ON public.rate_limits FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 END $$;
+
+-- ==============================================================================
+-- 10. Atomic Serverless Rate Limiting Stored Procedure
+-- ==============================================================================
+CREATE OR REPLACE FUNCTION public.check_rate_limit(
+    p_key TEXT,
+    p_limit INT,
+    p_window_ms BIGINT
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+    v_now TIMESTAMPTZ := now();
+    v_window_interval INTERVAL := (p_window_ms || ' milliseconds')::INTERVAL;
+    v_record public.rate_limits%ROWTYPE;
+    v_success BOOLEAN;
+    v_remaining INT;
+    v_reset_ms BIGINT;
+BEGIN
+    -- Atomic row lock to eliminate distributed race conditions across serverless instances
+    SELECT * INTO v_record
+    FROM public.rate_limits
+    WHERE key = p_key
+    FOR UPDATE;
+
+    IF NOT FOUND THEN
+        -- New window bucket initialization
+        INSERT INTO public.rate_limits (key, count, reset_at, updated_at)
+        VALUES (p_key, 1, v_now + v_window_interval, v_now)
+        RETURNING * INTO v_record;
+
+        v_success := true;
+        v_remaining := GREATEST(0, p_limit - 1);
+        v_reset_ms := p_window_ms;
+    ELSIF v_record.reset_at <= v_now THEN
+        -- Sliding window expired, reset counter
+        UPDATE public.rate_limits
+        SET count = 1,
+            reset_at = v_now + v_window_interval,
+            updated_at = v_now
+        WHERE key = p_key
+        RETURNING * INTO v_record;
+
+        v_success := true;
+        v_remaining := GREATEST(0, p_limit - 1);
+        v_reset_ms := p_window_ms;
+    ELSE
+        -- Active sliding window
+        IF v_record.count < p_limit THEN
+            UPDATE public.rate_limits
+            SET count = v_record.count + 1,
+                updated_at = v_now
+            WHERE key = p_key
+            RETURNING * INTO v_record;
+
+            v_success := true;
+            v_remaining := GREATEST(0, p_limit - v_record.count);
+        ELSE
+            -- Threshold exceeded
+            v_success := false;
+            v_remaining := 0;
+        END IF;
+
+        v_reset_ms := GREATEST(0, (EXTRACT(EPOCH FROM (v_record.reset_at - v_now)) * 1000)::BIGINT);
+    END IF;
+
+    RETURN jsonb_build_object(
+        'success', v_success,
+        'limit', p_limit,
+        'remaining', v_remaining,
+        'resetMs', v_reset_ms
+    );
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION public.check_rate_limit(TEXT, INT, BIGINT) TO anon, authenticated, service_role;
 
 -- ==============================================================================
 -- Initial Data Seed (Preserving existing content into database)

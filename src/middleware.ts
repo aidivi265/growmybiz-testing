@@ -54,6 +54,54 @@ function isRateLimited(key: string, limit: number, windowMs: number): boolean {
   return entry.count > limit;
 }
 
+/**
+ * Multi-Tier Edge Rate Limiter
+ * Queries Supabase atomic PostgreSQL check_rate_limit RPC with a strict 1200ms edge timeout budget,
+ * falling back seamlessly to in-memory sliding window cache if unconfigured, offline, or timed out.
+ */
+async function isRateLimitedEdge(key: string, limit: number, windowMs: number): Promise<boolean> {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (supabaseUrl && supabaseKey) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 1200);
+
+      const res = await fetch(`${supabaseUrl}/rest/v1/rpc/check_rate_limit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: supabaseKey,
+          Authorization: `Bearer ${supabaseKey}`,
+        },
+        body: JSON.stringify({
+          p_key: key,
+          p_limit: limit,
+          p_window_ms: windowMs,
+        }),
+        signal: controller.signal,
+        cache: 'no-store',
+      });
+
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data && typeof data.success === 'boolean') {
+          return !data.success;
+        }
+      }
+    } catch {
+      // Supabase RPC unavailable or timed out; fall back to in-memory tier
+    }
+  }
+
+  return isRateLimited(key, limit, windowMs);
+}
+
 // ── Web Crypto HMAC Session Verifier for Edge Middleware ──────────────────────
 const SESSION_SECRET =
   process.env.ADMIN_SESSION_SECRET ||
@@ -166,7 +214,7 @@ export async function middleware(request: NextRequest) {
   // ── 4. Edge Rate Limiting ──────────────────────────────────────────────────
   // Contact Form: 5 requests per 10 minutes per IP
   if (pathname === '/api/contact' && request.method === 'POST') {
-    if (isRateLimited(`contact_${ip}`, 5, 10 * 60 * 1000)) {
+    if (await isRateLimitedEdge(`contact_${ip}`, 5, 10 * 60 * 1000)) {
       return new NextResponse(
         JSON.stringify({
           error: 'Too many submissions from this IP. Please wait a few minutes before submitting another inquiry.',
@@ -184,7 +232,7 @@ export async function middleware(request: NextRequest) {
 
   // Admin Login: 6 attempts per 15 minutes per IP
   if (pathname === '/api/admin/login' && request.method === 'POST') {
-    if (isRateLimited(`admin_login_${ip}`, 6, 15 * 60 * 1000)) {
+    if (await isRateLimitedEdge(`admin_login_${ip}`, 6, 15 * 60 * 1000)) {
       return new NextResponse(
         JSON.stringify({
           error: 'Too many failed login attempts. Account temporarily throttled for 15 minutes.',

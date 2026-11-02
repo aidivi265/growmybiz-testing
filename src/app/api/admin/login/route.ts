@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     // 2. Defense-in-depth IP Rate Limiting (6 attempts per 15 mins)
     const forwardedFor = request.headers.get('x-forwarded-for');
     const ip = forwardedFor ? forwardedFor.split(',')[0].trim() : '127.0.0.1';
-    const rateCheck = checkRateLimit(`admin_login_${ip}`, {
+    const rateCheck = await checkRateLimit(`admin_login_${ip}`, {
       limit: 6,
       windowMs: 15 * 60 * 1000,
     });

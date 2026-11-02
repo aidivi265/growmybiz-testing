@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     // 2. IP Rate Limiting (5 project submissions per 10 minutes)
     const forwardedFor = request.headers.get('x-forwarded-for');
     const ip = forwardedFor ? forwardedFor.split(',')[0].trim() : '127.0.0.1';
-    const rateCheck = checkRateLimit(`project_submit_${ip}`, {
+    const rateCheck = await checkRateLimit(`project_submit_${ip}`, {
       limit: 5,
       windowMs: 10 * 60 * 1000,
     });
