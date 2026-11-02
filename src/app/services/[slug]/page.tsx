@@ -132,6 +132,22 @@ export default async function ServicePage({ params }: Props) {
     ],
   };
 
+  const faqJsonLd =
+    service.faqs && service.faqs.length > 0
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: service.faqs.map((faq) => ({
+            '@type': 'Question',
+            name: faq.question.trim(),
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: faq.answer.trim(),
+            },
+          })),
+        }
+      : null;
+
   return (
     <>
       <script
@@ -142,6 +158,12 @@ export default async function ServicePage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
       {/* ── Page Header ── */}
       <div
         className="pt-24 pb-14 relative overflow-hidden"
