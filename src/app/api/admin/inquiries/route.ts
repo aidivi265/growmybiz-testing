@@ -38,19 +38,21 @@ export async function GET() {
     console.warn('Supabase inquiries query notice:', err);
   }
 
-  // 2. Fetch from local file fallback
+  // 2. Fetch from Supabase Cloud KV backup (inquiry_backup_*)
   const fileLeads: InquiryRecord[] = [];
   try {
-    const leadsFile = path.join(process.cwd(), '.leads', 'inquiries.jsonl');
-    if (fs.existsSync(leadsFile)) {
-      const content = fs.readFileSync(leadsFile, 'utf-8');
-      const lines = content.trim().split('\n').filter(Boolean);
-      for (const line of lines) {
-        try {
-          const item = JSON.parse(line);
+    const { data: kvData, error: kvError } = await supabaseAdmin
+      .from('page_content')
+      .select('id, data, updated_at')
+      .like('id', 'inquiry_backup_%');
+
+    if (!kvError && Array.isArray(kvData)) {
+      for (const row of kvData) {
+        if (row.data) {
+          const item = row.data as any;
           fileLeads.push({
-            id: item.id || `file_${Date.now()}`,
-            created_at: item.receivedAt || new Date().toISOString(),
+            id: row.id,
+            created_at: item.receivedAt || item.created_at || row.updated_at || new Date().toISOString(),
             name: item.name,
             email: item.email,
             phone: item.phone || null,
@@ -62,13 +64,45 @@ export async function GET() {
             status: (item.status as InquiryRecord['status']) || 'new',
             notes: item.notes || null,
           });
-        } catch {
-          // Ignore corrupted line
         }
       }
     }
-  } catch {
-    // Non-fatal
+  } catch (err) {
+    console.warn('Supabase KV backup inquiry fetch notice:', err);
+  }
+
+  // 3. Fetch from local file fallback (Only in local development, skipped on Vercel)
+  if (!process.env.VERCEL) {
+    try {
+      const leadsFile = path.join(process.cwd(), '.leads', 'inquiries.jsonl');
+      if (fs.existsSync(leadsFile)) {
+        const content = fs.readFileSync(leadsFile, 'utf-8');
+        const lines = content.trim().split('\n').filter(Boolean);
+        for (const line of lines) {
+          try {
+            const item = JSON.parse(line);
+            fileLeads.push({
+              id: item.id || `file_${Date.now()}`,
+              created_at: item.receivedAt || new Date().toISOString(),
+              name: item.name,
+              email: item.email,
+              phone: item.phone || null,
+              company: item.company || null,
+              service: item.service || 'General Inquiry',
+              budget: item.budget || 'Not specified',
+              timeline: item.timeline || 'Not specified',
+              message: item.message,
+              status: (item.status as InquiryRecord['status']) || 'new',
+              notes: item.notes || null,
+            });
+          } catch {
+            // Ignore corrupted line
+          }
+        }
+      }
+    } catch {
+      // Non-fatal
+    }
   }
 
   // Merge leads (Supabase takes precedence, fallback appended if not present)
@@ -125,29 +159,52 @@ export async function PATCH(request: Request) {
       if (supaErr) {
         console.warn('Supabase lead update error:', supaErr.message);
       }
+    } else if (id.startsWith('inquiry_backup_')) {
+      // Update in Supabase Cloud KV backup
+      try {
+        const { data: existing } = await supabaseAdmin
+          .from('page_content')
+          .select('data')
+          .eq('id', id)
+          .maybeSingle();
+
+        if (existing?.data) {
+          await supabaseAdmin
+            .from('page_content')
+            .upsert({
+              id,
+              data: { ...existing.data, ...updates },
+              updated_at: new Date().toISOString(),
+            });
+        }
+      } catch (kvErr) {
+        console.warn('Supabase KV backup lead update notice:', kvErr);
+      }
     }
 
-    // Also update in local file storage if present
-    try {
-      const leadsFile = path.join(process.cwd(), '.leads', 'inquiries.jsonl');
-      if (fs.existsSync(leadsFile)) {
-        const content = fs.readFileSync(leadsFile, 'utf-8');
-        const lines = content.trim().split('\n').filter(Boolean);
-        const updatedLines = lines.map((line) => {
-          try {
-            const item = JSON.parse(line);
-            if (item.id === id) {
-              return JSON.stringify({ ...item, ...updates });
+    // Local file update (Only in local development, skipped on Vercel)
+    if (!process.env.VERCEL) {
+      try {
+        const leadsFile = path.join(process.cwd(), '.leads', 'inquiries.jsonl');
+        if (fs.existsSync(leadsFile)) {
+          const content = fs.readFileSync(leadsFile, 'utf-8');
+          const lines = content.trim().split('\n').filter(Boolean);
+          const updatedLines = lines.map((line) => {
+            try {
+              const item = JSON.parse(line);
+              if (item.id === id) {
+                return JSON.stringify({ ...item, ...updates });
+              }
+              return line;
+            } catch {
+              return line;
             }
-            return line;
-          } catch {
-            return line;
-          }
-        });
-        fs.writeFileSync(leadsFile, updatedLines.join('\n') + (updatedLines.length > 0 ? '\n' : ''), 'utf-8');
+          });
+          fs.writeFileSync(leadsFile, updatedLines.join('\n') + (updatedLines.length > 0 ? '\n' : ''), 'utf-8');
+        }
+      } catch {
+        // Non-fatal
       }
-    } catch {
-      // Non-fatal
     }
 
     return NextResponse.json({ success: true, updated: { id, ...updates } });
@@ -180,26 +237,34 @@ export async function DELETE(request: Request) {
       if (supaErr) {
         console.warn('Supabase delete notice:', supaErr.message);
       }
+    } else if (id.startsWith('inquiry_backup_')) {
+      // Delete from Supabase Cloud KV backup
+      const { error: kvDelErr } = await supabaseAdmin.from('page_content').delete().eq('id', id);
+      if (kvDelErr) {
+        console.warn('Supabase KV backup lead delete notice:', kvDelErr.message);
+      }
     }
 
-    // Always delete from local file storage if present
-    try {
-      const leadsFile = path.join(process.cwd(), '.leads', 'inquiries.jsonl');
-      if (fs.existsSync(leadsFile)) {
-        const content = fs.readFileSync(leadsFile, 'utf-8');
-        const lines = content.trim().split('\n').filter(Boolean);
-        const remainingLines = lines.filter((line) => {
-          try {
-            const item = JSON.parse(line);
-            return item.id !== id;
-          } catch {
-            return false;
-          }
-        });
-        fs.writeFileSync(leadsFile, remainingLines.join('\n') + (remainingLines.length > 0 ? '\n' : ''), 'utf-8');
+    // Local file storage removal (Only in local development, skipped on Vercel)
+    if (!process.env.VERCEL) {
+      try {
+        const leadsFile = path.join(process.cwd(), '.leads', 'inquiries.jsonl');
+        if (fs.existsSync(leadsFile)) {
+          const content = fs.readFileSync(leadsFile, 'utf-8');
+          const lines = content.trim().split('\n').filter(Boolean);
+          const remainingLines = lines.filter((line) => {
+            try {
+              const item = JSON.parse(line);
+              return item.id !== id;
+            } catch {
+              return false;
+            }
+          });
+          fs.writeFileSync(leadsFile, remainingLines.join('\n') + (remainingLines.length > 0 ? '\n' : ''), 'utf-8');
+        }
+      } catch {
+        // Non-fatal
       }
-    } catch {
-      // Non-fatal
     }
 
     return NextResponse.json({ success: true, deleted: id });

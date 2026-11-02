@@ -167,16 +167,45 @@ export async function POST(request: Request) {
       console.warn('Supabase DB insertion exception:', dbErr);
     }
 
-    // 7. Persistence Fallback: Append to local leads storage
-    try {
-      const storageDir = path.join(process.cwd(), '.leads');
-      if (!fs.existsSync(storageDir)) {
-        fs.mkdirSync(storageDir, { recursive: true });
+    // 7. Multi-Tier Persistence Fallback: Cloud KV Backup in Supabase page_content
+    if (!supabasePersisted) {
+      try {
+        const backupKey = `inquiry_backup_${sanitizedLead.id}`;
+        const { error: kvError } = await supabaseAdmin
+          .from('page_content')
+          .upsert({
+            id: backupKey,
+            data: {
+              ...sanitizedLead,
+              status: 'new',
+              created_at: sanitizedLead.receivedAt,
+            },
+            updated_at: new Date().toISOString(),
+          });
+
+        if (!kvError) {
+          supabasePersisted = true;
+          console.log(`✅ Lead persisted to Supabase cloud KV backup (Key: ${backupKey})`);
+        } else {
+          console.warn('Cloud KV backup insert notice:', kvError.message);
+        }
+      } catch (kvErr) {
+        console.warn('Cloud KV backup exception:', kvErr);
       }
-      const leadsFile = path.join(storageDir, 'inquiries.jsonl');
-      fs.appendFileSync(leadsFile, JSON.stringify(sanitizedLead) + '\n', 'utf-8');
-    } catch {
-      // Non-fatal if environment has read-only filesystem
+    }
+
+    // Local Disk Fallback (Only in local development, safely skipped on Vercel serverless)
+    if (!process.env.VERCEL && process.env.NODE_ENV !== 'production') {
+      try {
+        const storageDir = path.join(process.cwd(), '.leads');
+        if (!fs.existsSync(storageDir)) {
+          fs.mkdirSync(storageDir, { recursive: true });
+        }
+        const leadsFile = path.join(storageDir, 'inquiries.jsonl');
+        fs.appendFileSync(leadsFile, JSON.stringify(sanitizedLead) + '\n', 'utf-8');
+      } catch (fsErr) {
+        console.warn('Local leads file append notice:', fsErr);
+      }
     }
 
     // 8. Instant Email Delivery via Resend (with full HTML escaping and clean ASCII sanitization)

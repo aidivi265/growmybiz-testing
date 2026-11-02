@@ -9,6 +9,7 @@ const LOCAL_STORAGE_FILE = path.join(LOCAL_STORAGE_DIR, 'projects.json');
 
 // Ensure local backup directory exists
 function ensureLocalBackup() {
+  if (process.env.VERCEL) return;
   try {
     if (!fs.existsSync(LOCAL_STORAGE_DIR)) {
       fs.mkdirSync(LOCAL_STORAGE_DIR, { recursive: true });
@@ -23,6 +24,7 @@ function ensureLocalBackup() {
 
 // Read from local backup file
 export function readLocalProjectsBackup(): ProjectRecord[] {
+  if (process.env.VERCEL) return [];
   ensureLocalBackup();
   try {
     if (fs.existsSync(LOCAL_STORAGE_FILE)) {
@@ -37,6 +39,7 @@ export function readLocalProjectsBackup(): ProjectRecord[] {
 
 // Save to local backup file
 export function writeLocalProjectsBackup(projects: ProjectRecord[]): void {
+  if (process.env.VERCEL) return;
   ensureLocalBackup();
   try {
     fs.writeFileSync(LOCAL_STORAGE_FILE, JSON.stringify(projects, null, 2), 'utf-8');
