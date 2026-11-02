@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import {
   Code2,
@@ -62,6 +62,9 @@ import PhoneInput from '@/components/ui/PhoneInput';
 import TurnstileWidget from '@/components/TurnstileWidget';
 import { ScheduleCallModal } from '@/components/ScheduleCallModal';
 import { trackGAEvent } from '@/components/GoogleAnalytics';
+import { useCurrency } from '@/context/CurrencyContext';
+import CurrencySwitcher from '@/components/ui/CurrencySwitcher';
+import { CurrencyCode } from '@/data/currencyConfig';
 
 interface ProjectEstimatorClientProps {
   initialConfig: EstimatorConfig;
@@ -115,7 +118,7 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
   const config = initialConfig;
 
   // ── 1. Interactive Selection State ──
-  const [currency, setCurrency] = useState<'INR' | 'USD'>('INR');
+  const { currency, setCurrency, rates, currencyDetails } = useCurrency();
   const [currentStep, setCurrentStep] = useState<number>(1);
 
   // Selections
@@ -188,30 +191,43 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
     }
   };
 
-  // ── 5. Real-Time Price Calculation ──
-  const currencySymbol = currency === 'INR' ? '₹' : '$';
+  // ── 5. Real-Time Multi-Currency Calculation ──
+  const currencySymbol = currencyDetails.symbol;
 
-  const basePrice = currency === 'INR' ? activePlatform.basePriceINR : activePlatform.basePriceUSD;
-  const tierPrice = currency === 'INR' ? activeTier.additionalPriceINR : activeTier.additionalPriceUSD;
+  const getItemPrice = useCallback(
+    (priceUSD: number, priceINR: number): number => {
+      if (currency === 'INR') return priceINR;
+      if (currency === 'USD') return priceUSD;
+      const rate = rates[currency] || (currency === 'EUR' ? 0.92 : 3.67);
+      return Math.round(priceUSD * rate);
+    },
+    [currency, rates]
+  );
+
+  const basePrice = getItemPrice(activePlatform.basePriceUSD, activePlatform.basePriceINR);
+  const tierPrice = getItemPrice(activeTier.additionalPriceUSD, activeTier.additionalPriceINR);
 
   const featuresTotal = useMemo(() => {
     return selectedFeatureIds.reduce((sum, fId) => {
       const feat = config.features.find((f) => f.id === fId);
       if (!feat) return sum;
-      return sum + (currency === 'INR' ? feat.priceINR : feat.priceUSD);
+      return sum + getItemPrice(feat.priceUSD, feat.priceINR);
     }, 0);
-  }, [config, selectedFeatureIds, currency]);
+  }, [config, selectedFeatureIds, getItemPrice]);
 
   const rawSubtotal = (basePrice + tierPrice + featuresTotal) * activeTimeline.multiplier;
 
-  // Round neatly to nearest 500 (INR) or 25 (USD)
-  const roundIncrement = currency === 'INR' ? 500 : 25;
+  // Adaptive round increment and floor per currency
+  const roundIncrement = currencyDetails.roundIncrement;
+  const minFloor = currency === 'INR' ? 15000 : currency === 'AED' ? 750 : currency === 'EUR' ? 180 : 200;
+  const minSpread = currency === 'INR' ? 10000 : currency === 'AED' ? 550 : currency === 'EUR' ? 140 : 150;
+
   const estimatedMin = Math.max(
-    currency === 'INR' ? 15000 : 200,
+    minFloor,
     Math.round((rawSubtotal * 0.95) / roundIncrement) * roundIncrement
   );
   const estimatedMax = Math.max(
-    estimatedMin + (currency === 'INR' ? 10000 : 150),
+    estimatedMin + minSpread,
     Math.round((rawSubtotal * 1.25) / roundIncrement) * roundIncrement
   );
 
@@ -329,29 +345,8 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
           </p>
 
           {/* Currency Toggle Switch */}
-          <div className="inline-flex items-center gap-1.5 p-1 rounded-xl bg-white/5 border border-white/10 mt-6 shadow-inner">
-            <button
-              type="button"
-              onClick={() => setCurrency('INR')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                currency === 'INR'
-                  ? 'bg-gradient-to-r from-[#477BDB] to-[#6477C8] text-white shadow-md'
-                  : 'text-white/60 hover:text-white'
-              }`}
-            >
-              🇮🇳 INR (₹)
-            </button>
-            <button
-              type="button"
-              onClick={() => setCurrency('USD')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                currency === 'USD'
-                  ? 'bg-gradient-to-r from-[#477BDB] to-[#6477C8] text-white shadow-md'
-                  : 'text-white/60 hover:text-white'
-              }`}
-            >
-              🇺🇸 USD ($)
-            </button>
+          <div className="mt-6">
+            <CurrencySwitcher variant="pills" />
           </div>
         </div>
 
@@ -537,7 +532,7 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {activeCategory.platforms.map((plat) => {
                         const isSelected = plat.id === selectedPlatformId;
-                        const price = currency === 'INR' ? plat.basePriceINR : plat.basePriceUSD;
+                        const price = getItemPrice(plat.basePriceUSD, plat.basePriceINR);
                         return (
                           <button
                             key={plat.id}
@@ -608,7 +603,7 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
                   <div className="grid grid-cols-1 gap-4">
                     {config.designTiers.map((tier) => {
                       const isSelected = tier.id === selectedTierId;
-                      const addPrice = currency === 'INR' ? tier.additionalPriceINR : tier.additionalPriceUSD;
+                      const addPrice = getItemPrice(tier.additionalPriceUSD, tier.additionalPriceINR);
                       return (
                         <button
                           key={tier.id}
@@ -692,7 +687,7 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {config.features.map((feat) => {
                       const isSelected = selectedFeatureIds.includes(feat.id);
-                      const price = currency === 'INR' ? feat.priceINR : feat.priceUSD;
+                      const price = getItemPrice(feat.priceUSD, feat.priceINR);
                       return (
                         <button
                           key={feat.id}

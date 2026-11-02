@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import WhatsAppFloatingButton from '@/components/WhatsAppFloatingButton';
 import StickyMobileActionBar from '@/components/StickyMobileActionBar';
 import ScrollObserver from '@/components/ui/ScrollObserver';
+import { CurrencyProvider } from '@/context/CurrencyContext';
 
 interface LayoutShellProps {
   children: React.ReactNode;
@@ -22,17 +23,17 @@ export default function LayoutShell({
   const isAdmin = pathname?.startsWith('/admin');
 
   if (isAdmin) {
-    return <>{children}</>;
+    return <CurrencyProvider>{children}</CurrencyProvider>;
   }
 
   return (
-    <>
+    <CurrencyProvider>
       <ScrollObserver />
       <Navbar initialVisibility={initialVisibility} />
       <main>{children}</main>
       <Footer initialSettings={initialSettings} initialVisibility={initialVisibility} />
       <WhatsAppFloatingButton />
       <StickyMobileActionBar />
-    </>
+    </CurrencyProvider>
   );
 }

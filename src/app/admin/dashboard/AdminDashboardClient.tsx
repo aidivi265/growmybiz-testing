@@ -45,6 +45,8 @@ import LegalPanel from '@/components/admin/LegalPanel';
 import EstimatorPanel from '@/components/admin/EstimatorPanel';
 import BeforeAfterPanel from '@/components/admin/BeforeAfterPanel';
 import BookingPanel from '@/components/admin/BookingPanel';
+import CurrencyPanel from '@/components/admin/CurrencyPanel';
+import { Coins } from 'lucide-react';
 import { Calendar } from 'lucide-react';
 import { Calculator, SplitSquareVertical } from 'lucide-react';
 import { invalidateClientSettings } from '@/lib/settingsClient';
@@ -57,6 +59,7 @@ const adminNav = [
   { id: 'site-config', label: 'Site Settings', icon: Settings },
   { id: 'before-after', label: 'Before & After Studio', icon: SplitSquareVertical },
   { id: 'booking', label: 'Calendar & Booking CMS', icon: Calendar },
+  { id: 'currency', label: 'Multi-Currency CMS', icon: Coins },
   { id: 'estimator', label: 'Cost Estimator CMS', icon: Calculator },
   { id: 'seo', label: 'SEO & Socials', icon: Share2 },
   { id: 'hero', label: 'Hero Slides', icon: Globe },
@@ -194,6 +197,7 @@ export default function AdminDashboardClient() {
           {activeSection === 'site-config' && <SiteConfigPanel />}
           {activeSection === 'before-after' && <BeforeAfterPanel />}
           {activeSection === 'booking' && <BookingPanel />}
+          {activeSection === 'currency' && <CurrencyPanel />}
           {activeSection === 'estimator' && <EstimatorPanel />}
           {activeSection === 'seo' && <SeoPanel />}
           {activeSection === 'hero' && <HeroPanel />}

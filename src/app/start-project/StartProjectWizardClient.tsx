@@ -22,6 +22,8 @@ import {
 import { SYNE_FONT } from '@/lib/fonts';
 import TurnstileWidget from '@/components/TurnstileWidget';
 import PhoneInput from '@/components/ui/PhoneInput';
+import { useCurrency } from '@/context/CurrencyContext';
+import CurrencySwitcher from '@/components/ui/CurrencySwitcher';
 
 const SERVICES = [
   {
@@ -90,6 +92,7 @@ const TIMELINE_OPTIONS = [
 export default function StartProjectWizardClient() {
   const [currentSlide, setCurrentSlide] = useState(1);
   const totalSlides = 5;
+  const { currency, formatPrice } = useCurrency();
 
   // Slide 1: Contact
   const [clientName, setClientName] = useState('');
@@ -188,7 +191,7 @@ export default function StartProjectWizardClient() {
           featureWishlist,
           technicalNotes: technicalNotes.trim(),
           budgetRange,
-          currency: country === 'India' ? 'INR' : 'USD',
+          currency,
           targetTimeline,
           urgencyLevel,
           assetsReady: {
@@ -574,9 +577,12 @@ export default function StartProjectWizardClient() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-[#0F1C31] mb-2">
-                      Target Investment Budget Range
-                    </label>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-xs font-semibold text-[#0F1C31]">
+                        Target Investment Budget Range
+                      </label>
+                      <CurrencySwitcher variant="pills" />
+                    </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {BUDGET_RANGES.map((b) => {
                         const isSelected = budgetRange === b.range;

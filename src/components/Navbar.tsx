@@ -7,6 +7,7 @@ import { Menu, X, ChevronDown, ArrowRight, MessageSquare, LayoutDashboard } from
 import { navItems } from '@/data/navigation';
 import BrandLogo from '@/components/BrandLogo';
 import QuickInquiryModal from '@/components/QuickInquiryModal';
+import CurrencySwitcher from '@/components/ui/CurrencySwitcher';
 import type { NavItem } from '@/types';
 import { getClientSettings } from '@/lib/settingsClient';
 
@@ -132,7 +133,8 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
             </div>
 
             {/* ── Right actions ── */}
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2 sm:gap-2.5">
+              <CurrencySwitcher variant="compact" className="hidden sm:inline-block" />
               <Link
                 href="/portal"
                 className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#3D4F63] hover:text-[#0F1C31] hover:bg-[#F0F4FA] transition-colors"
@@ -246,6 +248,15 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
               </div>
             ))}
           </nav>
+
+          {/* Mobile Currency Switcher */}
+          <div className="px-4 py-3 border-t border-[#E8EDF4] bg-[#F7F9FC]">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-[#6B7E95] mb-2 flex items-center justify-between">
+              <span>Currency</span>
+              <span>Auto IP &amp; Manual</span>
+            </div>
+            <CurrencySwitcher variant="pills" className="w-full justify-between" />
+          </div>
 
           {/* Drawer footer CTA */}
           <div className="p-4 border-t border-[#E8EDF4] space-y-2">

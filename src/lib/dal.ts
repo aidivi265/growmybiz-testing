@@ -619,6 +619,33 @@ export async function fetchBookingConfig(): Promise<BookingConfig> {
   return defaultBookingConfig;
 }
 
+import { defaultCurrencyConfig, type CurrencyConfig } from '@/data/currencyConfig';
+export { defaultCurrencyConfig };
+export type { CurrencyConfig };
+
+// ── 20. Multi-Currency Configuration ─────────────────────────────────────────
+export async function fetchCurrencyConfig(): Promise<CurrencyConfig> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('page_content')
+      .select('data')
+      .eq('id', 'currency_config')
+      .maybeSingle();
+
+    if (!error && data?.data && typeof data.data === 'object' && 'rates' in (data.data as any)) {
+      return {
+        ...defaultCurrencyConfig,
+        ...(data.data as CurrencyConfig),
+      };
+    }
+  } catch (err) {
+    console.warn('[DAL Notice] Currency config fetch fallback:', err);
+  }
+
+  return defaultCurrencyConfig;
+}
+
+
 
 
 
