@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { X, MessageSquare, Send, CheckCircle2, ArrowRight } from 'lucide-react';
 import { services as defaultServices } from '@/data/services';
 import TurnstileWidget from '@/components/TurnstileWidget';
+import PhoneInput from '@/components/ui/PhoneInput';
 
 interface QuickInquiryModalProps {
   isOpen: boolean;
@@ -12,7 +13,8 @@ interface QuickInquiryModalProps {
 
 export default function QuickInquiryModal({ isOpen, onClose }: QuickInquiryModalProps) {
   const [name, setName] = useState('');
-  const [contact, setContact] = useState(''); // Email or WhatsApp
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [service, setService] = useState('web-app-development');
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -31,21 +33,24 @@ export default function QuickInquiryModal({ isOpen, onClose }: QuickInquiryModal
       setError('Please enter your name.');
       return;
     }
-    if (!contact.trim()) {
-      setError('Please enter your email or WhatsApp number.');
+    if (!email.trim() && !phone.trim()) {
+      setError('Please provide either your email address or WhatsApp number.');
+      return;
+    }
+    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError('Please enter a valid email address.');
       return;
     }
 
     setSubmitting(true);
     try {
-      const isEmail = contact.includes('@');
       const res = await fetch('/api/inquiry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: name.trim(),
-          email: isEmail ? contact.trim() : '',
-          phone: !isEmail ? contact.trim() : '',
+          email: email.trim(),
+          phone: phone.trim(),
           service,
           message: message.trim() || 'I want to discuss my project requirement.',
           turnstileToken,
@@ -72,7 +77,8 @@ export default function QuickInquiryModal({ isOpen, onClose }: QuickInquiryModal
 
   const handleReset = () => {
     setName('');
-    setContact('');
+    setEmail('');
+    setPhone('');
     setMessage('');
     setSubmitted(false);
     setWhatsappUrl(null);
@@ -140,15 +146,23 @@ export default function QuickInquiryModal({ isOpen, onClose }: QuickInquiryModal
 
               <div>
                 <label className="block text-xs font-semibold text-[#0F1C31] mb-1.5">
-                  Email Address or WhatsApp Number <span className="text-red-500">*</span>
+                  Work Email Address
                 </label>
                 <input
-                  type="text"
-                  value={contact}
-                  onChange={(e) => setContact(e.target.value)}
-                  placeholder="rahul@example.com or +91 98765 43210"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="rahul@example.com"
                   className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8EDF4] text-sm text-[#0F1C31] placeholder-[#A0AEC0] focus:outline-none focus:border-[#477BDB] focus:ring-2 focus:ring-[#477BDB]/10"
-                  required
+                />
+              </div>
+
+              <div>
+                <PhoneInput
+                  label="Phone / WhatsApp Number"
+                  value={phone}
+                  onChange={(fullPhone) => setPhone(fullPhone)}
+                  hint="We will only reach out regarding your inquiry."
                 />
               </div>
 

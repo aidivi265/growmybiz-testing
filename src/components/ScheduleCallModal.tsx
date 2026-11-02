@@ -7,6 +7,7 @@ import { siteConfig } from '@/data/siteConfig';
 import { getClientSettings } from '@/lib/settingsClient';
 import { trackGAEvent } from '@/components/GoogleAnalytics';
 import TurnstileWidget from '@/components/TurnstileWidget';
+import PhoneInput from '@/components/ui/PhoneInput';
 
 interface ScheduleCallModalProps {
   isOpen: boolean;
@@ -269,16 +270,12 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-white/80 mb-1" style={{ color: '#e2e8f0' }}>
-                  Phone / WhatsApp Number <span className="text-white/40 font-normal">(for call & updates)</span>
-                </label>
-                <input
-                  type="tel"
+                <PhoneInput
+                  label="Phone / WhatsApp Number (for call & updates)"
                   required
+                  theme="dark"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="e.g. +91 98765 43210"
-                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/15 text-white placeholder-white/35 text-xs sm:text-sm focus:outline-none focus:border-[#477BDB] focus:ring-1 focus:ring-[#477BDB] transition-colors"
+                  onChange={(fullPhone) => setPhone(fullPhone)}
                 />
               </div>
 

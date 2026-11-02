@@ -312,3 +312,5 @@ export function Select({ label, error, options, className, id, ...props }: Selec
     </div>
   );
 }
+
+export { default as PhoneInput } from './ui/PhoneInput';

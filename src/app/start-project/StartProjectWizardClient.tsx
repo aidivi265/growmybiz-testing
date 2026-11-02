@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { SYNE_FONT } from '@/lib/fonts';
 import TurnstileWidget from '@/components/TurnstileWidget';
+import PhoneInput from '@/components/ui/PhoneInput';
 
 const SERVICES = [
   {
@@ -318,15 +319,32 @@ export default function StartProjectWizardClient() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-[#0F1C31] mb-1.5">
-                        WhatsApp / Phone Number
-                      </label>
-                      <input
-                        type="tel"
+                      <PhoneInput
+                        label="WhatsApp / Phone Number"
                         value={clientPhone}
-                        onChange={(e) => setClientPhone(e.target.value)}
-                        placeholder="+91 98765 43210"
-                        className="w-full px-4 py-3 rounded-xl border border-[#E8EDF4] text-sm text-[#0F1C31] focus:outline-none focus:border-[#477BDB] focus:ring-2 focus:ring-[#477BDB]/10"
+                        onChange={(fullPhone, meta) => {
+                          setClientPhone(fullPhone);
+                          if (meta && (!country || country === 'India')) {
+                            const cMap: Record<string, string> = {
+                              US: 'United States',
+                              AE: 'United Arab Emirates',
+                              GB: 'United Kingdom',
+                              CA: 'Canada',
+                              AU: 'Australia',
+                              SG: 'Singapore',
+                              SA: 'Saudi Arabia',
+                              DE: 'Germany',
+                              FR: 'France',
+                              QA: 'Qatar',
+                              KW: 'Kuwait',
+                              OM: 'Oman',
+                              BH: 'Bahrain',
+                            };
+                            if (cMap[meta.countryCode]) {
+                              setCountry(cMap[meta.countryCode]);
+                            }
+                          }
+                        }}
                       />
                     </div>
                   </div>

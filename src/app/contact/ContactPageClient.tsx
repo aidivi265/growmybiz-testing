@@ -5,7 +5,7 @@ import { ArrowRight, CheckCircle, Mail, Phone, MapPin, MessageSquare, AlertCircl
 import { services as defaultServices } from '@/data/services';
 import { budgetRanges, timelineOptions } from '@/data/forms';
 import { siteConfig } from '@/data/siteConfig';
-import { Input, Textarea, Select, Breadcrumb } from '@/components/ui';
+import { Input, Textarea, Select, Breadcrumb, PhoneInput } from '@/components/ui';
 import type { EnquiryFormData, Service } from '@/types';
 import { SYNE_FONT } from '@/lib/fonts';
 import { trackGAEvent } from '@/components/GoogleAnalytics';
@@ -261,12 +261,14 @@ export default function ContactPageClient({
                   />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <Input
-                    label="Phone / WhatsApp Number *"
-                    type="tel"
-                    placeholder="e.g. +91 98765 43210"
-                    value={form.phone}
-                    onChange={set('phone')}
+                  <PhoneInput
+                    label="Phone / WhatsApp Number"
+                    value={form.phone || ''}
+                    onChange={(fullPhone) => {
+                      setForm((prev) => ({ ...prev, phone: fullPhone }));
+                      if (errors.phone) setErrors((prev) => ({ ...prev, phone: undefined }));
+                      if (serverError) setServerError(null);
+                    }}
                     error={errors.phone}
                     required
                   />
