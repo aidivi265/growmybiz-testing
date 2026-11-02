@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, Calculator, Sparkles } from 'lucide-react';
+import { ArrowRight, Calculator, Sparkles, Search } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { fetchServices, fetchPageVisibility } from '@/lib/dal';
 import { Section, Card, Breadcrumb } from '@/components/ui';
@@ -152,14 +152,23 @@ export default async function ServicesPage() {
                 Use our 5-step interactive cost estimator. Select deliverables across Web, Mobile, AI, Branding, and Marketing to lock in a transparent quote.
               </p>
             </div>
-            <Link
-              href="/estimator"
-              className="inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-500 text-black font-bold text-sm hover:opacity-95 active:scale-[0.98] transition-all shadow-xl shadow-emerald-950/50 shrink-0"
-            >
-              <Calculator size={16} />
-              <span>Launch Cost Estimator</span>
-              <ArrowRight size={15} />
-            </Link>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+              <Link
+                href="/estimator"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 text-black font-bold text-xs hover:opacity-95 active:scale-[0.98] transition-all shadow-xl shadow-emerald-950/50"
+              >
+                <Calculator size={15} />
+                <span>Cost Estimator</span>
+                <ArrowRight size={13} />
+              </Link>
+              <Link
+                href="/audit"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white font-semibold text-xs transition-all"
+              >
+                <Search size={14} className="text-emerald-400" />
+                <span>Free SEO Audit</span>
+              </Link>
+            </div>
           </div>
         </div>
       </Section>

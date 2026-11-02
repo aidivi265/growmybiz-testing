@@ -250,6 +250,7 @@ export default function Footer({ initialSettings, initialVisibility }: FooterPro
                   { label: 'Contact',   href: '/contact',   key: 'contact' },
                   { label: 'Client Portal', href: '/portal', key: 'portal' },
                   { label: 'Cost Estimator', href: '/estimator', key: 'estimator' },
+                  { label: 'Free SEO Audit', href: '/audit', key: 'audit' },
                   { label: 'Start a Project', href: '/start-project', key: 'startProject' },
                 ]
                   .filter((l) => (pageVisibility as any)[l.key] !== false)
