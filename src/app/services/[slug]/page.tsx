@@ -29,6 +29,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const service = (await fetchServiceBySlug(slug)) || defaultServices.find((s) => s.slug === slug);
   if (!service) return {};
   const pageUrl = `/services/${slug}`;
+  const ogImageUrl = `/api/og?title=${encodeURIComponent(service.title)}&type=service&category=${encodeURIComponent('Core Service')}&subtitle=${encodeURIComponent((service.shortDescription || service.description || '').slice(0, 120))}`;
+
   return {
     title: `${service.title} | Digital Growth Services | Growmybiz24`,
     description: service.shortDescription || service.description,
@@ -42,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'website',
       images: [
         {
-          url: '/brand-logo-white-bg.png',
+          url: ogImageUrl,
           width: 1200,
           height: 630,
           alt: service.title,
@@ -53,7 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: 'summary_large_image',
       title: `${service.title} | Growmybiz24`,
       description: service.shortDescription || service.description,
-      images: ['/brand-logo-white-bg.png'],
+      images: [ogImageUrl],
     },
   };
 }

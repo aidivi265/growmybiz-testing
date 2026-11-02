@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     locale: 'en_IN',
     images: [
       {
-        url: '/brand-logo-white-bg.png',
+        url: '/opengraph-image',
         width: 1200,
         height: 630,
         alt: `${siteConfig.siteName} — ${siteConfig.tagline}`,
@@ -79,7 +79,7 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     creator: '@growmybiz24',
     site: '@growmybiz24',
-    images: ['/brand-logo-white-bg.png'],
+    images: ['/opengraph-image'],
   },
   robots: {
     index: true,

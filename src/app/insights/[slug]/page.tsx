@@ -25,6 +25,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = (await fetchInsightBySlug(slug)) || defaultBlogPosts.find((p) => p.slug === slug);
   if (!post) return {};
   const pageUrl = `/insights/${slug}`;
+  const ogImageUrl = `/api/og?title=${encodeURIComponent(post.title)}&category=${encodeURIComponent(post.category)}&type=insight&readTime=${encodeURIComponent(post.readTime)}&subtitle=${encodeURIComponent(post.excerpt.slice(0, 120))}`;
+
   return {
     title: `${post.title} | Growmybiz24 Insights`,
     description: post.excerpt,
@@ -40,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       authors: [post.author || 'Divyansh Gupta'],
       images: [
         {
-          url: '/brand-logo-white-bg.png',
+          url: ogImageUrl,
           width: 1200,
           height: 630,
           alt: post.title,
@@ -51,7 +53,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: 'summary_large_image',
       title: `${post.title} | Growmybiz24`,
       description: post.excerpt,
-      images: ['/brand-logo-white-bg.png'],
+      images: [ogImageUrl],
     },
   };
 }

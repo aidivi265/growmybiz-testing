@@ -33,7 +33,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!item) return {};
   const pageUrl = `/portfolio/${slug}`;
   const desc = item.challenge || item.approach || item.outcome || `Case study on ${item.title} by Growmybiz24.`;
-  const imgUrl = item.thumbnail || (item.images && item.images[0]) || '/brand-logo-white-bg.png';
+  const ogImageUrl = `/api/og?title=${encodeURIComponent(item.title)}&category=${encodeURIComponent(item.category)}&type=case-study&client=${encodeURIComponent(item.client || 'Client')}&subtitle=${encodeURIComponent((item.outcome || item.challenge || '').slice(0, 120))}`;
+
   return {
     title: `${item.title} | Case Study | Growmybiz24`,
     description: desc,
@@ -47,7 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'article',
       images: [
         {
-          url: imgUrl,
+          url: ogImageUrl,
           width: 1200,
           height: 630,
           alt: item.title,
@@ -58,7 +59,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: 'summary_large_image',
       title: `${item.title} | Growmybiz24`,
       description: desc,
-      images: [imgUrl],
+      images: [ogImageUrl],
     },
   };
 }
