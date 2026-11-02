@@ -288,7 +288,7 @@ export default function Footer({ initialSettings, initialVisibility }: FooterPro
 
         {/* ── Sub-footer ── */}
         <div className="border-t border-white/[0.08]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-20 md:pb-5">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#8BA5C8]">
               <p>&copy; {CURRENT_YEAR} {config.siteName}. All rights reserved.</p>
               <div className="flex items-center gap-4">

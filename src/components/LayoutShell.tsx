@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppFloatingButton from '@/components/WhatsAppFloatingButton';
+import StickyMobileActionBar from '@/components/StickyMobileActionBar';
 import ScrollObserver from '@/components/ui/ScrollObserver';
 
 interface LayoutShellProps {
@@ -31,6 +32,7 @@ export default function LayoutShell({
       <main>{children}</main>
       <Footer initialSettings={initialSettings} initialVisibility={initialVisibility} />
       <WhatsAppFloatingButton />
+      <StickyMobileActionBar />
     </>
   );
 }
