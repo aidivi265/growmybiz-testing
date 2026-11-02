@@ -37,6 +37,14 @@ export default function ClientPortalClient() {
   const [searchReceipt, setSearchReceipt] = useState(initialReceipt);
   const [token, setToken] = useState(initialToken);
   const [verifyEmailInput, setVerifyEmailInput] = useState('');
+  const [authTab, setAuthTab] = useState<'otp' | 'token'>('otp');
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpCodeInput, setOtpCodeInput] = useState('');
+  const [secretKeyInput, setSecretKeyInput] = useState('');
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [authSuccessMsg, setAuthSuccessMsg] = useState<string | null>(null);
+  const [devOtpHint, setDevOtpHint] = useState<string | null>(null);
   const [project, setProject] = useState<ProjectRecord | null>(null);
   const [isRestricted, setIsRestricted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -121,10 +129,87 @@ export default function ClientPortalClient() {
     fetchProject(searchReceipt, rememberedToken);
   };
 
-  const handleVerifyEmail = (e: React.FormEvent) => {
+  const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!verifyEmailInput.trim()) return;
-    fetchProject(searchReceipt, token, verifyEmailInput.trim());
+    if (!project || !verifyEmailInput.trim()) return;
+    setAuthLoading(true);
+    setAuthError(null);
+    setAuthSuccessMsg(null);
+    try {
+      const res = await fetch(`/api/projects/${encodeURIComponent(project.receiptId)}/auth`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'request_otp',
+          email: verifyEmailInput.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setAuthError(data.error || 'Failed to request verification code.');
+      } else {
+        setOtpSent(true);
+        setAuthSuccessMsg('A 6-digit verification code has been sent to your email.');
+        if (data.devOtp) {
+          setDevOtpHint(`Development Testing Code: ${data.devOtp}`);
+        }
+      }
+    } catch {
+      setAuthError('Connection error. Please try again.');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!project || !otpCodeInput.trim()) return;
+    setAuthLoading(true);
+    setAuthError(null);
+    try {
+      const res = await fetch(`/api/projects/${encodeURIComponent(project.receiptId)}/auth`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'verify_otp',
+          email: verifyEmailInput.trim(),
+          code: otpCodeInput.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setAuthError(data.error || 'Invalid verification code.');
+      } else if (data.token) {
+        setToken(data.token);
+        try {
+          localStorage.setItem(`gmb_token_${project.receiptId.toUpperCase()}`, data.token);
+        } catch {}
+        await fetchProject(project.receiptId, data.token);
+      }
+    } catch {
+      setAuthError('Connection error. Please try again.');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleUnlockWithSecretKey = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!project || !secretKeyInput.trim()) return;
+    setAuthLoading(true);
+    setAuthError(null);
+    try {
+      const trimmed = secretKeyInput.trim();
+      setToken(trimmed);
+      try {
+        localStorage.setItem(`gmb_token_${project.receiptId.toUpperCase()}`, trimmed);
+      } catch {}
+      await fetchProject(project.receiptId, trimmed);
+    } catch {
+      setAuthError('Failed to unlock project.');
+    } finally {
+      setAuthLoading(false);
+    }
   };
 
   const handleOpenDoc = (
@@ -300,9 +385,9 @@ export default function ClientPortalClient() {
           </div>
         )}
 
-        {/* RESTRICTED ACCESS CHALLENGE (Zero PII Leakage) */}
+        {/* RESTRICTED ACCESS CHALLENGE (Zero PII Leakage with Email OTP & Secret Key Auth) */}
         {project && isRestricted && (
-          <div className="bg-white rounded-3xl border border-[#E8EDF4] p-8 sm:p-10 text-center shadow-lg max-w-xl mx-auto space-y-5">
+          <div className="bg-white rounded-3xl border border-[#E8EDF4] p-6 sm:p-10 text-center shadow-lg max-w-xl mx-auto space-y-5 animate-in fade-in duration-200">
             <div className="w-14 h-14 bg-[#EBF1FB] text-[#477BDB] rounded-2xl flex items-center justify-center mx-auto">
               <KeyRound size={28} />
             </div>
@@ -319,27 +404,138 @@ export default function ClientPortalClient() {
               </h2>
               <p className="text-xs text-[#6B7E95] mt-1.5 max-w-sm mx-auto leading-relaxed">
                 Service: <strong>{project.serviceTitle}</strong> | Status: <strong className="capitalize">{project.status.replace(/_/g, ' ')}</strong>.
-                To protect client privacy, enter the work email used when commissioning this project.
+                Authenticate with your email OTP or your secret access token to view confidential quotation, invoices, and design mockups.
               </p>
             </div>
 
-            <form onSubmit={handleVerifyEmail} className="space-y-3 max-w-sm mx-auto">
-              <input
-                type="email"
-                value={verifyEmailInput}
-                onChange={(e) => setVerifyEmailInput(e.target.value)}
-                placeholder="Enter client work email to unlock"
-                className="w-full px-4 py-2.5 rounded-xl border border-[#E8EDF4] text-xs text-[#0F1C31] focus:outline-none focus:border-[#477BDB]"
-                required
-              />
+            {/* Auth Mode Tabs */}
+            <div className="flex items-center justify-center gap-1 p-1 bg-[#F7F9FC] rounded-xl border border-[#E8EDF4] max-w-xs mx-auto text-xs font-semibold">
               <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-2.5 rounded-xl text-xs font-bold text-white bg-[#477BDB] hover:bg-[#3b6ec7] transition-colors shadow-md"
+                type="button"
+                onClick={() => { setAuthTab('otp'); setAuthError(null); }}
+                className={`flex-1 py-1.5 px-3 rounded-lg transition-all ${
+                  authTab === 'otp'
+                    ? 'bg-white text-[#477BDB] shadow-sm'
+                    : 'text-[#6B7E95] hover:text-[#0F1C31]'
+                }`}
               >
-                {loading ? 'Verifying...' : 'Unlock Full Project Dashboard'}
+                Email OTP
               </button>
-            </form>
+              <button
+                type="button"
+                onClick={() => { setAuthTab('token'); setAuthError(null); }}
+                className={`flex-1 py-1.5 px-3 rounded-lg transition-all ${
+                  authTab === 'token'
+                    ? 'bg-white text-[#477BDB] shadow-sm'
+                    : 'text-[#6B7E95] hover:text-[#0F1C31]'
+                }`}
+              >
+                Secret Token
+              </button>
+            </div>
+
+            {/* Alerts */}
+            {authError && (
+              <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-600 font-medium max-w-sm mx-auto text-left">
+                ⚠️ {authError}
+              </div>
+            )}
+            {authSuccessMsg && (
+              <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-700 font-medium max-w-sm mx-auto text-left">
+                ✓ {authSuccessMsg}
+              </div>
+            )}
+            {devOtpHint && (
+              <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-[11px] font-mono text-blue-700 max-w-sm mx-auto">
+                ℹ️ {devOtpHint}
+              </div>
+            )}
+
+            {/* TAB 1: Email OTP */}
+            {authTab === 'otp' && (
+              <div className="max-w-sm mx-auto space-y-3">
+                {!otpSent ? (
+                  <form onSubmit={handleRequestOtp} className="space-y-3">
+                    <div>
+                      <input
+                        type="email"
+                        value={verifyEmailInput}
+                        onChange={(e) => setVerifyEmailInput(e.target.value)}
+                        placeholder="Enter client work email to send code"
+                        className="w-full px-4 py-2.5 rounded-xl border border-[#E8EDF4] text-xs text-[#0F1C31] focus:outline-none focus:border-[#477BDB]"
+                        required
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={authLoading}
+                      className="w-full py-2.5 rounded-xl text-xs font-bold text-white bg-[#477BDB] hover:bg-[#3b6ec7] transition-all shadow-md disabled:opacity-60"
+                    >
+                      {authLoading ? 'Sending 6-Digit Code...' : 'Send 6-Digit Verification Code'}
+                    </button>
+                  </form>
+                ) : (
+                  <form onSubmit={handleVerifyOtp} className="space-y-3">
+                    <div>
+                      <input
+                        type="text"
+                        maxLength={6}
+                        value={otpCodeInput}
+                        onChange={(e) => setOtpCodeInput(e.target.value.replace(/\D/g, ''))}
+                        placeholder="Enter 6-digit code (e.g. 123456)"
+                        className="w-full px-4 py-2.5 rounded-xl border border-[#E8EDF4] text-center font-mono text-base tracking-widest text-[#0F1C31] focus:outline-none focus:border-[#477BDB]"
+                        required
+                        autoFocus
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={authLoading || otpCodeInput.length !== 6}
+                      className="w-full py-2.5 rounded-xl text-xs font-bold text-white bg-[#10B981] hover:bg-[#059669] transition-all shadow-md disabled:opacity-60"
+                    >
+                      {authLoading ? 'Verifying Code...' : 'Verify Code & Unlock Portal'}
+                    </button>
+                    <div className="flex items-center justify-between text-[11px] text-[#6B7E95] pt-1">
+                      <button
+                        type="button"
+                        onClick={() => { setOtpSent(false); setAuthError(null); setDevOtpHint(null); }}
+                        className="hover:underline"
+                      >
+                        Change Email
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleRequestOtp}
+                        className="text-[#477BDB] hover:underline font-semibold"
+                      >
+                        Resend Code
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
+            )}
+
+            {/* TAB 2: Direct Secret Token */}
+            {authTab === 'token' && (
+              <form onSubmit={handleUnlockWithSecretKey} className="space-y-3 max-w-sm mx-auto">
+                <input
+                  type="text"
+                  value={secretKeyInput}
+                  onChange={(e) => setSecretKeyInput(e.target.value)}
+                  placeholder="Paste 32-character secret key (sec_...)"
+                  className="w-full px-4 py-2.5 rounded-xl border border-[#E8EDF4] font-mono text-xs text-[#0F1C31] focus:outline-none focus:border-[#477BDB]"
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={authLoading}
+                  className="w-full py-2.5 rounded-xl text-xs font-bold text-white bg-[#477BDB] hover:bg-[#3b6ec7] transition-colors shadow-md disabled:opacity-60"
+                >
+                  {authLoading ? 'Unlocking...' : 'Unlock with Secret Token'}
+                </button>
+              </form>
+            )}
           </div>
         )}
 

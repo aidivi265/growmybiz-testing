@@ -135,7 +135,7 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
             <div className="flex items-center gap-2.5">
               <Link
                 href="/portal"
-                className="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#3D4F63] hover:text-[#0F1C31] hover:bg-[#F0F4FA] transition-colors"
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#3D4F63] hover:text-[#0F1C31] hover:bg-[#F0F4FA] transition-colors"
               >
                 <LayoutDashboard size={13} className="text-[#477BDB]" />
                 Client Portal

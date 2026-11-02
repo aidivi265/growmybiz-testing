@@ -150,6 +150,25 @@ CREATE TABLE IF NOT EXISTS public.rate_limits (
     updated_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- 12. Client Intake & Managed Projects Table
+CREATE TABLE IF NOT EXISTS public.projects (
+    id TEXT PRIMARY KEY, -- Receipt ID e.g. GMB-PRJ-2026-8492
+    receipt_id TEXT UNIQUE NOT NULL,
+    client_name TEXT NOT NULL,
+    client_email TEXT NOT NULL,
+    client_phone TEXT,
+    company_name TEXT,
+    service_title TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'under_review',
+    access_token TEXT NOT NULL,
+    data JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_projects_client_email ON public.projects(client_email);
+CREATE INDEX IF NOT EXISTS idx_projects_status ON public.projects(status);
+
 -- ==============================================================================
 -- Idempotent Column Alterations (Guarantees safety on pre-existing tables)
 -- ==============================================================================
@@ -195,6 +214,7 @@ ALTER TABLE public.admin_audit_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.inquiries ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.rate_limits ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.projects ENABLE ROW LEVEL SECURITY;
 
 -- Allow Public Read Access for Published Content
 DO $$
@@ -256,6 +276,9 @@ BEGIN
 
     DROP POLICY IF EXISTS "Service role full access on rate_limits" ON public.rate_limits;
     CREATE POLICY "Service role full access on rate_limits" ON public.rate_limits FOR ALL USING (true);
+
+    DROP POLICY IF EXISTS "Service role full access on projects" ON public.projects;
+    CREATE POLICY "Service role full access on projects" ON public.projects FOR ALL USING (true);
 END $$;
 
 -- 9. Auto-updated_at trigger function

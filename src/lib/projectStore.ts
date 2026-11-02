@@ -69,7 +69,21 @@ export async function getProjectByReceiptId(receiptId: string): Promise<ProjectR
   const cleanId = receiptId.trim().toUpperCase();
   const docKey = getSupabaseDocKey(cleanId);
 
-  // 1. Authoritative: Fetch from Supabase PostgreSQL
+  // 1. Authoritative: Fetch from Supabase PostgreSQL (projects table or page_content)
+  try {
+    const { data: pData, error: pErr } = await supabaseAdmin
+      .from('projects')
+      .select('data')
+      .eq('receipt_id', cleanId)
+      .single();
+
+    if (!pErr && pData && pData.data) {
+      return pData.data as ProjectRecord;
+    }
+  } catch (err) {
+    // projects table might not exist yet; fall through
+  }
+
   try {
     const { data, error } = await supabaseAdmin
       .from('page_content')
@@ -92,6 +106,22 @@ export async function getProjectByReceiptId(receiptId: string): Promise<ProjectR
 
 // List all projects for admin (Authoritative from Supabase)
 export async function getAllProjects(): Promise<ProjectRecord[]> {
+  // Try dedicated projects table first
+  try {
+    const { data: pData, error: pErr } = await supabaseAdmin
+      .from('projects')
+      .select('data, updated_at')
+      .order('created_at', { ascending: false });
+
+    if (!pErr && pData && pData.length > 0) {
+      const records = pData.map((d) => d.data as ProjectRecord).filter(Boolean);
+      writeLocalProjectsBackup(records);
+      return records;
+    }
+  } catch {
+    // Fall back to page_content
+  }
+
   try {
     const { data, error } = await supabaseAdmin
       .from('page_content')
@@ -101,7 +131,6 @@ export async function getAllProjects(): Promise<ProjectRecord[]> {
 
     if (!error && data && data.length > 0) {
       const records = data.map((d) => d.data as ProjectRecord).filter(Boolean);
-      // Sync local backup
       writeLocalProjectsBackup(records);
       return records;
     }
@@ -124,8 +153,28 @@ export async function saveProject(project: ProjectRecord): Promise<ProjectRecord
   const cleanId = project.receiptId.trim().toUpperCase();
   const docKey = getSupabaseDocKey(cleanId);
 
-  // 1. Authoritative: Upsert to Supabase PostgreSQL
+  // 1. Authoritative: Upsert to Supabase PostgreSQL (projects table + page_content fallback)
   let supabasePersisted = false;
+  try {
+    await supabaseAdmin
+      .from('projects')
+      .upsert({
+        id: cleanId,
+        receipt_id: cleanId,
+        client_name: project.clientName,
+        client_email: project.clientEmail,
+        client_phone: project.clientPhone,
+        company_name: project.companyName,
+        service_title: project.serviceTitle,
+        status: project.status,
+        access_token: project.clientAccessToken,
+        data: project,
+        updated_at: project.updatedAt,
+      });
+  } catch {
+    // Ignore error if projects table not created yet
+  }
+
   try {
     const { error } = await supabaseAdmin
       .from('page_content')
@@ -169,7 +218,9 @@ export function verifyProjectAuthorization(
   if (providedToken && project.clientAccessToken) {
     const cleanProvided = providedToken.trim();
     const cleanActual = project.clientAccessToken.trim();
-    if (crypto.timingSafeEqual(Buffer.from(cleanProvided), Buffer.from(cleanActual))) {
+    const bufA = Buffer.from(cleanProvided);
+    const bufB = Buffer.from(cleanActual);
+    if (bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB)) {
       return true;
     }
   }
@@ -377,4 +428,131 @@ export async function submitProjectFeedback(
   project.feedback = feedback;
   await saveProject(project);
   return project;
+}
+
+
+// ─── Client Authentication & Email OTP System ───────────────────────────────
+
+/**
+ * Generates and stores a 15-minute 6-digit OTP code for client email verification.
+ */
+export async function requestProjectOtp(
+  receiptId: string,
+  email: string
+): Promise<{ success: boolean; error?: string; devOtp?: string; expiresAt?: string }> {
+  const project = await getProjectByReceiptId(receiptId);
+  if (!project) {
+    return { success: false, error: 'Project not found.' };
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
+  const projectEmail = (project.clientEmail || '').trim().toLowerCase();
+
+  if (cleanEmail !== projectEmail) {
+    return {
+      success: false,
+      error: 'The provided email address does not match the project client email on record.',
+    };
+  }
+
+  // Generate 6-digit random code
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+
+  project.authOtp = {
+    code,
+    expiresAt,
+    attempts: 0,
+  };
+
+  await saveProject(project);
+
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  console.log(`🔐 [CLIENT AUTH OTP GENERATED]`);
+  console.log(`📋 Project:    ${project.receiptId}`);
+  console.log(`✉️ Client:     ${project.clientEmail}`);
+  console.log(`🔑 6-Digit OTP: ${code}`);
+  console.log(`⏱️ Valid For:  15 Minutes (until ${expiresAt})`);
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+  return {
+    success: true,
+    expiresAt,
+    devOtp: process.env.NODE_ENV !== 'production' ? code : undefined,
+  };
+}
+
+/**
+ * Validates a client-submitted 6-digit OTP code and returns the authorized clientAccessToken.
+ */
+export async function verifyProjectOtp(
+  receiptId: string,
+  email: string,
+  code: string
+): Promise<{ success: boolean; token?: string; error?: string }> {
+  const project = await getProjectByReceiptId(receiptId);
+  if (!project) {
+    return { success: false, error: 'Project not found.' };
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
+  const projectEmail = (project.clientEmail || '').trim().toLowerCase();
+
+  if (cleanEmail !== projectEmail) {
+    return {
+      success: false,
+      error: 'The provided email address does not match the project client email on record.',
+    };
+  }
+
+  if (!project.authOtp || !project.authOtp.code) {
+    return {
+      success: false,
+      error: 'No active verification code found. Please request a new code.',
+    };
+  }
+
+  // Check expiration
+  if (Date.now() > new Date(project.authOtp.expiresAt).getTime()) {
+    delete project.authOtp;
+    await saveProject(project);
+    return {
+      success: false,
+      error: 'Verification code has expired. Please request a new one.',
+    };
+  }
+
+  // Check brute force attempts (max 5)
+  if (project.authOtp.attempts >= 5) {
+    delete project.authOtp;
+    await saveProject(project);
+    return {
+      success: false,
+      error: 'Too many incorrect attempts. Please request a new code.',
+    };
+  }
+
+  // Constant-time compare code
+  const inputBuf = Buffer.from(code.trim());
+  const actualBuf = Buffer.from(project.authOtp.code.trim());
+
+  if (inputBuf.length === actualBuf.length && crypto.timingSafeEqual(inputBuf, actualBuf)) {
+    // Clear OTP on successful authentication
+    delete project.authOtp;
+    await saveProject(project);
+
+    return {
+      success: true,
+      token: project.clientAccessToken,
+    };
+  }
+
+  // Incorrect code: increment attempts
+  project.authOtp.attempts = (project.authOtp.attempts || 0) + 1;
+  await saveProject(project);
+
+  return {
+    success: false,
+    error: `Incorrect verification code. ${5 - project.authOtp.attempts} attempts remaining.`,
+  };
 }

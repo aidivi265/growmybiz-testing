@@ -118,6 +118,11 @@ export interface ProjectRecord {
   feedback?: ClientFeedback;
   stagingUrl?: string;
   productionUrl?: string;
+  authOtp?: {
+    code: string;
+    expiresAt: string;
+    attempts: number;
+  };
 }
 
 export interface QuickInquiryRecord {

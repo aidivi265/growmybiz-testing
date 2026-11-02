@@ -248,6 +248,8 @@ export default function Footer({ initialSettings, initialVisibility }: FooterPro
                   { label: 'Process',   href: '/process',   key: 'process' },
                   { label: 'Insights',  href: '/insights',  key: 'insights' },
                   { label: 'Contact',   href: '/contact',   key: 'contact' },
+                  { label: 'Client Portal', href: '/portal', key: 'portal' },
+                  { label: 'Start a Project', href: '/start-project', key: 'startProject' },
                 ]
                   .filter((l) => (pageVisibility as any)[l.key] !== false)
                   .map((l) => (
