@@ -82,6 +82,7 @@ export async function POST(request: Request) {
 
     revalidatePath('/insights');
     revalidatePath(`/insights/${slug}`);
+    revalidatePath('/sitemap.xml');
     revalidatePath('/');
 
     return NextResponse.json({ success: true, article: data });
@@ -118,6 +119,7 @@ export async function PUT(request: Request) {
 
     revalidatePath('/insights');
     if (data?.slug) revalidatePath(`/insights/${data.slug}`);
+    revalidatePath('/sitemap.xml');
     revalidatePath('/');
 
     return NextResponse.json({ success: true, article: data });
@@ -153,6 +155,7 @@ export async function DELETE(request: Request) {
     }
 
     revalidatePath('/insights');
+    revalidatePath('/sitemap.xml');
     revalidatePath('/');
 
     return NextResponse.json({ success: true, deleted: id });

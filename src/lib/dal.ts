@@ -40,6 +40,8 @@ export async function fetchServices(): Promise<Service[]> {
         process: Array.isArray(item.process_steps) ? item.process_steps : [],
         faqs: Array.isArray(item.faqs) ? item.faqs : [],
         featured: item.featured ?? true,
+        published: item.is_published ?? true,
+        updatedAt: item.updated_at || item.created_at,
       }));
     }
   } catch (err) {
@@ -122,6 +124,7 @@ export async function fetchPortfolio(): Promise<PortfolioItem[]> {
           published: p.is_published ?? true,
           year: parseInt(p.year, 10) || 2025,
           isConcept: p.is_concept ?? false,
+          updatedAt: p.updated_at || p.created_at,
         };
       });
     }
@@ -208,6 +211,7 @@ export async function fetchInsights(): Promise<BlogPost[]> {
         featured: true,
         published: a.is_published ?? true,
         coverImage: a.cover_image || '/portfolio-mockups/mobile-app.png',
+        updatedAt: a.updated_at || a.published_at || a.created_at,
       }));
     }
   } catch (err) {

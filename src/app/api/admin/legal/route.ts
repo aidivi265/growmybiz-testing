@@ -98,6 +98,7 @@ export async function POST(request: Request) {
     }
 
     revalidatePath(`/legal/${slug}`);
+    revalidatePath('/sitemap.xml');
     revalidatePath('/');
 
     return NextResponse.json({ success: true, doc: data.data });

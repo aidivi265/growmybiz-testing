@@ -175,6 +175,7 @@ export async function POST(request: Request) {
 
     revalidatePath('/portfolio');
     revalidatePath(`/portfolio/${cleanSlug}`);
+    revalidatePath('/sitemap.xml');
     revalidatePath('/');
 
     return NextResponse.json({ success: true, project: data });
@@ -242,6 +243,7 @@ export async function PUT(request: Request) {
 
     revalidatePath('/portfolio');
     if (data?.slug) revalidatePath(`/portfolio/${data.slug}`);
+    revalidatePath('/sitemap.xml');
     revalidatePath('/');
 
     return NextResponse.json({ success: true, project: data });
@@ -277,6 +279,7 @@ export async function DELETE(request: Request) {
     }
 
     revalidatePath('/portfolio');
+    revalidatePath('/sitemap.xml');
     revalidatePath('/');
 
     return NextResponse.json({ success: true, deleted: id });
@@ -319,6 +322,7 @@ export async function PATCH(request: Request) {
     await Promise.all(updatePromises);
 
     revalidatePath('/portfolio');
+    revalidatePath('/sitemap.xml');
     revalidatePath('/');
 
     return NextResponse.json({ success: true, reorderedCount: items.length });

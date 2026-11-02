@@ -176,6 +176,7 @@ export async function POST(request: Request) {
     revalidatePath('/process');
     revalidatePath('/insights');
     revalidatePath('/contact');
+    revalidatePath('/sitemap.xml');
 
     return NextResponse.json({
       success: true,

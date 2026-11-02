@@ -122,6 +122,7 @@ export async function POST(request: Request) {
     // Instant On-Demand Cache Revalidation
     revalidatePath('/services');
     revalidatePath(`/services/${slug}`);
+    revalidatePath('/sitemap.xml');
     revalidatePath('/');
 
     return NextResponse.json({ success: true, service: data });
@@ -159,6 +160,7 @@ export async function PUT(request: Request) {
     // Instant On-Demand Cache Revalidation
     revalidatePath('/services');
     if (data?.slug) revalidatePath(`/services/${data.slug}`);
+    revalidatePath('/sitemap.xml');
     revalidatePath('/');
 
     return NextResponse.json({ success: true, service: data });
@@ -189,6 +191,7 @@ export async function DELETE(request: Request) {
     }
 
     revalidatePath('/services');
+    revalidatePath('/sitemap.xml');
     revalidatePath('/');
 
     return NextResponse.json({ success: true, deleted: id });

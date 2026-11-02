@@ -55,6 +55,8 @@ export interface Service {
   process?: string[];
   faqs?: FAQ[];
   featured: boolean;
+  published?: boolean;
+  updatedAt?: string;
 }
 
 export interface ServiceOffering {
@@ -89,6 +91,7 @@ export interface PortfolioItem {
   year: number;
   isConcept?: boolean;
   conceptDisclaimer?: string;
+  updatedAt?: string;
 }
 
 export interface OrbitNodeConfig {
@@ -142,6 +145,7 @@ export interface BlogPost {
   featured: boolean;
   published: boolean;
   coverImage: string;
+  updatedAt?: string;
 }
 
 export interface Testimonial {

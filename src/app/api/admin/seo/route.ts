@@ -105,6 +105,7 @@ export async function POST(request: Request) {
     }
 
     revalidatePath(route_path);
+    revalidatePath('/sitemap.xml');
     revalidatePath('/');
 
     return NextResponse.json({ success: true, route: data });

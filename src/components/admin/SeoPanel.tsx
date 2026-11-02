@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Save, Check, Loader2, Globe, Search, Share2, Sparkles, Plus } from 'lucide-react';
+import { Save, Check, Loader2, Globe, Search, Share2, Sparkles, Plus, RefreshCw, ExternalLink } from 'lucide-react';
 import MediaUploadInput from './MediaUploadInput';
 
 interface SeoRouteRecord {
@@ -20,6 +20,26 @@ export default function SeoPanel() {
   const [saved, setSaved] = useState(false);
   const [source, setSource] = useState<string>('loading');
   const [keywordInput, setKeywordInput] = useState('');
+  const [revalidatingSitemap, setRevalidatingSitemap] = useState(false);
+  const [sitemapRevalidatedAt, setSitemapRevalidatedAt] = useState<string | null>(null);
+
+  const handleRevalidateSitemap = async () => {
+    setRevalidatingSitemap(true);
+    try {
+      const res = await fetch('/api/revalidate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ entity: 'all', path: '/sitemap.xml' }),
+      });
+      if (res.ok) {
+        setSitemapRevalidatedAt(new Date().toLocaleTimeString());
+      }
+    } catch (err) {
+      console.error('Failed to revalidate sitemap:', err);
+    } finally {
+      setRevalidatingSitemap(false);
+    }
+  };
 
   const loadSeoData = async () => {
     setLoading(true);
@@ -124,6 +144,50 @@ export default function SeoPanel() {
           )}
           <span>{saved ? 'Updated Live on Route!' : saving ? 'Publishing...' : 'Save Page SEO'}</span>
         </button>
+      </div>
+
+      {/* Dynamic Sitemap Sync Status Banner */}
+      <div className="p-4 rounded-xl bg-gradient-to-r from-blue-500/10 via-emerald-500/5 to-transparent border border-blue-500/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-start md:items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-blue-500/20 border border-blue-500/30 flex items-center justify-center shrink-0 text-blue-400">
+            <Globe size={18} />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-white">Dynamic XML Sitemap Sync</span>
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                ACTIVE (ISR 60s + On-Demand)
+              </span>
+            </div>
+            <p className="text-[11px] text-white/60 mt-0.5">
+              Automatically indexes newly published services, blogs, and portfolio items from Supabase.
+              {sitemapRevalidatedAt && (
+                <span className="text-emerald-400 ml-1 font-medium">Synced at {sitemapRevalidatedAt}.</span>
+              )}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 self-start md:self-auto shrink-0">
+          <a
+            href="/sitemap.xml"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white/70 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+          >
+            <ExternalLink size={12} />
+            <span>View sitemap.xml</span>
+          </a>
+          <button
+            type="button"
+            onClick={handleRevalidateSitemap}
+            disabled={revalidatingSitemap}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 border border-blue-500/30 transition-all cursor-pointer disabled:opacity-50"
+          >
+            <RefreshCw size={12} className={revalidatingSitemap ? 'animate-spin' : ''} />
+            <span>{revalidatingSitemap ? 'Syncing...' : 'Sync Sitemap Cache'}</span>
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
