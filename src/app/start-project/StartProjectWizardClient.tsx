@@ -20,6 +20,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { SYNE_FONT } from '@/lib/fonts';
+import TurnstileWidget from '@/components/TurnstileWidget';
 
 const SERVICES = [
   {
@@ -130,6 +131,7 @@ export default function StartProjectWizardClient() {
   const [submittedReceipt, setSubmittedReceipt] = useState<string | null>(null);
   const [submittedToken, setSubmittedToken] = useState<string | null>(null);
   const [honeypot, setHoneypot] = useState('');
+  const [turnstileToken, setTurnstileToken] = useState('');
 
   const toggleFeature = (feature: string) => {
     setFeatureWishlist((prev) =>
@@ -196,6 +198,7 @@ export default function StartProjectWizardClient() {
             otherNotes: assetsNotes.trim(),
           },
           _hp: honeypot,
+          turnstileToken,
         }),
       });
 
@@ -711,6 +714,13 @@ export default function StartProjectWizardClient() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Cloudflare Turnstile Bot Protection */}
+                  <TurnstileWidget
+                    action="start_project_wizard"
+                    onVerify={(token) => setTurnstileToken(token)}
+                    onExpire={() => setTurnstileToken('')}
+                  />
                 </div>
               )}
 

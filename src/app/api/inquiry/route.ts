@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseServer';
 import { sanitizeString, escapeHtml, isValidEmail, sanitizePhone } from '@/lib/sanitizer';
 import { checkRateLimit } from '@/lib/rateLimit';
+import { verifyTurnstileToken } from '@/lib/turnstile';
 
 export async function POST(request: Request) {
   try {
@@ -30,7 +31,17 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { name, email, phone, service, message, _hp } = body;
+    const { name, email, phone, service, message, _hp, turnstileToken } = body;
+
+    // 3. Cloudflare Turnstile Bot Verification
+    const clientToken = turnstileToken || request.headers.get('cf-turnstile-response');
+    const botCheck = await verifyTurnstileToken(clientToken, ip);
+    if (!botCheck.success) {
+      return NextResponse.json(
+        { error: botCheck.error || 'Bot verification failed. Please complete the security check.' },
+        { status: 403 }
+      );
+    }
 
     // 3. Silent Honeypot Trap
     if (_hp && _hp.trim().length > 0) {

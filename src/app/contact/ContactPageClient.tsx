@@ -9,6 +9,7 @@ import { Input, Textarea, Select, Breadcrumb } from '@/components/ui';
 import type { EnquiryFormData, Service } from '@/types';
 import { SYNE_FONT } from '@/lib/fonts';
 import { trackGAEvent } from '@/components/GoogleAnalytics';
+import TurnstileWidget from '@/components/TurnstileWidget';
 
 const INITIAL: EnquiryFormData = {
   name: '',
@@ -32,6 +33,7 @@ export default function ContactPageClient({
 }: ContactPageClientProps) {
   const [form, setForm] = useState<EnquiryFormData>(INITIAL);
   const [honeypot, setHoneypot] = useState('');
+  const [turnstileToken, setTurnstileToken] = useState('');
   const [errors, setErrors] = useState<Partial<EnquiryFormData>>({});
   const [serverError, setServerError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -88,6 +90,7 @@ export default function ContactPageClient({
         body: JSON.stringify({
           ...form,
           _hp: honeypot, // Honeypot spam check
+          turnstileToken,
         }),
       });
 
@@ -319,6 +322,13 @@ export default function ContactPageClient({
                   error={errors.message}
                   required
                   rows={5}
+                />
+
+                {/* Cloudflare Turnstile Bot Protection */}
+                <TurnstileWidget
+                  action="contact_page"
+                  onVerify={(token) => setTurnstileToken(token)}
+                  onExpire={() => setTurnstileToken('')}
                 />
 
                 {/* Disclaimer */}

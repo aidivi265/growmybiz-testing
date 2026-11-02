@@ -4,6 +4,7 @@ import path from 'path';
 import { supabaseAdmin } from '@/lib/supabaseServer';
 import { sanitizeString, escapeHtml, isValidEmail, sanitizePhone } from '@/lib/sanitizer';
 import { checkRateLimit } from '@/lib/rateLimit';
+import { verifyTurnstileToken } from '@/lib/turnstile';
 
 interface ContactPayload {
   name?: string;
@@ -14,7 +15,8 @@ interface ContactPayload {
   budget?: string;
   timeline?: string;
   message?: string;
-  _hp?: string; // Honeypot field for bot suppression
+  _hp?: string; // Honeypot field for secondary bot suppression
+  turnstileToken?: string; // Cloudflare Turnstile verification token
 }
 
 export async function POST(request: Request) {
@@ -51,15 +53,25 @@ export async function POST(request: Request) {
     }
 
     const body: ContactPayload = await request.json();
-    const { name, email, phone, company, service, budget, timeline, message, _hp } = body;
+    const { name, email, phone, company, service, budget, timeline, message, _hp, turnstileToken } = body;
 
-    // 3. Silent Honeypot Bot Trap: If honeypot is filled, simulate success but drop payload
+    // 3. Cloudflare Turnstile Bot Verification
+    const clientToken = turnstileToken || request.headers.get('cf-turnstile-response');
+    const botCheck = await verifyTurnstileToken(clientToken, ip);
+    if (!botCheck.success) {
+      return NextResponse.json(
+        { error: botCheck.error || 'Bot verification failed. Please complete the security check.' },
+        { status: 403 }
+      );
+    }
+
+    // 4. Defense-in-Depth Honeypot Bot Trap: If honeypot is filled, simulate success but drop payload
     if (_hp && _hp.trim().length > 0) {
       console.warn('[SECURITY] Bot honeypot triggered from IP:', ip);
       return NextResponse.json({ success: true, message: 'Message received.' });
     }
 
-    // 4. Strict Server-Side Validation & Sanitization
+    // 5. Strict Server-Side Validation & Sanitization
     const cleanName = sanitizeString(name, 100);
     if (!cleanName || cleanName.length < 2) {
       return NextResponse.json(

@@ -6,6 +6,7 @@ import { Calendar, MessageSquare, Phone, X, CheckCircle } from 'lucide-react';
 import { siteConfig } from '@/data/siteConfig';
 import { getClientSettings } from '@/lib/settingsClient';
 import { trackGAEvent } from '@/components/GoogleAnalytics';
+import TurnstileWidget from '@/components/TurnstileWidget';
 
 interface ScheduleCallModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [turnstileToken, setTurnstileToken] = useState('');
   const [error, setError] = useState('');
   const [preferredTime, setPreferredTime] = useState('Morning (10 AM - 1 PM)');
   const [submitted, setSubmitted] = useState(false);
@@ -100,6 +102,7 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
           service: 'Discovery Strategy Call',
           budget: 'Flexible',
           timeline: 'Immediate',
+          turnstileToken,
           message: `Client requested a scheduled strategy call.\nPreferred slot: ${preferredTime}\nDirect Phone/WhatsApp: ${cleanPhone}\nEmail: ${cleanEmail}`,
         }),
       });
@@ -304,6 +307,15 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
                   ))}
                 </div>
               </div>
+
+                            {/* Cloudflare Turnstile Bot Protection */}
+              <TurnstileWidget
+                action="schedule_call_modal"
+                theme="dark"
+                size="compact"
+                onVerify={(token) => setTurnstileToken(token)}
+                onExpire={() => setTurnstileToken('')}
+              />
 
               <button
                 type="submit"

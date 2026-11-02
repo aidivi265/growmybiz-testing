@@ -3,6 +3,7 @@ import { generateReceiptId, generateClientAccessToken, saveProject, generateDefa
 import type { ProjectRecord } from '@/types/project';
 import { sanitizeString, escapeHtml, isValidEmail, sanitizePhone } from '@/lib/sanitizer';
 import { checkRateLimit } from '@/lib/rateLimit';
+import { verifyTurnstileToken } from '@/lib/turnstile';
 
 export async function POST(request: Request) {
   try {
@@ -34,6 +35,16 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
+
+    // 3. Cloudflare Turnstile Bot Verification
+    const clientToken = body.turnstileToken || request.headers.get('cf-turnstile-response');
+    const botCheck = await verifyTurnstileToken(clientToken, ip);
+    if (!botCheck.success) {
+      return NextResponse.json(
+        { error: botCheck.error || 'Bot verification failed. Please complete the security check.' },
+        { status: 403 }
+      );
+    }
 
     // 3. Silent Honeypot Bot Trap
     if (body._hp && body._hp.trim().length > 0) {

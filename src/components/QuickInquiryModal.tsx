@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { X, MessageSquare, Send, CheckCircle2, ArrowRight } from 'lucide-react';
 import { services as defaultServices } from '@/data/services';
+import TurnstileWidget from '@/components/TurnstileWidget';
 
 interface QuickInquiryModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export default function QuickInquiryModal({ isOpen, onClose }: QuickInquiryModal
   const [submitted, setSubmitted] = useState(false);
   const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState('');
 
   if (!isOpen) return null;
 
@@ -46,6 +48,7 @@ export default function QuickInquiryModal({ isOpen, onClose }: QuickInquiryModal
           phone: !isEmail ? contact.trim() : '',
           service,
           message: message.trim() || 'I want to discuss my project requirement.',
+          turnstileToken,
         }),
       });
 
@@ -179,6 +182,14 @@ export default function QuickInquiryModal({ isOpen, onClose }: QuickInquiryModal
                   className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8EDF4] text-sm text-[#0F1C31] placeholder-[#A0AEC0] focus:outline-none focus:border-[#477BDB] focus:ring-2 focus:ring-[#477BDB]/10 resize-none"
                 />
               </div>
+
+                            {/* Cloudflare Turnstile Bot Protection */}
+              <TurnstileWidget
+                action="quick_inquiry_modal"
+                size="compact"
+                onVerify={(token) => setTurnstileToken(token)}
+                onExpire={() => setTurnstileToken('')}
+              />
 
               <div className="pt-2 flex items-center justify-end gap-3">
                 <button
