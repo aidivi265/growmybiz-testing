@@ -48,12 +48,37 @@ export async function POST(request: Request) {
     // 5. Upload to Supabase Storage Bucket ('growmybizz-media')
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    const { error: uploadError } = await supabaseAdmin.storage
+    let { error: uploadError } = await supabaseAdmin.storage
       .from('growmybizz-media')
       .upload(filePath, buffer, {
         contentType,
         upsert: true,
       });
+
+    // Self-healing: if bucket does not exist, initialize public bucket and retry upload
+    if (
+      uploadError &&
+      (uploadError.message?.toLowerCase().includes('not found') ||
+        (uploadError as any).statusCode === 404 ||
+        (uploadError as any).status === 404)
+    ) {
+      console.warn('[Storage Notice] Bucket "growmybizz-media" not found. Self-healing public bucket initialization...');
+      const { error: createError } = await supabaseAdmin.storage.createBucket('growmybizz-media', {
+        public: true,
+        fileSizeLimit: MAX_FILE_SIZE,
+        allowedMimeTypes: Object.values(mimeMap),
+      });
+
+      if (!createError) {
+        const retryResult = await supabaseAdmin.storage
+          .from('growmybizz-media')
+          .upload(filePath, buffer, {
+            contentType,
+            upsert: true,
+          });
+        uploadError = retryResult.error;
+      }
+    }
 
     if (uploadError) {
       console.error('Supabase upload error:', uploadError);

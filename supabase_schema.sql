@@ -760,19 +760,56 @@ ON CONFLICT (id) DO UPDATE SET
 -- ==============================================================================
 -- Storage Bucket & Policies (growmybizz-media)
 -- ==============================================================================
-INSERT INTO storage.buckets (id, name, public)
-VALUES ('growmybizz-media', 'growmybizz-media', true)
-ON CONFLICT (id) DO NOTHING;
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+    'growmybizz-media',
+    'growmybizz-media',
+    true,
+    26214400,
+    ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml', 'image/avif', 'image/gif', 'image/x-icon']::text[]
+)
+ON CONFLICT (id) DO UPDATE SET
+    public = EXCLUDED.public,
+    file_size_limit = EXCLUDED.file_size_limit,
+    allowed_mime_types = EXCLUDED.allowed_mime_types;
 
 DO $$
 BEGIN
-    DROP POLICY IF EXISTS "Public can view media" ON storage.objects;
-    CREATE POLICY "Public can view media" ON storage.objects FOR SELECT USING (bucket_id = 'growmybizz-media');
+    ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
 
+    DROP POLICY IF EXISTS "Public can view growmybizz-media" ON storage.objects;
+    DROP POLICY IF EXISTS "Public can view media" ON storage.objects;
+    CREATE POLICY "Public can view growmybizz-media"
+    ON storage.objects FOR SELECT
+    USING (bucket_id = 'growmybizz-media');
+
+    DROP POLICY IF EXISTS "Service role full access on growmybizz-media" ON storage.objects;
     DROP POLICY IF EXISTS "Service role full access on storage" ON storage.objects;
-    CREATE POLICY "Service role full access on storage" ON storage.objects FOR ALL USING (bucket_id = 'growmybizz-media');
+    CREATE POLICY "Service role full access on growmybizz-media"
+    ON storage.objects FOR ALL
+    TO service_role
+    USING (bucket_id = 'growmybizz-media')
+    WITH CHECK (bucket_id = 'growmybizz-media');
+
+    DROP POLICY IF EXISTS "Authenticated users can upload to growmybizz-media" ON storage.objects;
+    CREATE POLICY "Authenticated users can upload to growmybizz-media"
+    ON storage.objects FOR INSERT
+    TO authenticated
+    WITH CHECK (bucket_id = 'growmybizz-media');
+
+    DROP POLICY IF EXISTS "Authenticated users can update growmybizz-media" ON storage.objects;
+    CREATE POLICY "Authenticated users can update growmybizz-media"
+    ON storage.objects FOR UPDATE
+    TO authenticated
+    USING (bucket_id = 'growmybizz-media')
+    WITH CHECK (bucket_id = 'growmybizz-media');
+
+    DROP POLICY IF EXISTS "Authenticated users can delete growmybizz-media" ON storage.objects;
+    CREATE POLICY "Authenticated users can delete growmybizz-media"
+    ON storage.objects FOR DELETE
+    TO authenticated
+    USING (bucket_id = 'growmybizz-media');
 EXCEPTION
     WHEN undefined_table THEN
         NULL; -- Non-fatal if storage schema is not present in local pg
 END $$;
-
