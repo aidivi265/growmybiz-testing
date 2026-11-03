@@ -24,6 +24,7 @@ import {
   AlertCircle,
   AlertTriangle,
   KeyRound,
+  MessageCircle,
 } from 'lucide-react';
 import { SYNE_FONT } from '@/lib/fonts';
 import type { ProjectRecord, MilestoneItem } from '@/types/project';
@@ -45,6 +46,7 @@ export default function ClientPortalClient() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [authSuccessMsg, setAuthSuccessMsg] = useState<string | null>(null);
   const [devOtpHint, setDevOtpHint] = useState<string | null>(null);
+  const [whatsappFallbackUrl, setWhatsappFallbackUrl] = useState<string | null>(null);
   const [project, setProject] = useState<ProjectRecord | null>(null);
   const [isRestricted, setIsRestricted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -150,6 +152,9 @@ export default function ClientPortalClient() {
       } else {
         setOtpSent(true);
         setAuthSuccessMsg('A 6-digit verification code has been sent to your email.');
+        if (data.whatsappVerifyUrl) {
+          setWhatsappFallbackUrl(data.whatsappVerifyUrl);
+        }
         if (data.devOtp) {
           setDevOtpHint(`Development Testing Code: ${data.devOtp}`);
         }
@@ -469,10 +474,23 @@ export default function ClientPortalClient() {
                     <button
                       type="submit"
                       disabled={authLoading}
-                      className="w-full py-2.5 rounded-xl text-xs font-bold text-white bg-[#477BDB] hover:bg-[#3b6ec7] transition-all shadow-md disabled:opacity-60"
+                      className="w-full py-2.5 rounded-xl text-xs font-bold text-white bg-[#477BDB] hover:bg-[#3b6ec7] transition-all shadow-md disabled:opacity-60 cursor-pointer"
                     >
                       {authLoading ? 'Sending 6-Digit Code...' : 'Send 6-Digit Verification Code'}
                     </button>
+                    <div className="pt-1 text-center">
+                      <a
+                        href={`https://wa.me/917290884480?text=${encodeURIComponent(
+                          `Hi Growmybiz24 team! I need assistance accessing my Client Portal for Project ID: ${project.receiptId}.`
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-[11px] font-medium text-[#10B981] hover:text-[#059669] transition-colors"
+                      >
+                        <MessageCircle size={13} />
+                        <span>Need instant access? Verify via WhatsApp</span>
+                      </a>
+                    </div>
                   </form>
                 ) : (
                   <form onSubmit={handleVerifyOtp} className="space-y-3">
@@ -491,25 +509,54 @@ export default function ClientPortalClient() {
                     <button
                       type="submit"
                       disabled={authLoading || otpCodeInput.length !== 6}
-                      className="w-full py-2.5 rounded-xl text-xs font-bold text-white bg-[#10B981] hover:bg-[#059669] transition-all shadow-md disabled:opacity-60"
+                      className="w-full py-2.5 rounded-xl text-xs font-bold text-white bg-[#10B981] hover:bg-[#059669] transition-all shadow-md disabled:opacity-60 cursor-pointer"
                     >
                       {authLoading ? 'Verifying Code...' : 'Verify Code & Unlock Portal'}
                     </button>
                     <div className="flex items-center justify-between text-[11px] text-[#6B7E95] pt-1">
                       <button
                         type="button"
-                        onClick={() => { setOtpSent(false); setAuthError(null); setDevOtpHint(null); }}
-                        className="hover:underline"
+                        onClick={() => { setOtpSent(false); setAuthError(null); setDevOtpHint(null); setWhatsappFallbackUrl(null); }}
+                        className="hover:underline cursor-pointer"
                       >
                         Change Email
                       </button>
                       <button
                         type="button"
                         onClick={handleRequestOtp}
-                        className="text-[#477BDB] hover:underline font-semibold"
+                        className="text-[#477BDB] hover:underline font-semibold cursor-pointer"
                       >
                         Resend Code
                       </button>
+                    </div>
+
+                    {/* WhatsApp Fallback Card */}
+                    <div className="p-3 rounded-xl bg-emerald-50/80 border border-emerald-200/70 text-left">
+                      <div className="flex items-start gap-2.5">
+                        <MessageCircle size={15} className="text-emerald-600 shrink-0 mt-0.5" />
+                        <div className="text-[11px] text-emerald-900 leading-snug">
+                          <span className="font-semibold text-emerald-950 block mb-0.5">
+                            Email delayed or in spam folder?
+                          </span>
+                          Get your 6-digit security code directly from our team on WhatsApp.
+                          <div className="mt-2">
+                            <a
+                              href={
+                                whatsappFallbackUrl ||
+                                `https://wa.me/917290884480?text=${encodeURIComponent(
+                                  `Hi Growmybiz24! I am requesting the verification code for Project ID: ${project.receiptId} (Email: ${verifyEmailInput}).`
+                                )}`
+                              }
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors shadow-xs"
+                            >
+                              <MessageCircle size={12} />
+                              <span>Request Code on WhatsApp</span>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </form>
                 )}

@@ -28,6 +28,8 @@ import {
   Share2,
   FileText,
   Sparkles,
+  Download,
+  Search,
 } from 'lucide-react';
 import type { InquiryRecord } from '@/lib/supabase';
 import BrandLogo from '@/components/BrandLogo';
@@ -446,6 +448,7 @@ function LeadsPanel() {
   const [leads, setLeads] = useState<InquiryRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'new' | 'contacted' | 'qualified' | 'closed'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchLeads = async (showSpinner = true) => {
     if (showSpinner) setLoading(true);
@@ -504,44 +507,114 @@ function LeadsPanel() {
     }
   };
 
-  const filteredLeads = filter === 'all' ? leads : leads.filter((l) => l.status === filter);
+  const filteredLeads = leads.filter((l) => {
+    const matchesFilter = filter === 'all' || l.status === filter;
+    if (!matchesFilter) return false;
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      (l.name && l.name.toLowerCase().includes(q)) ||
+      (l.email && l.email.toLowerCase().includes(q)) ||
+      (l.phone && l.phone.toLowerCase().includes(q)) ||
+      (l.company && l.company.toLowerCase().includes(q)) ||
+      (l.service && l.service.toLowerCase().includes(q)) ||
+      (l.message && l.message.toLowerCase().includes(q))
+    );
+  });
+
+  const handleExportCsv = () => {
+    if (filteredLeads.length === 0) {
+      alert('No inquiries found to export.');
+      return;
+    }
+    const headers = ['ID', 'Date (UTC)', 'Name', 'Email', 'Phone', 'Company', 'Service', 'Budget', 'Status', 'Message'];
+    const rows = filteredLeads.map((l) => [
+      `"${l.id}"`,
+      `"${new Date(l.created_at).toISOString()}"`,
+      `"${(l.name || '').replace(/"/g, '""')}"`,
+      `"${(l.email || '').replace(/"/g, '""')}"`,
+      `"${(l.phone || '').replace(/"/g, '""')}"`,
+      `"${(l.company || '').replace(/"/g, '""')}"`,
+      `"${(l.service || '').replace(/"/g, '""')}"`,
+      `"${(l.budget || '').replace(/"/g, '""')}"`,
+      `"${(l.status || '').replace(/"/g, '""')}"`,
+      `"${(l.message || '').replace(/"/g, '""').replace(/[\r\n]+/g, ' ')}"`,
+    ]);
+
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `growmybiz24_inquiries_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <PanelWrapper
       title="Inbound Inquiries & Leads"
       subtitle="Prospects captured via the website contact form, stored in Supabase with Resend notification history."
       action={
-        <button
-          onClick={() => fetchLeads(true)}
-          disabled={loading}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white/70 bg-white/[0.04] hover:bg-white/[0.08] transition-colors"
-        >
-          <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
-          <span>Refresh</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleExportCsv}
+            disabled={filteredLeads.length === 0}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-emerald-600/90 hover:bg-emerald-600 disabled:opacity-50 transition-colors shadow-2xs cursor-pointer"
+            title="Download inquiries as a CSV spreadsheet"
+          >
+            <Download size={13} />
+            <span>Export CSV ({filteredLeads.length})</span>
+          </button>
+          <button
+            onClick={() => fetchLeads(true)}
+            disabled={loading}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white/70 bg-white/[0.04] hover:bg-white/[0.08] transition-colors cursor-pointer"
+          >
+            <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
+            <span>Refresh</span>
+          </button>
+        </div>
       }
     >
-      {/* Filter Tabs */}
-      <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-1">
-        {(['all', 'new', 'contacted', 'qualified', 'closed'] as const).map((tab) => {
-          const count = tab === 'all' ? leads.length : leads.filter((l) => l.status === tab).length;
-          return (
-            <button
-              key={tab}
-              onClick={() => setFilter(tab)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-colors flex items-center gap-1.5 ${
-                filter === tab
-                  ? 'bg-[#3b82d4] text-white shadow-sm'
-                  : 'bg-[#0d0d14] text-white/50 hover:text-white border border-white/[0.06]'
-              }`}
-            >
-              <span>{tab}</span>
-              <span className={`px-1.5 py-0.2 rounded text-[10px] ${filter === tab ? 'bg-white/20 text-white' : 'bg-white/[0.06] text-white/40'}`}>
-                {count}
-              </span>
-            </button>
-          );
-        })}
+      {/* Controls: Filter Tabs + Search Input */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+        {/* Filter Tabs */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+          {(['all', 'new', 'contacted', 'qualified', 'closed'] as const).map((tab) => {
+            const count = tab === 'all' ? leads.length : leads.filter((l) => l.status === tab).length;
+            return (
+              <button
+                key={tab}
+                onClick={() => setFilter(tab)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-colors flex items-center gap-1.5 cursor-pointer ${
+                  filter === tab
+                    ? 'bg-[#3b82d4] text-white shadow-sm'
+                    : 'bg-[#0d0d14] text-white/50 hover:text-white border border-white/[0.06]'
+                }`}
+              >
+                <span>{tab}</span>
+                <span className={`px-1.5 py-0.2 rounded text-[10px] ${filter === tab ? 'bg-white/20 text-white' : 'bg-white/[0.06] text-white/40'}`}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Search Input */}
+        <div className="relative min-w-[220px]">
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search name, email, service..."
+            className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#0d0d14] border border-white/[0.08] text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#3b82d4] transition-colors"
+          />
+        </div>
       </div>
 
       {loading ? (

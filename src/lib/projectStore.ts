@@ -439,7 +439,7 @@ export async function submitProjectFeedback(
 export async function requestProjectOtp(
   receiptId: string,
   email: string
-): Promise<{ success: boolean; error?: string; devOtp?: string; expiresAt?: string }> {
+): Promise<{ success: boolean; error?: string; devOtp?: string; expiresAt?: string; whatsappVerifyUrl?: string }> {
   const project = await getProjectByReceiptId(receiptId);
   if (!project) {
     return { success: false, error: 'Project not found.' };
@@ -467,6 +467,20 @@ export async function requestProjectOtp(
 
   await saveProject(project);
 
+  let adminWhatsAppNumber = (process.env.ADMIN_WHATSAPP_NUMBER || '917290884480').replace(/[^0-9]/g, '');
+  if (adminWhatsAppNumber.length === 10) {
+    adminWhatsAppNumber = `91${adminWhatsAppNumber}`;
+  }
+
+  const clientWaMessage = encodeURIComponent(
+    `Hi Growmybiz24 team! I am logging into my Client Portal.\n\n` +
+    `📋 Project ID: ${project.receiptId}\n` +
+    `👤 Client: ${project.clientName || 'Client'}\n` +
+    `✉️ Email: ${cleanEmail}\n\n` +
+    `Please assist me with my 6-digit portal verification code.`
+  );
+  const whatsappVerifyUrl = `https://wa.me/${adminWhatsAppNumber}?text=${clientWaMessage}`;
+
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log(`🔐 [CLIENT AUTH OTP GENERATED]`);
   console.log(`📋 Project:    ${project.receiptId}`);
@@ -478,6 +492,7 @@ export async function requestProjectOtp(
   return {
     success: true,
     expiresAt,
+    whatsappVerifyUrl,
     devOtp: process.env.NODE_ENV !== 'production' ? code : undefined,
   };
 }

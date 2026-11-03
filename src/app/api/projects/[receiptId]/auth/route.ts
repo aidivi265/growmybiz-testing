@@ -53,6 +53,7 @@ export async function POST(
         success: true,
         message: 'A 6-digit security code has been generated for your project.',
         expiresAt: result.expiresAt,
+        whatsappVerifyUrl: result.whatsappVerifyUrl,
         devOtp: result.devOtp, // Returned only in development for effortless testing
       });
     }
