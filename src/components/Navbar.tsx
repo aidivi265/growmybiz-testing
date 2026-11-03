@@ -3,7 +3,23 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Menu, X, ChevronDown, ArrowRight, MessageSquare, LayoutDashboard } from 'lucide-react';
+import {
+  Menu,
+  X,
+  ChevronDown,
+  ArrowRight,
+  MessageSquare,
+  LayoutDashboard,
+  Code2,
+  Palette,
+  TrendingUp,
+  Video,
+  Cpu,
+  Layers,
+  Calculator,
+  Search,
+  Sparkles,
+} from 'lucide-react';
 import { navItems } from '@/data/navigation';
 import BrandLogo from '@/components/BrandLogo';
 import QuickInquiryModal from '@/components/QuickInquiryModal';
@@ -208,33 +224,31 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
           {/* Drawer Navigation Links */}
           <nav className="flex-1 overflow-y-auto py-3 px-3">
             {/* Interactive Tools Highlight */}
-            <div className="mb-3 p-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl space-y-1.5">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] px-2 pt-0.5">
-                Growth Tools
+            <div className="mb-3.5 p-2 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-1.5">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-2 pt-0.5">
+                Interactive Studio Tools
               </div>
               <Link
                 href="/estimator"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-semibold text-[#0F1C31] bg-white border border-[#E2E8F0] shadow-2xs hover:bg-[#EFF6FF] transition-colors"
+                className="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-800 bg-white border border-slate-200 shadow-2xs hover:bg-blue-50/50 hover:text-blue-600 hover:border-blue-300 transition-colors"
               >
-                <span className="flex items-center gap-2">
-                  <span>⚡</span> Cost &amp; Scope Estimator
+                <span className="flex items-center gap-2.5">
+                  <Calculator size={15} className="text-blue-600" />
+                  <span>Cost &amp; Scope Estimator</span>
                 </span>
-                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 font-mono">
-                  CALC
-                </span>
+                <ArrowRight size={13} className="text-slate-400" />
               </Link>
               <Link
                 href="/audit"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-semibold text-[#0F1C31] bg-white border border-[#E2E8F0] shadow-2xs hover:bg-[#ECFDF5] transition-colors"
+                className="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-800 bg-white border border-slate-200 shadow-2xs hover:bg-emerald-50/50 hover:text-emerald-600 hover:border-emerald-300 transition-colors"
               >
-                <span className="flex items-center gap-2">
-                  <span>🔍</span> Free Website &amp; SEO Audit
+                <span className="flex items-center gap-2.5">
+                  <Search size={15} className="text-emerald-600" />
+                  <span>Free Website &amp; SEO Audit</span>
                 </span>
-                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 font-mono">
-                  FREE
-                </span>
+                <ArrowRight size={13} className="text-slate-400" />
               </Link>
             </div>
 
@@ -263,20 +277,29 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
                     </button>
                     {mobileExpanded === item.href && (
                       <div className="ml-3 pl-3 border-l-2 border-[#EFF6FF] mt-1 mb-2 space-y-0.5">
-                        {item.children.map((child) => (
-                          <Link
-                            key={child.href}
-                            href={child.href}
-                            onClick={() => setMobileOpen(false)}
-                            className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
-                              isActive(child.href)
-                                ? 'text-[#2563EB] font-medium'
-                                : 'text-[#64748B] hover:text-[#0F1C31]'
-                            }`}
-                          >
-                            {child.label}
-                          </Link>
-                        ))}
+                        {item.children.map((child) => {
+                          const slug = child.href.replace('/services/', '').replace('/', '');
+                          const meta = SERVICE_META[slug] || DEFAULT_SERVICE_META;
+                          const IconComp = meta.icon;
+                          const isChildActive = isActive(child.href);
+                          return (
+                            <Link
+                              key={child.href}
+                              href={child.href}
+                              onClick={() => setMobileOpen(false)}
+                              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
+                                isChildActive
+                                  ? 'text-[#2563EB] font-semibold bg-blue-50/60'
+                                  : 'text-[#475569] hover:text-[#0F1C31]'
+                              }`}
+                            >
+                              <div className={`w-5 h-5 rounded-md flex items-center justify-center ${meta.iconBg} ${meta.iconColor} shrink-0`}>
+                                <IconComp size={12} />
+                              </div>
+                              <span className="truncate">{child.label}</span>
+                            </Link>
+                          );
+                        })}
                       </div>
                     )}
                   </>
@@ -351,6 +374,59 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
   );
 }
 
+interface ServiceMetaItem {
+  icon: React.ElementType;
+  desc: string;
+  iconBg: string;
+  iconColor: string;
+}
+
+const SERVICE_META: Record<string, ServiceMetaItem> = {
+  'web-app-development': {
+    icon: Code2,
+    desc: 'Modern web apps, SaaS & mobile platforms',
+    iconBg: 'bg-blue-50',
+    iconColor: 'text-blue-600',
+  },
+  'design-branding': {
+    icon: Palette,
+    desc: 'UI/UX systems, brand identity & Figma',
+    iconBg: 'bg-violet-50',
+    iconColor: 'text-violet-600',
+  },
+  'digital-marketing': {
+    icon: TrendingUp,
+    desc: 'SEO rankings, performance ads & funnels',
+    iconBg: 'bg-emerald-50',
+    iconColor: 'text-emerald-600',
+  },
+  'video-content': {
+    icon: Video,
+    desc: 'Motion graphics, 3D renders & brand films',
+    iconBg: 'bg-amber-50',
+    iconColor: 'text-amber-600',
+  },
+  'ai-automation': {
+    icon: Cpu,
+    desc: 'Custom LLM agents, bots & automated ops',
+    iconBg: 'bg-cyan-50',
+    iconColor: 'text-cyan-600',
+  },
+  'other-digital-services': {
+    icon: Layers,
+    desc: 'Cloud setup, custom APIs & retainers',
+    iconBg: 'bg-slate-100',
+    iconColor: 'text-slate-700',
+  },
+};
+
+const DEFAULT_SERVICE_META: ServiceMetaItem = {
+  icon: Sparkles,
+  desc: 'Specialized digital agency capabilities',
+  iconBg: 'bg-blue-50',
+  iconColor: 'text-blue-600',
+};
+
 function NavItemComponent({
   item,
   isActive,
@@ -406,77 +482,84 @@ function NavItemComponent({
         />
       </button>
 
-      {/* Dropdown Panel */}
+      {/* Mega Dropdown Panel */}
       {isOpen && (
-        <div className="absolute top-full left-0 pt-2 w-80 z-50 animate-fadeIn">
+        <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2.5 w-[560px] max-w-[92vw] z-50 animate-fadeIn">
           {/* Invisible bridge to prevent mouse leaving gap */}
-          <div className="absolute -top-2 inset-x-0 h-2" />
-          <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-[0_12px_40px_rgba(15,28,49,0.12)] overflow-hidden p-2">
-            {/* Gradient Top Accent */}
-            <div
-              className="h-1 -mx-2 -mt-2 mb-2 w-[calc(100%+16px)]"
-              style={{ background: 'linear-gradient(90deg, #2563EB, #6366F1, #10B981)' }}
-            />
+          <div className="absolute -top-2.5 inset-x-0 h-3" />
 
-            <div className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8] px-2.5 py-1">
-              Core Digital Services
-            </div>
-            <div className="space-y-0.5">
-              {item.children!.map((child) => (
-                <Link
-                  key={child.href}
-                  href={child.href}
-                  prefetch={false}
-                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#334155] hover:text-[#2563EB] hover:bg-[#F8FAFC] transition-colors group"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#CBD5E1] group-hover:bg-[#2563EB] transition-colors shrink-0" />
-                  <span className="truncate">{child.label}</span>
-                </Link>
-              ))}
+          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-[0_20px_50px_rgba(15,28,49,0.12)] overflow-hidden">
+            {/* Header bar */}
+            <div className="px-4.5 pt-3.5 pb-2 flex items-center justify-between border-b border-slate-100">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                Studio Capabilities
+              </span>
+              <Link
+                href="/services"
+                prefetch={false}
+                className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1 group"
+              >
+                <span>All 6 Services</span>
+                <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
+              </Link>
             </div>
 
-            {/* Featured Interactive Tools Section */}
-            <div className="mt-2 pt-2 border-t border-[#F1F5F9] bg-[#F8FAFC] rounded-xl p-2 space-y-1">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] px-1 mb-1">
-                Interactive Growth Tools
-              </div>
+            {/* 2-Column Grid of Services */}
+            <div className="p-2 grid grid-cols-2 gap-1">
+              {item.children!.map((child) => {
+                const slug = child.href.replace('/services/', '').replace('/', '');
+                const meta = SERVICE_META[slug] || DEFAULT_SERVICE_META;
+                const IconComp = meta.icon;
+
+                return (
+                  <Link
+                    key={child.href}
+                    href={child.href}
+                    prefetch={false}
+                    className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors group text-left"
+                  >
+                    <div
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${meta.iconBg} ${meta.iconColor} group-hover:scale-105 transition-transform`}
+                    >
+                      <IconComp size={16} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[13px] font-bold text-slate-800 group-hover:text-blue-600 transition-colors truncate">
+                        {child.label}
+                      </div>
+                      <div className="text-[11px] text-slate-500 line-clamp-1 mt-0.5 leading-snug">
+                        {meta.desc}
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Bottom Agency Tools Rail */}
+            <div className="border-t border-slate-100 bg-slate-50/90 px-4 py-2.5 flex items-center justify-between">
               <Link
                 href="/estimator"
-                className="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-semibold text-[#0F1C31] hover:bg-white hover:shadow-xs transition-all group"
+                className="flex items-center gap-2 text-xs font-semibold text-slate-700 hover:text-blue-600 transition-colors group"
               >
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">⚡</span>
-                  <div>
-                    <div className="group-hover:text-[#2563EB] transition-colors leading-tight">
-                      Cost &amp; Scope Estimator
-                    </div>
-                    <div className="text-[10px] font-normal text-[#64748B]">
-                      Instant price &amp; timeline calculator
-                    </div>
-                  </div>
+                <div className="w-6 h-6 rounded-lg bg-blue-100/70 text-blue-600 flex items-center justify-center">
+                  <Calculator size={13} />
                 </div>
-                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 font-mono">
-                  CALC
-                </span>
+                <span>Scope &amp; Cost Estimator</span>
+                <span className="text-[11px] text-slate-400 group-hover:translate-x-0.5 transition-transform">→</span>
               </Link>
+
+              <span className="w-1 h-1 rounded-full bg-slate-300" />
+
               <Link
                 href="/audit"
-                className="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-semibold text-[#0F1C31] hover:bg-white hover:shadow-xs transition-all group"
+                className="flex items-center gap-2 text-xs font-semibold text-slate-700 hover:text-emerald-600 transition-colors group"
               >
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">🔍</span>
-                  <div>
-                    <div className="group-hover:text-[#2563EB] transition-colors leading-tight">
-                      Free Website &amp; SEO Audit
-                    </div>
-                    <div className="text-[10px] font-normal text-[#64748B]">
-                      Core Web Vitals &amp; tech score
-                    </div>
-                  </div>
+                <div className="w-6 h-6 rounded-lg bg-emerald-100/70 text-emerald-600 flex items-center justify-center">
+                  <Search size={13} />
                 </div>
-                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 font-mono">
-                  FREE
-                </span>
+                <span>Free Website &amp; SEO Audit</span>
+                <span className="text-[11px] text-slate-400 group-hover:translate-x-0.5 transition-transform">→</span>
               </Link>
             </div>
           </div>
