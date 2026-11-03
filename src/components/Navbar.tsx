@@ -109,18 +109,20 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
         className={`fixed top-0 inset-x-0 z-50 transition-[background-color,border-color,box-shadow] duration-200 ${
           scrolled
             ? 'bg-white/96 backdrop-blur-md shadow-[0_2px_24px_rgba(15,28,49,0.09)] border-b border-[#E8EDF4]'
-            : 'bg-white/80 backdrop-blur-sm border-b border-transparent'
+            : 'bg-white/90 backdrop-blur-md border-b border-[#E8EDF4]/60'
         }`}
         style={{ transform: 'translateZ(0)' }}
       >
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-16 sm:h-18 gap-3">
 
             {/* ── Official Brand Logo ── */}
-            <BrandLogo theme="light" size="lg" asLink={true} />
+            <div className="shrink-0 flex items-center">
+              <BrandLogo theme="light" size="md" asLink={true} />
+            </div>
 
-            {/* ── Desktop Nav ── */}
-            <div className="hidden lg:flex items-center gap-0.5">
+            {/* ── Desktop Navigation ── */}
+            <div className="hidden lg:flex items-center gap-1 xl:gap-1.5">
               {displayedNavItems.map((item) => (
                 <NavItemComponent
                   key={item.href}
@@ -132,35 +134,49 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
               ))}
             </div>
 
-            {/* ── Right actions ── */}
-            <div className="flex items-center gap-2 sm:gap-2.5">
-              <CurrencySwitcher variant="compact" className="hidden sm:inline-block" />
+            {/* ── Right Actions ── */}
+            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+              {/* Currency Switcher */}
+              <CurrencySwitcher
+                variant="compact"
+                theme="light"
+                showAutoBadge={true}
+                className="hidden sm:inline-block shrink-0"
+              />
+
+              {/* Client Portal Link */}
               <Link
                 href="/portal"
-                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#3D4F63] hover:text-[#0F1C31] hover:bg-[#F0F4FA] transition-colors"
+                className="h-9 px-3 hidden md:inline-flex items-center gap-1.5 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#CBD5E1]/70 hover:border-[#94A3B8] text-xs font-semibold text-[#1E293B] hover:text-[#0F1C31] shadow-xs transition-all whitespace-nowrap shrink-0"
               >
-                <LayoutDashboard size={13} className="text-[#477BDB]" />
-                Client Portal
+                <LayoutDashboard size={14} className="text-[#2563EB]" />
+                <span>Client Portal</span>
               </Link>
+
+              {/* Quick Inquire Button (Desktop XL) */}
               <button
                 type="button"
                 onClick={() => setInquiryModalOpen(true)}
-                className="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#477BDB] border border-[#477BDB]/30 hover:bg-[#EBF1FB] transition-colors"
+                className="h-9 px-3.5 hidden xl:inline-flex items-center gap-1.5 rounded-xl text-xs font-semibold text-[#2563EB] bg-[#EFF6FF] hover:bg-[#DBEAFE] border border-[#BFDBFE] transition-all whitespace-nowrap cursor-pointer shrink-0"
               >
                 <MessageSquare size={13} />
-                Inquire
+                <span>Inquire</span>
               </button>
+
+              {/* Start a Project (Primary CTA) */}
               <Link
                 href="/start-project"
-                className="hidden lg:inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all duration-200 hover:shadow-[0_4px_16px_rgba(71,123,219,0.40)] hover:-translate-y-0.5"
-                style={{ background: 'linear-gradient(135deg, #477BDB 0%, #6477C8 100%)' }}
+                className="h-9 px-4 hidden sm:inline-flex items-center gap-1.5 rounded-xl text-xs sm:text-sm font-semibold text-white transition-all shadow-[0_4px_14px_rgba(37,99,235,0.30)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.40)] hover:-translate-y-0.5 whitespace-nowrap shrink-0"
+                style={{ background: 'linear-gradient(135deg, #2563EB 0%, #4F46E5 100%)' }}
               >
-                Start a Project
+                <span>Start a Project</span>
                 <ArrowRight size={14} />
               </Link>
+
+              {/* Mobile Menu Toggle */}
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg border border-[#E8EDF4] text-[#3D4F63] hover:text-[#0F1C31] hover:border-[#C8D3E0] hover:bg-[#F7F9FC] transition-colors"
+                className="lg:hidden h-9 w-9 flex items-center justify-center rounded-xl border border-[#CBD5E1]/70 text-[#1E293B] hover:text-[#0F1C31] hover:bg-[#F8FAFC] transition-colors shrink-0"
                 aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
                 aria-expanded={mobileOpen}
               >
@@ -172,59 +188,101 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
         </nav>
       </header>
 
-      {/* ── Mobile overlay ── */}
-      <div className={`fixed inset-0 z-[60] lg:hidden transition-all duration-300 ${
-        mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-      }`}>
-        <div className="absolute inset-0 bg-[#0F1C31]/50 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
+      {/* ── Mobile Overlay & Drawer ── */}
+      <div
+        className={`fixed inset-0 z-[60] lg:hidden transition-all duration-300 ${
+          mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        <div
+          className="absolute inset-0 bg-[#0F1C31]/50 backdrop-blur-sm"
+          onClick={() => setMobileOpen(false)}
+        />
 
-        {/* Drawer */}
-        <div className={`absolute top-0 right-0 bottom-0 w-full max-w-[320px] bg-white flex flex-col shadow-2xl transition-transform duration-300 ${
-          mobileOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}>
-          {/* Drawer header */}
+        {/* Drawer Panel */}
+        <div
+          className={`absolute top-0 right-0 bottom-0 w-full max-w-[320px] bg-white flex flex-col shadow-2xl transition-transform duration-300 ${
+            mobileOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
+        >
+          {/* Drawer Header */}
           <div className="flex items-center justify-between px-5 h-16 border-b border-[#E8EDF4]">
-            <BrandLogo theme="light" size="md" asLink={false} />
+            <BrandLogo theme="light" size="sm" asLink={false} />
             <button
               onClick={() => setMobileOpen(false)}
-              className="w-8 h-8 flex items-center justify-center rounded-lg text-[#6B7E95] hover:text-[#0F1C31] hover:bg-[#F7F9FC]"
+              className="h-8 w-8 flex items-center justify-center rounded-lg text-[#6B7E95] hover:text-[#0F1C31] hover:bg-[#F7F9FC]"
             >
               <X size={18} />
             </button>
           </div>
 
-          {/* Drawer nav */}
+          {/* Drawer Navigation Links */}
           <nav className="flex-1 overflow-y-auto py-3 px-3">
+            {/* Interactive Tools Highlight */}
+            <div className="mb-3 p-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl space-y-1.5">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] px-2 pt-0.5">
+                Growth Tools
+              </div>
+              <Link
+                href="/estimator"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-semibold text-[#0F1C31] bg-white border border-[#E2E8F0] shadow-2xs hover:bg-[#EFF6FF] transition-colors"
+              >
+                <span className="flex items-center gap-2">
+                  <span>⚡</span> Cost &amp; Scope Estimator
+                </span>
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 font-mono">
+                  CALC
+                </span>
+              </Link>
+              <Link
+                href="/audit"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-semibold text-[#0F1C31] bg-white border border-[#E2E8F0] shadow-2xs hover:bg-[#ECFDF5] transition-colors"
+              >
+                <span className="flex items-center gap-2">
+                  <span>🔍</span> Free Website &amp; SEO Audit
+                </span>
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 font-mono">
+                  FREE
+                </span>
+              </Link>
+            </div>
+
+            {/* Main Links */}
             {displayedNavItems.map((item) => (
               <div key={item.href} className="mb-0.5">
                 {item.children ? (
                   <>
                     <button
-                      onClick={() => setMobileExpanded(mobileExpanded === item.href ? null : item.href)}
+                      onClick={() =>
+                        setMobileExpanded(mobileExpanded === item.href ? null : item.href)
+                      }
                       className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                         isActive(item.href)
-                          ? 'text-[#477BDB] bg-[#EBF1FB]'
-                          : 'text-[#3D4F63] hover:text-[#0F1C31] hover:bg-[#F7F9FC]'
+                          ? 'text-[#2563EB] bg-[#EFF6FF]'
+                          : 'text-[#334155] hover:text-[#0F1C31] hover:bg-[#F8FAFC]'
                       }`}
                     >
-                      {item.label}
+                      <span>{item.label}</span>
                       <ChevronDown
                         size={15}
-                        className={`transition-transform duration-200 text-[#6B7E95] ${
-                          mobileExpanded === item.href ? 'rotate-180' : ''
+                        className={`transition-transform duration-200 text-[#64748B] ${
+                          mobileExpanded === item.href ? 'rotate-180 text-[#2563EB]' : ''
                         }`}
                       />
                     </button>
                     {mobileExpanded === item.href && (
-                      <div className="ml-3 pl-3 border-l-2 border-[#EBF1FB] mt-1 mb-2 space-y-0.5">
+                      <div className="ml-3 pl-3 border-l-2 border-[#EFF6FF] mt-1 mb-2 space-y-0.5">
                         {item.children.map((child) => (
                           <Link
                             key={child.href}
                             href={child.href}
+                            onClick={() => setMobileOpen(false)}
                             className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
                               isActive(child.href)
-                                ? 'text-[#477BDB] font-medium'
-                                : 'text-[#6B7E95] hover:text-[#0F1C31]'
+                                ? 'text-[#2563EB] font-medium'
+                                : 'text-[#64748B] hover:text-[#0F1C31]'
                             }`}
                           >
                             {child.label}
@@ -236,10 +294,11 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
                 ) : (
                   <Link
                     href={item.href}
+                    onClick={() => setMobileOpen(false)}
                     className={`block px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                       isActive(item.href)
-                        ? 'text-[#477BDB] bg-[#EBF1FB]'
-                        : 'text-[#3D4F63] hover:text-[#0F1C31] hover:bg-[#F7F9FC]'
+                        ? 'text-[#2563EB] bg-[#EFF6FF]'
+                        : 'text-[#334155] hover:text-[#0F1C31] hover:bg-[#F8FAFC]'
                     }`}
                   >
                     {item.label}
@@ -250,21 +309,21 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
           </nav>
 
           {/* Mobile Currency Switcher */}
-          <div className="px-4 py-3 border-t border-[#E8EDF4] bg-[#F7F9FC]">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-[#6B7E95] mb-2 flex items-center justify-between">
+          <div className="px-4 py-3 border-t border-[#E8EDF4] bg-[#F8FAFC]">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] mb-2 flex items-center justify-between">
               <span>Currency</span>
-              <span>Auto IP &amp; Manual</span>
+              <span className="text-[#2563EB]">Auto IP &amp; Manual</span>
             </div>
-            <CurrencySwitcher variant="pills" className="w-full justify-between" />
+            <CurrencySwitcher variant="pills" theme="light" className="w-full justify-between" />
           </div>
 
-          {/* Drawer footer CTA */}
+          {/* Drawer Footer CTA */}
           <div className="p-4 border-t border-[#E8EDF4] space-y-2">
             <Link
               href="/start-project"
               onClick={() => setMobileOpen(false)}
               className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-sm text-white transition-all shadow-md"
-              style={{ background: 'linear-gradient(135deg, #477BDB, #6477C8)' }}
+              style={{ background: 'linear-gradient(135deg, #2563EB, #4F46E5)' }}
             >
               Start a Project
               <ArrowRight size={14} />
@@ -273,9 +332,9 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
               <Link
                 href="/portal"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold text-[#0F1C31] bg-[#F7F9FC] border border-[#E8EDF4]"
+                className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold text-[#0F1C31] bg-[#F8FAFC] border border-[#E8EDF4] hover:bg-[#F1F5F9]"
               >
-                <LayoutDashboard size={13} className="text-[#477BDB]" />
+                <LayoutDashboard size={13} className="text-[#2563EB]" />
                 Client Portal
               </Link>
               <button
@@ -284,7 +343,7 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
                   setMobileOpen(false);
                   setInquiryModalOpen(true);
                 }}
-                className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold text-[#477BDB] bg-[#EBF1FB]"
+                className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold text-[#2563EB] bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE]"
               >
                 <MessageSquare size={13} />
                 Quick Inquire
@@ -304,7 +363,10 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
 }
 
 function NavItemComponent({
-  item, isActive, activeDropdown, setActiveDropdown,
+  item,
+  isActive,
+  activeDropdown,
+  setActiveDropdown,
 }: {
   item: NavItem;
   isActive: boolean;
@@ -317,14 +379,14 @@ function NavItemComponent({
     return (
       <Link
         href={item.href}
-        className={`relative px-3.5 py-2 rounded-lg text-sm font-medium transition-colors ${
+        className={`relative px-3 py-2 rounded-xl text-[13.5px] font-medium whitespace-nowrap transition-colors ${
           isActive
-            ? 'text-[#477BDB]'
-            : 'text-[#3D4F63] hover:text-[#0F1C31] hover:bg-[#F7F9FC]'
+            ? 'text-[#2563EB] font-semibold'
+            : 'text-[#334155] hover:text-[#0F1C31] hover:bg-[#F8FAFC]'
         }`}
       >
         {isActive && (
-          <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full bg-[#477BDB]" />
+          <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full bg-[#2563EB]" />
         )}
         {item.label}
       </Link>
@@ -338,39 +400,95 @@ function NavItemComponent({
       onMouseLeave={() => setActiveDropdown(null)}
     >
       <button
-        className={`flex items-center gap-1 px-3.5 py-2 rounded-lg text-sm font-medium transition-colors ${
-          isActive ? 'text-[#477BDB]' : 'text-[#3D4F63] hover:text-[#0F1C31] hover:bg-[#F7F9FC]'
+        className={`flex items-center gap-1 px-3 py-2 rounded-xl text-[13.5px] font-medium whitespace-nowrap transition-colors ${
+          isActive
+            ? 'text-[#2563EB] font-semibold'
+            : 'text-[#334155] hover:text-[#0F1C31] hover:bg-[#F8FAFC]'
         }`}
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
-        {item.label}
+        <span>{item.label}</span>
         <ChevronDown
           size={13}
-          className={`transition-transform duration-200 text-[#6B7E95] ${isOpen ? 'rotate-180' : ''}`}
+          className={`transition-transform duration-200 text-[#64748B] ${
+            isOpen ? 'rotate-180 text-[#2563EB]' : ''
+          }`}
         />
       </button>
 
-      {/* Dropdown panel */}
+      {/* Dropdown Panel */}
       {isOpen && (
-        <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2.5 w-60 z-50">
-          {/* Invisible bridge to prevent gap hover */}
+        <div className="absolute top-full left-0 pt-2 w-80 z-50 animate-fadeIn">
+          {/* Invisible bridge to prevent mouse leaving gap */}
           <div className="absolute -top-2 inset-x-0 h-2" />
-          <div className="bg-white rounded-2xl border border-[#E8EDF4] shadow-[0_8px_32px_rgba(15,28,49,0.12)] overflow-hidden">
-            {/* Gradient top accent */}
-            <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg,#477BDB,#6477C8,#32A88A)' }} />
-            <div className="py-2">
+          <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-[0_12px_40px_rgba(15,28,49,0.12)] overflow-hidden p-2">
+            {/* Gradient Top Accent */}
+            <div
+              className="h-1 -mx-2 -mt-2 mb-2 w-[calc(100%+16px)]"
+              style={{ background: 'linear-gradient(90deg, #2563EB, #6366F1, #10B981)' }}
+            />
+
+            <div className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8] px-2.5 py-1">
+              Core Digital Services
+            </div>
+            <div className="space-y-0.5">
               {item.children!.map((child) => (
                 <Link
                   key={child.href}
                   href={child.href}
                   prefetch={false}
-                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#3D4F63] hover:text-[#477BDB] hover:bg-[#F7F9FC] transition-colors group"
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#334155] hover:text-[#2563EB] hover:bg-[#F8FAFC] transition-colors group"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#DDE3EC] group-hover:bg-[#477BDB] transition-colors flex-shrink-0" />
-                  {child.label}
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#CBD5E1] group-hover:bg-[#2563EB] transition-colors shrink-0" />
+                  <span className="truncate">{child.label}</span>
                 </Link>
               ))}
+            </div>
+
+            {/* Featured Interactive Tools Section */}
+            <div className="mt-2 pt-2 border-t border-[#F1F5F9] bg-[#F8FAFC] rounded-xl p-2 space-y-1">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] px-1 mb-1">
+                Interactive Growth Tools
+              </div>
+              <Link
+                href="/estimator"
+                className="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-semibold text-[#0F1C31] hover:bg-white hover:shadow-xs transition-all group"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-sm">⚡</span>
+                  <div>
+                    <div className="group-hover:text-[#2563EB] transition-colors leading-tight">
+                      Cost &amp; Scope Estimator
+                    </div>
+                    <div className="text-[10px] font-normal text-[#64748B]">
+                      Instant price &amp; timeline calculator
+                    </div>
+                  </div>
+                </div>
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 font-mono">
+                  CALC
+                </span>
+              </Link>
+              <Link
+                href="/audit"
+                className="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-semibold text-[#0F1C31] hover:bg-white hover:shadow-xs transition-all group"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-sm">🔍</span>
+                  <div>
+                    <div className="group-hover:text-[#2563EB] transition-colors leading-tight">
+                      Free Website &amp; SEO Audit
+                    </div>
+                    <div className="text-[10px] font-normal text-[#64748B]">
+                      Core Web Vitals &amp; tech score
+                    </div>
+                  </div>
+                </div>
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 font-mono">
+                  FREE
+                </span>
+              </Link>
             </div>
           </div>
         </div>
