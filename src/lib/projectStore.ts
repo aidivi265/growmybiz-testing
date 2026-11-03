@@ -65,6 +65,103 @@ function getSupabaseDocKey(receiptId: string): string {
 }
 
 // Fetch a single project by receipt ID (Authoritative from Supabase)
+
+export const DEMO_PROJECT_RECORD: ProjectRecord = {
+  id: 'demo-project-1001',
+  receiptId: 'GMB-PRJ-2026-1001',
+  clientAccessToken: 'sec_demo_growmybiz24_portal_key_2026',
+  createdAt: '2026-03-01T10:00:00.000Z',
+  updatedAt: new Date().toISOString(),
+  clientName: 'Demo Client',
+  clientEmail: 'demo@growmybiz24.com',
+  clientPhone: '+91 98765 43210',
+  companyName: 'Acme Growth Labs',
+  city: 'Bengaluru',
+  country: 'India',
+  serviceCategory: 'web-app-development',
+  serviceTitle: 'Full-Stack Web Application',
+  primaryGoal: 'Scale inbound conversion and automate customer onboarding',
+  inspirationUrls: ['https://linear.app', 'https://stripe.com'],
+  projectScale: 'Full-Stack Platform (10-15 modules)',
+  featureWishlist: ['User Authentication', 'Interactive Cost Calculator', 'Payment Gateway', 'Real-time Analytics'],
+  integrations: ['Supabase', 'Stripe / Razorpay', 'Resend Email API'],
+  budgetRange: '₹1,50,000 - ₹3,00,000',
+  budgetNumericEstimate: 200000,
+  currency: 'INR',
+  targetTimeline: '4-6 weeks',
+  urgencyLevel: 'standard',
+  assetsReady: {
+    logo: true,
+    copy: true,
+    photos: true,
+    domain: true,
+  },
+  status: 'phase_2_in_progress',
+  quotation: {
+    id: 'quote_demo_1001',
+    projectId: 'demo-project-1001',
+    receiptId: 'GMB-PRJ-2026-1001',
+    title: 'Enterprise Web Platform & Conversion Suite',
+    validityDays: 30,
+    currency: 'INR',
+    totalAmount: 200000,
+    executiveSummary: 'End-to-end full stack web application engineered with Next.js 16, Supabase PostgreSQL, and automated client workflows.',
+    proposedArchitecture: ['Next.js App Router', 'Tailwind CSS UI', 'Supabase Auth & Database', 'Vercel Serverless'],
+    deliverables: [
+      { id: 'del_1', title: 'Interactive High-Converting UI/UX', description: 'Complete responsive design system with dark/light fidelity.', includedRevisions: '3 rounds' },
+      { id: 'del_2', title: 'Full-Stack Next.js Architecture', description: 'Server components, dynamic data loading, and optimized routing.', includedRevisions: 'Included' },
+      { id: 'del_3', title: 'Payment & Authentication Integration', description: 'Secure role-based auth and multi-currency billing.', includedRevisions: 'Included' },
+    ],
+    exclusions: ['Third-party API recurring licensing fees', 'Content authoring beyond agreed sitemap'],
+    milestones: [
+      {
+        number: 1,
+        title: 'Project Kickoff & UI/UX Design Approval (50%)',
+        percentage: 50,
+        amount: 100000,
+        trigger: 'Project initiation and Figma approval',
+        status: 'paid',
+        invoiceNumber: 'EST-1001-01',
+        paidAt: '2026-03-05T12:00:00.000Z',
+        receiptSlipId: 'SLIP-DEMO-1001-M1',
+        transactionRef: 'TXN_UPI_DEMO_998822'
+      },
+      {
+        number: 2,
+        title: 'Frontend & API Integration Milestone (30%)',
+        percentage: 30,
+        amount: 60000,
+        trigger: 'Staging deployment with functional workflows',
+        status: 'unlocked',
+        invoiceNumber: 'EST-1001-02'
+      },
+      {
+        number: 3,
+        title: 'Final UAT Testing & Production Handover (20%)',
+        percentage: 20,
+        amount: 40000,
+        trigger: 'Production launch and codebase handover',
+        status: 'locked',
+        invoiceNumber: 'EST-1001-03'
+      }
+    ],
+    createdAt: '2026-03-02T10:00:00.000Z',
+    updatedAt: '2026-03-02T10:00:00.000Z'
+  },
+  mockups: [
+    {
+      id: 'mock_demo_1',
+      title: 'Figma High-Fidelity Interactive Prototype',
+      previewUrl: 'https://www.figma.com',
+      description: 'Complete UI layout covering desktop, tablet, and mobile views.',
+      status: 'approved',
+      submittedAt: '2026-03-04T10:00:00.000Z',
+      signedAt: '2026-03-05T11:30:00.000Z',
+      signedBy: 'Demo Client'
+    }
+  ]
+};
+
 export async function getProjectByReceiptId(receiptId: string): Promise<ProjectRecord | null> {
   const cleanId = receiptId.trim().toUpperCase();
   const docKey = getSupabaseDocKey(cleanId);
@@ -101,7 +198,14 @@ export async function getProjectByReceiptId(receiptId: string): Promise<ProjectR
   // 2. Fallback to local backup file
   const localProjects = readLocalProjectsBackup();
   const found = localProjects.find((p) => p.receiptId.toUpperCase() === cleanId);
-  return found || null;
+  if (found) return found;
+
+  // 3. Built-in interactive demo project fallback for testing & exploration
+  if (cleanId === 'GMB-PRJ-2026-1001') {
+    return DEMO_PROJECT_RECORD;
+  }
+
+  return null;
 }
 
 // List all projects for admin (Authoritative from Supabase)
