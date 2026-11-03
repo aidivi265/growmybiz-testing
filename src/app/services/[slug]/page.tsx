@@ -212,11 +212,11 @@ export default async function ServicePage({ params }: Props) {
                 </Link>
                 <ScheduleCallButton />
                 <Link
-                  href="/estimator"
+                  href={`/estimator?category=${slug}`}
                   className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-xs text-white bg-white/10 hover:bg-white/20 border border-white/10 transition-all hover:-translate-y-0.5"
                 >
                   <Calculator size={14} className="text-emerald-400" />
-                  Estimate Scope & Cost
+                  Estimate {service.title} Cost
                 </Link>
               </div>
             </div>
@@ -346,6 +346,50 @@ export default async function ServicePage({ params }: Props) {
         </Section>
       )}
 
+      {/* ── Interactive Scope & Cost Estimator Banner for this service ── */}
+      <Section dark>
+        <div className="p-8 sm:p-10 rounded-3xl bg-gradient-to-r from-[#0F1E36] via-[#162947] to-[#0F1E36] border border-[#2563EB]/30 relative overflow-hidden shadow-2xl">
+          <div
+            className="absolute top-0 right-0 w-80 h-80 rounded-full blur-3xl pointer-events-none opacity-20"
+            style={{ background: service.color }}
+          />
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div className="max-w-2xl space-y-2.5">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-semibold">
+                <Calculator size={13} />
+                <span>Instant {service.title} Pricing</span>
+              </div>
+              <h2
+                style={{ fontFamily: SYNE_FONT }}
+                className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight"
+              >
+                Calculate your investment for {service.title.toLowerCase()}
+              </h2>
+              <p className="text-sm text-slate-300 leading-relaxed">
+                Select your deliverables, design fidelity, and required delivery pace to receive a transparent scope breakdown with real-time currency pricing.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+              <Link
+                href={`/estimator?category=${slug}`}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-xs text-white transition-all shadow-[0_4px_16px_rgba(37,99,235,0.4)] hover:shadow-[0_6px_24px_rgba(37,99,235,0.5)] hover:-translate-y-0.5"
+                style={{ background: 'linear-gradient(135deg, #2563EB 0%, #4F46E5 100%)' }}
+              >
+                <Calculator size={15} />
+                <span>Estimate {service.title} Scope</span>
+                <ArrowRight size={14} />
+              </Link>
+              <Link
+                href="/audit"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold text-xs transition-all"
+              >
+                <span>Free SEO &amp; Speed Audit</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </Section>
+
       {/* FAQs */}
       {service.faqs && service.faqs.length > 0 && (
         <Section dark>
@@ -386,7 +430,14 @@ export default async function ServicePage({ params }: Props) {
               Tell us your goals and we will propose a clear scope with no ambiguity.
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+            <Link
+              href={`/estimator?category=${slug}`}
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-95 shadow-md shadow-emerald-950/40 transition-all hover:-translate-y-0.5"
+            >
+              <Calculator size={14} />
+              <span>Calculate Scope &amp; Pricing</span>
+            </Link>
             <Link href="/contact" className="btn btn-primary btn-md">
               Start a Project <ArrowRight size={15} />
             </Link>
