@@ -164,6 +164,9 @@ export const DEMO_PROJECT_RECORD: ProjectRecord = {
 
 export async function getProjectByReceiptId(receiptId: string): Promise<ProjectRecord | null> {
   const cleanId = receiptId.trim().toUpperCase();
+  if (cleanId === 'GMB-PRJ-2026-1001') {
+    return DEMO_PROJECT_RECORD;
+  }
   const docKey = getSupabaseDocKey(cleanId);
 
   // 1. Authoritative: Fetch from Supabase PostgreSQL (projects table or page_content)
@@ -250,6 +253,9 @@ export async function getAllProjects(): Promise<ProjectRecord[]> {
 // Save or update a project (Authoritative to Supabase)
 export async function saveProject(project: ProjectRecord): Promise<ProjectRecord> {
   project.updatedAt = new Date().toISOString();
+  if (project.receiptId.trim().toUpperCase() === 'GMB-PRJ-2026-1001') {
+    return project;
+  }
   if (!project.clientAccessToken) {
     project.clientAccessToken = generateClientAccessToken();
   }
