@@ -38,8 +38,8 @@ const SCOPE_PRESETS: ScopePreset[] = [
     title: 'Web & E-Commerce',
     icon: Globe,
     tagline: 'High-converting custom web apps & headless e-commerce stores',
-    minINR: 45000,
-    maxINR: 95000,
+    minINR: 18000,
+    maxINR: 42000,
     timeline: '2–3 Weeks Cadence',
     features: [
       'Tailored Next.js 16 + React 19 Frontend',
@@ -54,8 +54,8 @@ const SCOPE_PRESETS: ScopePreset[] = [
     title: 'SaaS & Mobile Apps',
     icon: Smartphone,
     tagline: 'Full-stack web products, user dashboards & native mobile apps',
-    minINR: 85000,
-    maxINR: 180000,
+    minINR: 42000,
+    maxINR: 85000,
     timeline: '3–5 Weeks Cadence',
     features: [
       'Cross-platform Flutter / React Native or SaaS UI',
@@ -70,8 +70,8 @@ const SCOPE_PRESETS: ScopePreset[] = [
     title: 'Brand & UI/UX Systems',
     icon: Palette,
     tagline: 'Premium visual identity, Figma design systems & interactive prototypes',
-    minINR: 35000,
-    maxINR: 75000,
+    minINR: 14000,
+    maxINR: 32000,
     timeline: '1–2 Weeks Cadence',
     features: [
       'Complete Brand Book & Typography Rules',
@@ -86,8 +86,8 @@ const SCOPE_PRESETS: ScopePreset[] = [
     title: 'AI & Workflow Automation',
     icon: Bot,
     tagline: 'Custom Gemini/LLM AI bots, n8n automations & CRM integration',
-    minINR: 40000,
-    maxINR: 110000,
+    minINR: 18000,
+    maxINR: 45000,
     timeline: '2–3 Weeks Cadence',
     features: [
       'Custom AI Chatbot with Business Knowledge Base',

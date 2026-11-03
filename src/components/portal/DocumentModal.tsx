@@ -25,6 +25,12 @@ export default function DocumentModal({
   };
 
   const q = project.quotation;
+  const currSymbol = project.currency === 'USD' ? '$' : project.currency === 'EUR' ? '€' : project.currency === 'AED' ? 'AED ' : '₹';
+  const fmt = (amt?: number) => {
+    if (amt === undefined || amt === null) return '-';
+    return `${currSymbol}${amt.toLocaleString('en-IN')}`;
+  };
+
   const m1 = q?.milestones.find((m) => m.number === 1);
   const activeMilestone = milestone || m1;
 
@@ -192,14 +198,14 @@ export default function DocumentModal({
                           <td className="py-3 px-3 text-[11px] text-[#6B7E95]">{m.trigger}</td>
                           <td className="py-3 px-3 font-mono font-bold text-[#477BDB]">{m.percentage}%</td>
                           <td className="py-3 px-3 text-right font-mono font-bold text-[#0F1C31]">
-                            ₹{m.amount.toLocaleString('en-IN')}
+                            {fmt(m.amount)}
                           </td>
                         </tr>
                       ))}
                       <tr className="bg-[#F7F9FC] font-black text-[#0F1C31]">
                         <td colSpan={3} className="py-3 px-3 text-right uppercase text-xs">Total Professional Fee:</td>
                         <td className="py-3 px-3 text-right font-mono text-sm text-[#477BDB]">
-                          ₹{q?.totalAmount.toLocaleString('en-IN')}
+                          {fmt(q?.totalAmount)}
                         </td>
                       </tr>
                     </tbody>
@@ -226,7 +232,7 @@ export default function DocumentModal({
               </div>
 
               <div>
-                <strong className="text-[#0F1C31]">2. COMMERCIAL MILESTONES & 50-30-20 GATE:</strong> Total professional fee is ₹{q?.totalAmount.toLocaleString('en-IN')}. Payment schedule is governed strictly by:
+                <strong className="text-[#0F1C31]">2. COMMERCIAL MILESTONES & 50-30-20 GATE:</strong> Total professional fee is {fmt(q?.totalAmount)}. Payment schedule is governed strictly by:
                 <ul className="list-disc pl-5 mt-1 space-y-0.5">
                   <li><strong>Milestone 1 (50% Advance):</strong> Payable upon agreement execution to unlock architecture and Phase 1 UI/UX design.</li>
                   <li><strong>Milestone 2 (30% Design Approval):</strong> Payable upon formal sign-off of interactive mockups to unlock full development.</li>
@@ -318,17 +324,17 @@ export default function DocumentModal({
                       </td>
                       <td className="py-3 px-3 font-mono">998314</td>
                       <td className="py-3 px-3 text-right font-mono font-bold text-[#0F1C31]">
-                        ₹{activeMilestone?.amount.toLocaleString('en-IN')}
+                        {fmt(activeMilestone?.amount)}
                       </td>
                     </tr>
                     <tr className="bg-[#F7F9FC] font-bold text-[#0F1C31]">
                       <td colSpan={2} className="py-2 px-3 text-right">Subtotal Professional Fee:</td>
-                      <td className="py-2 px-3 text-right font-mono">₹{activeMilestone?.amount.toLocaleString('en-IN')}</td>
+                      <td className="py-2 px-3 text-right font-mono">{fmt(activeMilestone?.amount)}</td>
                     </tr>
                     <tr className="bg-[#0F1C31] text-white font-black text-sm">
                       <td colSpan={2} className="py-3 px-3 text-right uppercase tracking-wider">Milestone Amount Due:</td>
                       <td className="py-3 px-3 text-right font-mono text-[#477BDB]">
-                        ₹{activeMilestone?.amount.toLocaleString('en-IN')}
+                        {fmt(activeMilestone?.amount)}
                       </td>
                     </tr>
                   </tbody>
@@ -363,7 +369,7 @@ export default function DocumentModal({
                 <div>
                   <div className="text-[#6B7E95] text-[11px] uppercase tracking-wider font-bold">Simulation Record</div>
                   <div className="text-sm font-bold text-emerald-600 mt-0.5 font-mono">
-                    ₹{activeMilestone?.amount.toLocaleString('en-IN')} (DEMO CLEARED)
+                    {fmt(activeMilestone?.amount)} (DEMO CLEARED)
                   </div>
                   <div className="text-[11px] text-[#6B7E95] font-mono mt-1">
                     TXN ID: {activeMilestone?.transactionRef || `TXN-DEMO-${Date.now()}`}

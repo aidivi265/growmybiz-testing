@@ -242,8 +242,8 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
 
   // Adaptive round increment and floor per currency
   const roundIncrement = currencyDetails.roundIncrement;
-  const minFloor = currency === 'INR' ? 15000 : currency === 'AED' ? 750 : currency === 'EUR' ? 180 : 200;
-  const minSpread = currency === 'INR' ? 10000 : currency === 'AED' ? 550 : currency === 'EUR' ? 140 : 150;
+  const minFloor = currency === 'INR' ? 12000 : currency === 'AED' ? 550 : currency === 'EUR' ? 130 : 140;
+  const minSpread = currency === 'INR' ? 5000 : currency === 'AED' ? 250 : currency === 'EUR' ? 60 : 70;
 
   const estimatedMin = Math.max(
     minFloor,
@@ -251,7 +251,7 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
   );
   const estimatedMax = Math.max(
     estimatedMin + minSpread,
-    Math.round((rawSubtotal * 1.25) / roundIncrement) * roundIncrement
+    Math.round((rawSubtotal * 1.15) / roundIncrement) * roundIncrement
   );
 
   // Delivery duration estimation

@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { ArrowRight, CheckCircle, Mail, Phone, MapPin, MessageSquare, AlertCircle } from 'lucide-react';
 import { services as defaultServices } from '@/data/services';
-import { budgetRanges, timelineOptions } from '@/data/forms';
+import { getBudgetRanges, timelineOptions, type BudgetRangeItem } from '@/data/forms';
+import { useCurrency } from '@/context/CurrencyContext';
 import { siteConfig } from '@/data/siteConfig';
 import { Input, Textarea, Select, Breadcrumb, PhoneInput } from '@/components/ui';
 import type { EnquiryFormData, Service } from '@/types';
@@ -31,6 +32,8 @@ export default function ContactPageClient({
   initialServices,
   initialSettings,
 }: ContactPageClientProps) {
+  const { currency } = useCurrency();
+  const activeBudgetRanges = getBudgetRanges(currency);
   const [form, setForm] = useState<EnquiryFormData>(INITIAL);
   const [honeypot, setHoneypot] = useState('');
   const [turnstileToken, setTurnstileToken] = useState('');
@@ -296,7 +299,7 @@ export default function ContactPageClient({
                     label="Estimated Budget Range *"
                     options={[
                       { value: '', label: 'Select a budget range' },
-                      ...budgetRanges.map((b) => ({ value: b.value, label: b.label })),
+                      ...activeBudgetRanges.map((b: BudgetRangeItem) => ({ value: b.value, label: b.label })),
                     ]}
                     value={form.budget}
                     onChange={set('budget')}

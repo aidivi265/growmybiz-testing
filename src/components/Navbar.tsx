@@ -147,27 +147,16 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
               {/* Client Portal Link */}
               <Link
                 href="/portal"
-                className="h-9 px-3 hidden md:inline-flex items-center gap-1.5 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#CBD5E1]/70 hover:border-[#94A3B8] text-xs font-semibold text-[#1E293B] hover:text-[#0F1C31] shadow-xs transition-all whitespace-nowrap shrink-0"
+                className="h-9 px-3 hidden md:inline-flex items-center gap-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 hover:text-slate-900 transition-colors whitespace-nowrap shrink-0"
               >
-                <LayoutDashboard size={14} className="text-[#2563EB]" />
+                <LayoutDashboard size={13} className="text-slate-500" />
                 <span>Client Portal</span>
               </Link>
-
-              {/* Quick Inquire Button (Desktop XL) */}
-              <button
-                type="button"
-                onClick={() => setInquiryModalOpen(true)}
-                className="h-9 px-3.5 hidden xl:inline-flex items-center gap-1.5 rounded-xl text-xs font-semibold text-[#2563EB] bg-[#EFF6FF] hover:bg-[#DBEAFE] border border-[#BFDBFE] transition-all whitespace-nowrap cursor-pointer shrink-0"
-              >
-                <MessageSquare size={13} />
-                <span>Inquire</span>
-              </button>
 
               {/* Start a Project (Primary CTA) */}
               <Link
                 href="/start-project"
-                className="h-9 px-4 hidden sm:inline-flex items-center gap-1.5 rounded-xl text-xs sm:text-sm font-semibold text-white transition-all shadow-[0_4px_14px_rgba(37,99,235,0.30)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.40)] hover:-translate-y-0.5 whitespace-nowrap shrink-0"
-                style={{ background: 'linear-gradient(135deg, #2563EB 0%, #4F46E5 100%)' }}
+                className="h-9 px-3.5 sm:px-4 inline-flex items-center gap-1.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-xs whitespace-nowrap shrink-0"
               >
                 <span>Start a Project</span>
                 <ArrowRight size={14} />

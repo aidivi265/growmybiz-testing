@@ -21,12 +21,12 @@ import type { BeforeAfterShowcase, BeforeAfterMetric } from '@/data/beforeAfterS
 import { defaultBeforeAfterShowcases } from '@/data/beforeAfterShowcase';
 
 const SERVICE_OPTIONS = [
-  { slug: 'web-app-development', name: 'Web & E-Commerce Engineering', icon: '💻' },
-  { slug: 'ai-automation', name: 'AI Agents & WhatsApp Automation', icon: '🤖' },
-  { slug: 'design-branding', name: 'Design Systems & Brand Identity', icon: '🎨' },
-  { slug: 'digital-marketing', name: 'Performance Ads & Technical SEO', icon: '📈' },
-  { slug: 'mobile-app', name: 'Native Mobile App Development', icon: '📱' },
-  { slug: 'video-content', name: '3D Kinetic Motion & Video Production', icon: '🎬' },
+  { slug: 'web-app-development', name: 'Web & E-Commerce Engineering', icon: 'Globe' },
+  { slug: 'ai-automation', name: 'AI Agents & WhatsApp Automation', icon: 'Bot' },
+  { slug: 'design-branding', name: 'Design Systems & Brand Identity', icon: 'Palette' },
+  { slug: 'digital-marketing', name: 'Performance Ads & Technical SEO', icon: 'TrendingUp' },
+  { slug: 'mobile-app', name: 'Native Mobile App Development', icon: 'Smartphone' },
+  { slug: 'video-content', name: '3D Motion & Video Production', icon: 'Video' },
 ];
 
 export default function BeforeAfterPanel() {

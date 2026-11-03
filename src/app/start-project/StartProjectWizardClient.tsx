@@ -75,12 +75,38 @@ const FEATURE_OPTIONS = [
   'SEO Schema & OpenGraph Meta Optimizations',
 ];
 
-const BUDGET_RANGES = [
-  { label: 'Starter Sprint', range: '₹25,000 – ₹50,000', usd: '~$400 – $650' },
-  { label: 'Growth Project', range: '₹50,000 – ₹1,50,000', usd: '~$650 – $1,800' },
-  { label: 'Full-Stack Solution', range: '₹1,50,000 – ₹3,50,000', usd: '~$1,800 – $4,200' },
-  { label: 'Enterprise / Scale', range: '₹3,50,000+', usd: '~$4,200+' },
-];
+const getDynamicBudgetRanges = (curr: string) => {
+  switch (curr) {
+    case 'USD':
+      return [
+        { label: 'Starter Sprint', range: '$200 – $450', sub: 'Single-page / Landing' },
+        { label: 'Growth Project', range: '$450 – $950', sub: 'Standard Web Platform' },
+        { label: 'Full-Stack Solution', range: '$950 – $1,800', sub: 'Custom Web App / SaaS' },
+        { label: 'Enterprise / Scale', range: '$1,800+', sub: 'Comprehensive Architecture' },
+      ];
+    case 'EUR':
+      return [
+        { label: 'Starter Sprint', range: '€180 – €420', sub: 'Single-page / Landing' },
+        { label: 'Growth Project', range: '€420 – €880', sub: 'Standard Web Platform' },
+        { label: 'Full-Stack Solution', range: '€880 – €1,650', sub: 'Custom Web App / SaaS' },
+        { label: 'Enterprise / Scale', range: '€1,650+', sub: 'Comprehensive Architecture' },
+      ];
+    case 'AED':
+      return [
+        { label: 'Starter Sprint', range: '750 – 1,650 AED', sub: 'Single-page / Landing' },
+        { label: 'Growth Project', range: '1,650 – 3,500 AED', sub: 'Standard Web Platform' },
+        { label: 'Full-Stack Solution', range: '3,500 – 6,600 AED', sub: 'Custom Web App / SaaS' },
+        { label: 'Enterprise / Scale', range: '6,600+ AED', sub: 'Comprehensive Architecture' },
+      ];
+    default:
+      return [
+        { label: 'Starter Sprint', range: '₹15,000 – ₹35,000', sub: 'Single-page / Landing' },
+        { label: 'Growth Project', range: '₹35,000 – ₹75,000', sub: 'Standard Web Platform' },
+        { label: 'Full-Stack Solution', range: '₹75,000 – ₹1,50,000', sub: 'Custom Web App / SaaS' },
+        { label: 'Enterprise / Scale', range: '₹1,50,000+', sub: 'Comprehensive Architecture' },
+      ];
+  }
+};
 
 const TIMELINE_OPTIONS = [
   'Urgent Sprint (< 2 Weeks)',
@@ -93,6 +119,7 @@ export default function StartProjectWizardClient() {
   const [currentSlide, setCurrentSlide] = useState(1);
   const totalSlides = 5;
   const { currency, formatPrice } = useCurrency();
+  const activeBudgetRanges = getDynamicBudgetRanges(currency);
 
   // Slide 1: Contact
   const [clientName, setClientName] = useState('');
@@ -118,7 +145,7 @@ export default function StartProjectWizardClient() {
   const [technicalNotes, setTechnicalNotes] = useState('');
 
   // Slide 4: Budget & Timeline
-  const [budgetRange, setBudgetRange] = useState(BUDGET_RANGES[1].range);
+  const [budgetRange, setBudgetRange] = useState(activeBudgetRanges[1].range);
   const [targetTimeline, setTargetTimeline] = useState(TIMELINE_OPTIONS[1]);
   const [urgencyLevel, setUrgencyLevel] = useState('Standard');
 
@@ -584,7 +611,7 @@ export default function StartProjectWizardClient() {
                       <CurrencySwitcher variant="pills" />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {BUDGET_RANGES.map((b) => {
+                      {activeBudgetRanges.map((b) => {
                         const isSelected = budgetRange === b.range;
                         return (
                           <div
@@ -592,15 +619,15 @@ export default function StartProjectWizardClient() {
                             onClick={() => setBudgetRange(b.range)}
                             className={`p-4 rounded-2xl border cursor-pointer transition-all ${
                               isSelected
-                                ? 'border-[#477BDB] bg-[#EBF1FB] ring-2 ring-[#477BDB]/20 shadow-sm'
+                                ? 'border-[#2563EB] bg-[#EFF6FF] ring-2 ring-[#2563EB]/20 shadow-sm'
                                 : 'border-[#E8EDF4] bg-white hover:border-[#CBD5E1]'
                             }`}
                           >
                             <div className="flex items-center justify-between mb-1">
                               <span className="text-xs font-bold text-[#0F1C31]">{b.label}</span>
-                              <span className="text-[10px] text-[#6B7E95] font-mono">{b.usd}</span>
+                              <span className="text-[10px] text-[#64748B] font-mono">{b.sub}</span>
                             </div>
-                            <div className="text-base font-extrabold text-[#477BDB]">{b.range}</div>
+                            <div className="text-base font-extrabold text-[#2563EB]">{b.range}</div>
                           </div>
                         );
                       })}

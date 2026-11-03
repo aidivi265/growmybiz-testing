@@ -29,6 +29,7 @@ import {
 import { SYNE_FONT } from '@/lib/fonts';
 import type { ProjectRecord, MilestoneItem } from '@/types/project';
 import DocumentModal from '@/components/portal/DocumentModal';
+import { useCurrency } from '@/context/CurrencyContext';
 
 export default function ClientPortalClient() {
   const searchParams = useSearchParams();
@@ -71,6 +72,17 @@ export default function ClientPortalClient() {
   const [allowTestimonial, setAllowTestimonial] = useState(true);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   const [submittingFeedback, setSubmittingFeedback] = useState(false);
+  const { currency } = useCurrency();
+
+  const renderPrice = (amt?: number) => {
+    if (amt === undefined || amt === null) return '-';
+    const activeCurr = project?.currency || currency;
+    if (activeCurr === 'USD') return `$${amt.toLocaleString('en-US')}`;
+    if (activeCurr === 'EUR') return `€${amt.toLocaleString('de-DE')}`;
+    if (activeCurr === 'AED') return `${amt.toLocaleString('en-US')} AED`;
+    return `₹${amt.toLocaleString('en-IN')}`;
+  };
+
 
   // Retrieve token from localStorage if present
   useEffect(() => {
@@ -657,7 +669,7 @@ export default function ClientPortalClient() {
                       )}
                     </div>
                     <div className="text-base font-extrabold font-mono mt-1 text-white">
-                      ₹{m1?.amount.toLocaleString('en-IN')}
+                      {renderPrice(m1?.amount)}
                     </div>
                     <div className="text-[11px] text-white/60 mt-0.5">
                       Unlocks Architecture & Design Sprint
@@ -687,7 +699,7 @@ export default function ClientPortalClient() {
                       )}
                     </div>
                     <div className="text-base font-extrabold font-mono mt-1 text-white">
-                      ₹{m2?.amount.toLocaleString('en-IN')}
+                      {renderPrice(m2?.amount)}
                     </div>
                     <div className="text-[11px] text-white/60 mt-0.5">
                       Triggered after Design Mockup Sign-Off
@@ -717,7 +729,7 @@ export default function ClientPortalClient() {
                       )}
                     </div>
                     <div className="text-base font-extrabold font-mono mt-1 text-white">
-                      ₹{m3?.amount.toLocaleString('en-IN')}
+                      {renderPrice(m3?.amount)}
                     </div>
                     <div className="text-[11px] text-white/60 mt-0.5">
                       Releases DNS, Git Source Code & IP
@@ -784,7 +796,7 @@ export default function ClientPortalClient() {
                     <div className="text-right">
                       <div className="text-xs text-[#6B7E95]">Total Project Value</div>
                       <div className="text-lg font-black font-mono text-[#0F1C31]">
-                        ₹{q?.totalAmount.toLocaleString('en-IN')}
+                        {renderPrice(q?.totalAmount)}
                       </div>
                     </div>
                   </div>
@@ -820,7 +832,7 @@ export default function ClientPortalClient() {
                         style={{ background: 'linear-gradient(135deg, #10B981, #059669)' }}
                       >
                         <CreditCard size={14} />
-                        {payingMilestone === 1 ? 'Processing Simulation...' : `Accept & Pay 50% Advance (Demo Mode: ₹${m1?.amount.toLocaleString('en-IN')})`}
+                        {payingMilestone === 1 ? 'Processing Simulation...' : `Accept & Pay 50% Advance (Demo Mode: ${renderPrice(m1?.amount)})`}
                       </button>
                     )}
                   </div>
@@ -1041,7 +1053,7 @@ export default function ClientPortalClient() {
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-[#0F1C31]">Milestone 1 (50%)</span>
                       <span className="text-xs font-mono font-bold text-[#477BDB]">
-                        ₹{m1?.amount.toLocaleString('en-IN')}
+                        {renderPrice(m1?.amount)}
                       </span>
                     </div>
 
@@ -1086,7 +1098,7 @@ export default function ClientPortalClient() {
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-[#0F1C31]">Milestone 2 (30%)</span>
                       <span className="text-xs font-mono font-bold text-[#477BDB]">
-                        ₹{m2?.amount.toLocaleString('en-IN')}
+                        {renderPrice(m2?.amount)}
                       </span>
                     </div>
 
@@ -1133,7 +1145,7 @@ export default function ClientPortalClient() {
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-[#0F1C31]">Milestone 3 (20%)</span>
                       <span className="text-xs font-mono font-bold text-[#477BDB]">
-                        ₹{m3?.amount.toLocaleString('en-IN')}
+                        {renderPrice(m3?.amount)}
                       </span>
                     </div>
 
