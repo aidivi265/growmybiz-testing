@@ -57,6 +57,17 @@ export default function WebsiteAuditClient() {
   const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
   const [expandedIssue, setExpandedIssue] = useState<number | null>(null);
 
+  // Pre-fill URL from query parameter if present
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const paramUrl = params.get('url');
+      if (paramUrl) {
+        setUrl(paramUrl);
+      }
+    }
+  }, []);
+
   // Stepped scanning simulation
   useEffect(() => {
     let interval: any;

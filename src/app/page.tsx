@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import HeroSection from '@/components/home/HeroSection';
+import HomeAuditBar from '@/components/home/HomeAuditBar';
 import ServicesSection from '@/components/home/ServicesSection';
 import PortfolioPreview from '@/components/home/PortfolioPreview';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
 import ProcessPreview from '@/components/home/ProcessPreview';
 import ValuePropsSection from '@/components/home/ValuePropsSection';
+import HomeEstimatorTeaser from '@/components/home/HomeEstimatorTeaser';
 import InsightsPreview from '@/components/home/InsightsPreview';
 import BeforeAfterSlider from '@/components/ui/BeforeAfterSlider';
 import {
@@ -78,6 +80,7 @@ export default async function HomePage() {
 
   return (
     <>
+      {/* Hero Section with Interactive 3D Growth Orbit */}
       <HeroSection
         initialSlides={heroSlides}
         orbitConfig={orbitConfig}
@@ -85,6 +88,9 @@ export default async function HomePage() {
         offeringsCount={totalOfferings > 0 ? totalOfferings : 30}
         portfolioCount={portfolio.length}
       />
+
+      {/* Free Website & Technical SEO Diagnostic Lead Magnet */}
+      <HomeAuditBar />
 
       {/* Services Section */}
       {visibility.services !== false && services.length > 0 && (
@@ -94,9 +100,13 @@ export default async function HomePage() {
         </>
       )}
 
-      {/* Value Propositions / Why Us */}
+      {/* Value Propositions / Why Choose Growmybiz24 */}
       <div style={{ height: '2px', background: 'linear-gradient(90deg, #0F1C31, #1A2B4A, #0F1C31)' }} />
       <ValuePropsSection items={valueProps} />
+
+      {/* Interactive Project Cost & Scope Estimator Preview */}
+      <div style={{ height: '2px', background: 'linear-gradient(90deg, #1A2B4A, #243B66, #1A2B4A)' }} />
+      <HomeEstimatorTeaser />
 
       {/* Interactive Before & After Transformation Slider */}
       <div style={{ height: '2px', background: 'linear-gradient(90deg, #1A2B4A, #243B66, #1A2B4A)' }} />
@@ -110,7 +120,7 @@ export default async function HomePage() {
         </>
       )}
 
-      {/* Testimonials (Only rendered if enabled and has at least 1 real testimonial) */}
+      {/* Testimonials (Only rendered if enabled and has real entries) */}
       {visibility.testimonials !== false && testimonials && testimonials.length > 0 && (
         <>
           <div style={{ height: '2px', background: 'linear-gradient(90deg, #0F1C31, #1A2B4A, #0F1C31)' }} />

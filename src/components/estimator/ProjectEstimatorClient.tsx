@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import {
   Code2,
@@ -120,6 +120,29 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
   // ── 1. Interactive Selection State ──
   const { currency, setCurrency, rates, currencyDetails } = useCurrency();
   const [currentStep, setCurrentStep] = useState<number>(1);
+
+  // Pre-select category or platform from query parameters if present
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const catParam = params.get('category');
+      const platParam = params.get('platform');
+      if (catParam) {
+        const found = config.categories.find(
+          (c) => c.id === catParam || c.slug === catParam
+        );
+        if (found) {
+          setSelectedCategoryId(found.id);
+          if (found.platforms && found.platforms.length > 0) {
+            setSelectedPlatformId(found.platforms[0].id);
+          }
+        }
+      }
+      if (platParam) {
+        setSelectedPlatformId(platParam);
+      }
+    }
+  }, [config.categories]);
 
   // Selections
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>(config.categories[0]?.id || 'web-dev');
