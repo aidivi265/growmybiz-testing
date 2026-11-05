@@ -25,6 +25,7 @@ import {
   AlertTriangle,
   KeyRound,
   MessageCircle,
+  Info,
 } from 'lucide-react';
 import { SYNE_FONT } from '@/lib/fonts';
 import type { ProjectRecord, MilestoneItem } from '@/types/project';
@@ -72,15 +73,22 @@ export default function ClientPortalClient() {
   const [allowTestimonial, setAllowTestimonial] = useState(true);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   const [submittingFeedback, setSubmittingFeedback] = useState(false);
-  const { currency } = useCurrency();
+  const { currency, rates } = useCurrency();
+
+  const isDemo = project?.receiptId === 'GMB-PRJ-2026-1001';
+  const activeCurr = isDemo ? currency : (project?.currency || currency);
 
   const renderPrice = (amt?: number) => {
     if (amt === undefined || amt === null) return '-';
-    const activeCurr = project?.currency || currency;
-    if (activeCurr === 'USD') return `$${amt.toLocaleString('en-US')}`;
-    if (activeCurr === 'EUR') return `€${amt.toLocaleString('de-DE')}`;
-    if (activeCurr === 'AED') return `${amt.toLocaleString('en-US')} AED`;
-    return `₹${amt.toLocaleString('en-IN')}`;
+    let finalAmt = amt;
+    const rateMap = rates as Record<string, number>;
+    if (isDemo && activeCurr !== 'INR' && rateMap && rateMap['INR'] && rateMap[activeCurr]) {
+      finalAmt = Math.round((amt / rateMap['INR']) * rateMap[activeCurr]);
+    }
+    if (activeCurr === 'USD') return `$${finalAmt.toLocaleString('en-US')}`;
+    if (activeCurr === 'EUR') return `€${finalAmt.toLocaleString('de-DE')}`;
+    if (activeCurr === 'AED') return `${finalAmt.toLocaleString('en-US')} AED`;
+    return `₹${finalAmt.toLocaleString('en-IN')}`;
   };
 
 
@@ -453,18 +461,21 @@ export default function ClientPortalClient() {
 
             {/* Alerts */}
             {authError && (
-              <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-600 font-medium max-w-sm mx-auto text-left">
-                ⚠️ {authError}
+              <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-600 font-medium max-w-sm mx-auto text-left flex items-start gap-2">
+                <AlertCircle size={15} className="text-red-500 shrink-0 mt-0.5" />
+                <span>{authError}</span>
               </div>
             )}
             {authSuccessMsg && (
-              <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-700 font-medium max-w-sm mx-auto text-left">
-                ✓ {authSuccessMsg}
+              <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-700 font-medium max-w-sm mx-auto text-left flex items-start gap-2">
+                <CheckCircle2 size={15} className="text-emerald-600 shrink-0 mt-0.5" />
+                <span>{authSuccessMsg}</span>
               </div>
             )}
             {devOtpHint && (
-              <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-[11px] font-mono text-blue-700 max-w-sm mx-auto">
-                ℹ️ {devOtpHint}
+              <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-[11px] font-mono text-blue-700 max-w-sm mx-auto flex items-start gap-2">
+                <Info size={14} className="text-blue-500 shrink-0 mt-0.5" />
+                <span>{devOtpHint}</span>
               </div>
             )}
 

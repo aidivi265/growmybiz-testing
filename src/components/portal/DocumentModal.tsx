@@ -1,5 +1,7 @@
 'use client';
 
+import { useCurrency } from '@/context/CurrencyContext';
+
 import { X, Printer, Shield, CheckCircle, FileText, AlertTriangle } from 'lucide-react';
 import type { ProjectRecord, MilestoneItem } from '@/types/project';
 
@@ -24,11 +26,28 @@ export default function DocumentModal({
     window.print();
   };
 
+  const { currency, rates } = useCurrency();
   const q = project.quotation;
-  const currSymbol = project.currency === 'USD' ? '$' : project.currency === 'EUR' ? '€' : project.currency === 'AED' ? 'AED ' : '₹';
+  const isDemo = project.receiptId === 'GMB-PRJ-2026-1001';
+  const activeCurr = isDemo ? currency : (project.currency || currency);
+
+  const convertAmt = (amt?: number) => {
+    if (amt === undefined || amt === null) return 0;
+    const rateMap = rates as Record<string, number>;
+    if (isDemo && activeCurr !== 'INR' && rateMap && rateMap['INR'] && rateMap[activeCurr]) {
+      return Math.round((amt / rateMap['INR']) * rateMap[activeCurr]);
+    }
+    return amt;
+  };
+
+  const currSymbol = activeCurr === 'USD' ? '$' : activeCurr === 'EUR' ? '€' : activeCurr === 'AED' ? 'AED ' : '₹';
   const fmt = (amt?: number) => {
     if (amt === undefined || amt === null) return '-';
-    return `${currSymbol}${amt.toLocaleString('en-IN')}`;
+    const finalVal = convertAmt(amt);
+    if (activeCurr === 'AED') {
+      return `${finalVal.toLocaleString('en-US')} AED`;
+    }
+    return `${currSymbol}${finalVal.toLocaleString(activeCurr === 'USD' ? 'en-US' : activeCurr === 'EUR' ? 'de-DE' : 'en-IN')}`;
   };
 
   const m1 = q?.milestones.find((m) => m.number === 1);
@@ -188,7 +207,7 @@ export default function DocumentModal({
                         <th className="py-2.5 px-3">Milestone Stage</th>
                         <th className="py-2.5 px-3">Verification Trigger</th>
                         <th className="py-2.5 px-3">Split</th>
-                        <th className="py-2.5 px-3 text-right">Amount ({project.currency})</th>
+                        <th className="py-2.5 px-3 text-right">Amount ({activeCurr})</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#E8EDF4] text-[#3D4F63]">
@@ -313,7 +332,7 @@ export default function DocumentModal({
                     <tr>
                       <th className="py-2.5 px-3">Item Description</th>
                       <th className="py-2.5 px-3">Proposed SAC</th>
-                      <th className="py-2.5 px-3 text-right">Amount ({project.currency})</th>
+                      <th className="py-2.5 px-3 text-right">Amount ({activeCurr})</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#E8EDF4] text-[#3D4F63]">

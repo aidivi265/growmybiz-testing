@@ -18,7 +18,7 @@ export const teamMembers: TeamMember[] = [
     name: 'Swati Yadav',
     role: 'Co-Founder & COO',
     bio: 'Specialist in modern design systems, conversion-driven landing pages, and intuitive user experiences for B2B SaaS and D2C brands.',
-    avatar: '',
+    avatar: '/swati-yadav-avatar.svg',
     linkedin: 'https://linkedin.com/in/growmybiz24',
     instagram: 'https://instagram.com/growmybiz24',
     showLinkedin: true,

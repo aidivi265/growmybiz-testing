@@ -193,8 +193,11 @@ export default async function AboutPage() {
                   <Image src={member.avatar} alt={member.name} fill className="object-cover" unoptimized />
                 </div>
               ) : (
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#477BDB]/20 to-[#6477C8]/20 flex items-center justify-center mb-4 border border-[#E8EDF4]">
-                  <Users size={22} className="text-[#477BDB]" />
+                <div
+                  className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#0F1C31] to-[#1E293B] flex items-center justify-center mb-4 border border-[#E8EDF4] text-white font-bold text-sm tracking-wider shadow-sm select-none"
+                  style={{ fontFamily: SYNE_FONT }}
+                >
+                  {member.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()}
                 </div>
               )}
               <h3 className="font-semibold text-[#0F1C31] mb-0.5">{member.name}</h3>
