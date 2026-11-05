@@ -60,10 +60,11 @@ function isRateLimited(key: string, limit: number, windowMs: number): boolean {
  * falling back seamlessly to in-memory sliding window cache if unconfigured, offline, or timed out.
  */
 async function isRateLimitedEdge(key: string, limit: number, windowMs: number): Promise<boolean> {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey =
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/^[\uFEFF\s'"]+|[\uFEFF\s'"]+$/g, '');
+  const supabaseKey = (
     process.env.SUPABASE_SERVICE_ROLE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  )?.replace(/^[\uFEFF\s'"]+|[\uFEFF\s'"]+$/g, '');
 
   if (supabaseUrl && supabaseKey) {
     try {

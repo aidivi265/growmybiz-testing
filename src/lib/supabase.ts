@@ -1,7 +1,12 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+function cleanEnv(val?: string): string {
+  if (!val) return '';
+  return val.replace(/^[\uFEFF\s'"]+|[\uFEFF\s'"]+$/g, '');
+}
+
+const supabaseUrl = cleanEnv(process.env.NEXT_PUBLIC_SUPABASE_URL);
+const supabaseAnonKey = cleanEnv(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
 // Public Supabase Client (safe for browser and server components)
 export const supabase: SupabaseClient = createClient(

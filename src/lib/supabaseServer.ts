@@ -1,8 +1,13 @@
 import 'server-only';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+function cleanEnv(val?: string): string {
+  if (!val) return '';
+  return val.replace(/^[\uFEFF\s'"]+|[\uFEFF\s'"]+$/g, '');
+}
+
+const supabaseUrl = cleanEnv(process.env.NEXT_PUBLIC_SUPABASE_URL);
+const supabaseServiceRoleKey = cleanEnv(process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 if (!supabaseUrl || !supabaseServiceRoleKey) {
   if (process.env.NODE_ENV === 'production') {
