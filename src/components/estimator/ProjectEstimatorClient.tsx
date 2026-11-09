@@ -121,6 +121,21 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
   const { currency, setCurrency, rates, currencyDetails } = useCurrency();
   const [currentStep, setCurrentStep] = useState<number>(1);
 
+  // Selections
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>(config.categories[0]?.id || 'web-dev');
+  const [selectedPlatformId, setSelectedPlatformId] = useState<string>(
+    config.categories[0]?.platforms[0]?.id || 'business-website'
+  );
+  const [selectedTierId, setSelectedTierId] = useState<string>(config.designTiers[1]?.id || 'custom-pro');
+  const [selectedFeatureIds, setSelectedFeatureIds] = useState<string[]>([
+    'headless-cms',
+    'crm-whatsapp-sync',
+    'seo-pro-schemas',
+  ]);
+  const [selectedTimelineId, setSelectedTimelineId] = useState<string>(
+    config.timelines[0]?.id || 'standard-pace'
+  );
+
   // Pre-select category or platform from query parameters if present
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -143,21 +158,6 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
       }
     }
   }, [config.categories]);
-
-  // Selections
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>(config.categories[0]?.id || 'web-dev');
-  const [selectedPlatformId, setSelectedPlatformId] = useState<string>(
-    config.categories[0]?.platforms[0]?.id || 'business-website'
-  );
-  const [selectedTierId, setSelectedTierId] = useState<string>(config.designTiers[1]?.id || 'custom-pro');
-  const [selectedFeatureIds, setSelectedFeatureIds] = useState<string[]>([
-    'headless-cms',
-    'crm-whatsapp-sync',
-    'seo-pro-schemas',
-  ]);
-  const [selectedTimelineId, setSelectedTimelineId] = useState<string>(
-    config.timelines[0]?.id || 'standard-pace'
-  );
 
   // ── 2. Lead Capture Form State ──
   const [clientName, setClientName] = useState('');

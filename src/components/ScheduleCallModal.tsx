@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import {
   Calendar,
@@ -43,16 +43,12 @@ export function ScheduleCallModal({ isOpen, onClose }: ScheduleCallModalProps) {
   const [preferredTime, setPreferredTime] = useState('Morning (10 AM - 1 PM)');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
   const [whatsappUrl, setWhatsappUrl] = useState(
     `https://wa.me/${(siteConfig.whatsappNumber || '917290884480').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
       'Hi! I would like to schedule a 15-minute discovery call for my business.'
     )}`
   );
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     getClientSettings().then((data) => {

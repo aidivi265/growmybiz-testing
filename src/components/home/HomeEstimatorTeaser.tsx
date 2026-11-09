@@ -126,9 +126,9 @@ export default function HomeEstimatorTeaser() {
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/25 text-[#38BDF8] text-xs font-bold uppercase tracking-wider mb-4 shadow-xs">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-bold tracking-wider mb-4 shadow-[0_0_15px_rgba(0,240,255,0.2)]">
               <Calculator className="w-3.5 h-3.5" />
-              <span>Transparent Agency Investment</span>
+              <span>AI SCOPE & INVESTMENT ENGINE</span>
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
               Instant Project Scope &amp; Cost Estimator

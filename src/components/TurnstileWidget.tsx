@@ -49,7 +49,7 @@ export default function TurnstileWidget({
 }: TurnstileWidgetProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
-  const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [scriptLoaded, setScriptLoaded] = useState(() => typeof window !== 'undefined' && Boolean((window as unknown as { turnstile?: unknown }).turnstile));
 
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || DEFAULT_SITE_KEY;
 
@@ -58,7 +58,6 @@ export default function TurnstileWidget({
     if (typeof window === 'undefined') return;
 
     if (window.turnstile) {
-      setScriptLoaded(true);
       return;
     }
 

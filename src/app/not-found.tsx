@@ -19,7 +19,7 @@ import { trackGAEvent } from '@/components/GoogleAnalytics';
 
 export default function NotFound() {
   const [modalOpen, setModalOpen] = useState(false);
-  const [currentPath, setCurrentPath] = useState('');
+  const [currentPath, setCurrentPath] = useState(() => (typeof window !== 'undefined' ? window.location.pathname : ''));
   const [whatsappUrl, setWhatsappUrl] = useState(
     `https://wa.me/${(siteConfig.whatsappNumber || '917290884480').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
       'Hi Growmybiz24 team! I encountered a 404 broken link on your website and would like assistance.'
@@ -29,7 +29,7 @@ export default function NotFound() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const fullUrl = window.location.href;
-      setCurrentPath(window.location.pathname);
+      // Path set in lazy initializer
 
       getClientSettings().then((data) => {
         let num = (

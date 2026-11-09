@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import HeroSection from '@/components/home/HeroSection';
+import AiCopilotGenerator from '@/components/home/AiCopilotGenerator';
 import HomeAuditBar from '@/components/home/HomeAuditBar';
 import ServicesSection from '@/components/home/ServicesSection';
 import PortfolioPreview from '@/components/home/PortfolioPreview';
@@ -88,6 +89,9 @@ export default async function HomePage() {
         offeringsCount={totalOfferings > 0 ? totalOfferings : 30}
         portfolioCount={portfolio.length}
       />
+
+      {/* Interactive AI Architecture Copilot & Blueprint Generator */}
+      <AiCopilotGenerator />
 
       {/* Free Website & Technical SEO Diagnostic Lead Magnet */}
       <HomeAuditBar />

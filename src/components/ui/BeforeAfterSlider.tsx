@@ -52,9 +52,23 @@ export default function BeforeAfterSlider({
   const [activeSlug, setActiveSlug] = useState<string>(items[0]?.serviceSlug || 'web-app-development');
   const [sliderPosition, setSliderPosition] = useState<number>(50);
   const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [containerWidth, setContainerWidth] = useState<number>(0);
   const [isCallModalOpen, setIsCallModalOpen] = useState<boolean>(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.clientWidth);
+      }
+    };
+    updateWidth();
+    const ro = new ResizeObserver(updateWidth);
+    ro.observe(containerRef.current);
+    return () => ro.disconnect();
+  }, []);
 
   const activeItem =
     items.find((item) => item.serviceSlug === activeSlug) ||
@@ -229,7 +243,7 @@ export default function BeforeAfterSlider({
                   alt={activeItem.beforeLabel || 'Before redesign'}
                   className="absolute inset-0 max-w-none w-full h-full object-cover"
                   style={{
-                    width: containerRef.current ? `${containerRef.current.clientWidth}px` : '100%',
+                    width: containerWidth > 0 ? `${containerWidth}px` : '100%',
                     height: '100%',
                   }}
                 />

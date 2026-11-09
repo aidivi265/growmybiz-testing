@@ -20,13 +20,13 @@ export default function DocumentModal({
   project,
   milestone,
 }: DocumentModalProps) {
-  if (!isOpen) return null;
+  const { currency, rates } = useCurrency();
 
   const handlePrint = () => {
     window.print();
   };
 
-  const { currency, rates } = useCurrency();
+  if (!isOpen) return null;
   const q = project.quotation;
   const isDemo = project.receiptId === 'GMB-PRJ-2026-1001';
   const activeCurr = isDemo ? currency : (project.currency || currency);
@@ -391,7 +391,7 @@ export default function DocumentModal({
                     {fmt(activeMilestone?.amount)} (DEMO CLEARED)
                   </div>
                   <div className="text-[11px] text-[#6B7E95] font-mono mt-1">
-                    TXN ID: {activeMilestone?.transactionRef || `TXN-DEMO-${Date.now()}`}
+                    TXN ID: {activeMilestone?.transactionRef || (activeMilestone?.receiptSlipId ? `TXN-REF-${activeMilestone.receiptSlipId}` : 'TXN-DEMO-RECORDED')}
                   </div>
                 </div>
 

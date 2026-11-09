@@ -99,10 +99,10 @@ export default function HeroSection({
 
             {/* Slide badge */}
             <div className={`mb-5 sm:mb-6 flex items-center gap-2.5 transition-all duration-300 ${fading ? 'opacity-0 -translate-y-1' : 'opacity-100 translate-y-0'}`}>
-              <span className="w-2 h-2 rounded-full bg-[#477BDB] pulse-dot" />
-              <span className="text-xs font-bold uppercase tracking-widest text-[#7AA2FF]">
-                {cur.badge}
-              </span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-bold tracking-wider shadow-[0_0_15px_rgba(0,240,255,0.2)]">
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                <span>{cur.badge}</span>
+              </div>
             </div>
 
             {/* Headline */}
@@ -123,7 +123,7 @@ export default function HeroSection({
                     <span style={{ color: '#FFFFFF' }}>{line}</span>
                   ) : (
                     <span style={{
-                      background: 'linear-gradient(120deg, #6AADFF 0%, #8B9EEF 45%, #52D9B8 100%)',
+                      background: 'linear-gradient(120deg, #00F0FF 0%, #A855F7 50%, #38BDF8 100%)',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
                       backgroundClip: 'text',
@@ -138,7 +138,7 @@ export default function HeroSection({
             {/* Sub */}
             <p
               className={`mb-7 sm:mb-9 transition-all duration-300 delay-75 ${fading ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}
-              style={{ color: 'rgba(255,255,255,0.65)', fontSize: 'clamp(0.9375rem, 2vw, 1.0625rem)', lineHeight: 1.7, maxWidth: '480px' }}
+              style={{ color: 'rgba(255,255,255,0.70)', fontSize: 'clamp(0.9375rem, 2vw, 1.0625rem)', lineHeight: 1.7, maxWidth: '480px' }}
             >
               {cur.subheading}
             </p>
@@ -147,10 +147,9 @@ export default function HeroSection({
             <div className={`flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 mb-8 sm:mb-10 transition-all duration-300 delay-100 ${fading ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}>
               <Link
                 href={cur.ctaPrimary.href}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-[0.9375rem] text-white transition-all duration-200 hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-[0.9375rem] text-slate-950 transition-all duration-200 hover:-translate-y-0.5 shadow-[0_0_25px_rgba(0,240,255,0.4)]"
                 style={{
-                  background: 'linear-gradient(135deg, #477BDB 0%, #5C6FCC 100%)',
-                  boxShadow: '0 6px 24px rgba(71,123,219,0.40)',
+                  background: 'linear-gradient(135deg, #00F0FF 0%, #38BDF8 100%)',
                 }}
               >
                 {cur.ctaPrimary.label}
@@ -162,7 +161,7 @@ export default function HeroSection({
                 className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl font-semibold text-[0.9375rem] transition-all duration-200 hover:bg-white/[0.08]"
                 style={{
                   border: '1.5px solid rgba(255,255,255,0.18)',
-                  color: 'rgba(255,255,255,0.80)',
+                  color: 'rgba(255,255,255,0.85)',
                 }}
               >
                 {cur.ctaSecondary.label}

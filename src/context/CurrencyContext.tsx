@@ -29,7 +29,13 @@ const STORAGE_KEY = 'growmybiz_currency';
 const EVENT_NAME = 'growmybiz:currency-change';
 
 export function CurrencyProvider({ children }: { children: React.ReactNode }) {
-  const [currency, setCurrencyState] = useState<CurrencyCode>('USD');
+  const [currency, setCurrencyState] = useState<CurrencyCode>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem(STORAGE_KEY) as CurrencyCode;
+      if (stored && stored in SUPPORTED_CURRENCIES) return stored;
+    }
+    return 'USD';
+  });
   const [rates, setRates] = useState<CurrencyConfig['rates']>(defaultCurrencyConfig.rates);
   const [detectedCountry, setDetectedCountry] = useState<string | null>(null);
   const [isAutoDetected, setIsAutoDetected] = useState<boolean>(false);
@@ -39,8 +45,7 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
     // 1. Check if user already manually selected a currency in previous sessions
     const stored = typeof window !== 'undefined' ? (localStorage.getItem(STORAGE_KEY) as CurrencyCode) : null;
     if (stored && stored in SUPPORTED_CURRENCIES) {
-      setCurrencyState(stored);
-      setIsAutoDetected(false);
+      // already initialized
     } else {
       // 2. Auto-detect from IP location header via /api/geo
       fetch('/api/geo')

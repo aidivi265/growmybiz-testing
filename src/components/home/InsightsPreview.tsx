@@ -1,17 +1,17 @@
 import Link from 'next/link';
 import { blogPosts as defaultBlogPosts } from '@/data/insights';
-import { ArrowRight, Clock } from 'lucide-react';
+import { ArrowRight, Clock, Sparkles } from 'lucide-react';
 import { SYNE_FONT } from '@/lib/fonts';
 import type { BlogPost } from '@/types';
 
 const CAT_CONFIG: Record<string, { bg: string; text: string; dot: string }> = {
-  'Web & Digital Strategy': { bg: '#EBF1FB', text: '#2A5DBF', dot: '#477BDB' },
-  'SEO':                    { bg: '#E6F5F1', text: '#1E7A62', dot: '#32A88A' },
-  'Design & Branding':      { bg: '#EEF0FA', text: '#4151AA', dot: '#6477C8' },
-  'AI & Automation':        { bg: '#EBF1FB', text: '#2A5DBF', dot: '#477BDB' },
-  'Business & Strategy':    { bg: '#E6F5F1', text: '#1E7A62', dot: '#32A88A' },
+  'Web & Digital Strategy': { bg: 'rgba(0,240,255,0.12)', text: '#38BDF8', dot: '#00F0FF' },
+  'SEO':                    { bg: 'rgba(16,185,129,0.12)', text: '#34D399', dot: '#10B981' },
+  'Design & Branding':      { bg: 'rgba(168,85,247,0.12)', text: '#C084FC', dot: '#A855F7' },
+  'AI & Automation':        { bg: 'rgba(0,240,255,0.14)', text: '#67E8F9', dot: '#00F0FF' },
+  'Business & Strategy':    { bg: 'rgba(56,189,248,0.12)', text: '#7DD3FC', dot: '#38BDF8' },
 };
-const DEFAULT_CAT = { bg: '#EBF1FB', text: '#2A5DBF', dot: '#477BDB' };
+const DEFAULT_CAT = { bg: 'rgba(0,240,255,0.12)', text: '#38BDF8', dot: '#00F0FF' };
 
 function formatDate(dateStr: string) {
   const d = new Date(dateStr);
@@ -27,24 +27,31 @@ export default function InsightsPreview({ posts: propPosts }: InsightsPreviewPro
   const posts = pool.filter((p) => p.featured && p.published).slice(0, 3);
   if (posts.length === 0) return null;
 
-
   const [featured, ...rest] = posts;
   const featCat = CAT_CONFIG[featured.category] ?? DEFAULT_CAT;
 
   return (
     <section
-      className="section-pad-lg relative overflow-hidden"
+      className="section-pad-lg relative overflow-hidden bg-[#040812] border-t border-white/[0.08]"
       id="insights"
-      style={{ background: '#F7F9FC' }}
     >
-      <div className="absolute inset-0 dot-bg opacity-40" />
+      {/* Background Ambient Glow */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div
+          className="absolute -top-24 left-1/3 w-[450px] h-[450px] rounded-full blur-[140px]"
+          style={{ background: 'radial-gradient(circle, rgba(0,240,255,0.08) 0%, transparent 70%)' }}
+        />
+      </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
 
         {/* ── Header ── */}
         <div className="reveal-on-scroll grid grid-cols-1 lg:grid-cols-[1fr_auto] items-end gap-6 mb-12">
           <div>
-            <span className="eyebrow block mb-4">Insights</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-mono font-bold tracking-wider mb-4">
+              <Sparkles size={12} className="text-cyan-400" />
+              <span>KNOWLEDGE &amp; RESEARCH</span>
+            </div>
             <h2
               style={{
                 fontFamily: SYNE_FONT,
@@ -52,28 +59,28 @@ export default function InsightsPreview({ posts: propPosts }: InsightsPreviewPro
                 fontSize: 'clamp(1.9rem, 3vw, 2.6rem)',
                 lineHeight: 1.1,
                 letterSpacing: '-0.025em',
-                color: '#0F1C31',
+                color: '#FFFFFF',
               }}
             >
-              Useful thinking for<br />
+              Useful Thinking for<br />
               <span
                 style={{
-                  background: 'linear-gradient(120deg,#477BDB,#6477C8)',
+                  background: 'linear-gradient(120deg, #00F0FF 0%, #A855F7 50%, #38BDF8 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
                 }}
               >
-                growing businesses.
+                High-Growth Businesses.
               </span>
             </h2>
           </div>
           <Link
             href="/insights"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold shrink-0"
-            style={{ color: '#477BDB' }}
+            className="inline-flex items-center gap-1.5 text-sm font-semibold shrink-0 text-cyan-400 hover:text-cyan-300 transition-colors"
           >
-            All articles <ArrowRight size={14} />
+            <span>All articles</span>
+            <ArrowRight size={14} />
           </Link>
         </div>
 
@@ -83,15 +90,14 @@ export default function InsightsPreview({ posts: propPosts }: InsightsPreviewPro
           {/* Feature post — large card */}
           <Link href={`/insights/${featured.slug}`} className="reveal-on-scroll stagger-1 group block">
             <article
-              className="h-full rounded-[20px] overflow-hidden border transition-all duration-200 group-hover:shadow-[0_12px_48px_rgba(15,28,49,0.12)] group-hover:-translate-y-1"
-              style={{ background: '#fff', borderColor: '#DDE3EC' }}
+              className="h-full rounded-[22px] overflow-hidden border border-white/10 bg-[#0B1325]/85 hover:border-cyan-400/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.15)] transition-all duration-300 flex flex-col"
             >
               {/* Cover image area */}
               <div
                 className="relative overflow-hidden"
                 style={{
                   aspectRatio: '16/7',
-                  background: `linear-gradient(135deg, ${featCat.bg} 0%, #fff 100%)`,
+                  background: `linear-gradient(135deg, ${featCat.bg} 0%, rgba(11,19,37,0.95) 100%)`,
                 }}
               >
                 {/* Large decorative letter */}
@@ -103,7 +109,7 @@ export default function InsightsPreview({ posts: propPosts }: InsightsPreviewPro
                       fontSize: 'clamp(80px, 14vw, 140px)',
                       lineHeight: 1,
                       color: featCat.dot,
-                      opacity: 0.06,
+                      opacity: 0.12,
                     }}
                   >
                     {featured.category[0]}
@@ -112,142 +118,95 @@ export default function InsightsPreview({ posts: propPosts }: InsightsPreviewPro
                 {/* Category badge */}
                 <div className="absolute top-4 left-4">
                   <span
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-bold"
                     style={{
                       background: featCat.bg,
                       color: featCat.text,
-                      border: `1px solid ${featCat.dot}30`,
+                      border: `1px solid ${featCat.dot}40`,
                     }}
                   >
                     <span className="w-1.5 h-1.5 rounded-full" style={{ background: featCat.dot }} />
                     {featured.category}
                   </span>
                 </div>
-                {/* Read time */}
-                <div
-                  className="absolute top-4 right-4 flex items-center gap-1 text-[11px] font-medium"
-                  style={{ color: '#6B7E95' }}
-                >
-                  <Clock size={11} />
-                  {featured.readTime} min
-                </div>
               </div>
 
-              {/* Content */}
-              <div className="p-6 lg:p-8">
-                <p className="text-[#A4B3C4] text-xs mb-3">{formatDate(featured.publishedAt)}</p>
+              {/* Body */}
+              <div className="p-6 sm:p-7 flex flex-col flex-1">
+                <div className="flex items-center gap-3 text-xs text-slate-400 font-mono mb-3">
+                  <span>{formatDate(featured.publishedAt || '')}</span>
+                  <span>·</span>
+                  <span className="flex items-center gap-1">
+                    <Clock size={12} />
+                    {featured.readTime || '5 min read'}
+                  </span>
+                </div>
+
                 <h3
-                  className="font-bold text-[#0F1C31] leading-snug mb-3 group-hover:text-[#477BDB] transition-colors"
-                  style={{
-                    fontFamily: SYNE_FONT,
-                    fontSize: 'clamp(1.1rem, 2vw, 1.4rem)',
-                  }}
+                  className="font-bold text-white text-lg sm:text-xl leading-snug mb-3 group-hover:text-cyan-300 transition-colors"
+                  style={{ fontFamily: SYNE_FONT }}
                 >
                   {featured.title}
                 </h3>
-                <p className="text-[#6B7E95] text-sm leading-relaxed line-clamp-3 mb-5">
+
+                <p className="text-slate-300 text-sm leading-relaxed line-clamp-3 mb-5 flex-1">
                   {featured.excerpt}
                 </p>
-                <div
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold transition-colors"
-                  style={{ color: '#477BDB' }}
-                >
-                  Read article <ArrowRight size={13} />
+
+                <div className="flex items-center gap-2 text-xs font-semibold text-cyan-400 group-hover:gap-3 transition-all pt-3 border-t border-white/[0.08]">
+                  <span>Read article</span>
+                  <ArrowRight size={13} />
                 </div>
               </div>
             </article>
           </Link>
 
-          {/* Side stack — compact post list */}
+          {/* Side stack — smaller cards */}
           <div className="flex flex-col gap-4">
-            {rest.map((post) => {
+            {rest.map((post, i) => {
               const cat = CAT_CONFIG[post.category] ?? DEFAULT_CAT;
               return (
-                <Link key={post.id} href={`/insights/${post.slug}`} className="group block">
+                <Link key={post.id} href={`/insights/${post.slug}`} className={`reveal-on-scroll stagger-${i + 2} group block flex-1`}>
                   <article
-                    className="flex gap-4 p-4 rounded-2xl border transition-all duration-200 group-hover:shadow-[0_4px_20px_rgba(15,28,49,0.08)] group-hover:-translate-y-0.5"
-                    style={{ background: '#fff', borderColor: '#DDE3EC' }}
+                    className="h-full rounded-2xl p-5 border border-white/10 bg-[#0B1325]/85 hover:border-cyan-400/50 hover:shadow-[0_0_20px_rgba(0,240,255,0.12)] transition-all duration-200 flex flex-col justify-between"
                   >
-                    {/* Color strip */}
-                    <div
-                      className="w-1 rounded-full shrink-0 self-stretch"
-                      style={{ background: cat.dot }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-2">
                         <span
-                          className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold"
-                          style={{ background: cat.bg, color: cat.text }}
+                          className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold"
+                          style={{
+                            background: cat.bg,
+                            color: cat.text,
+                            border: `1px solid ${cat.dot}30`,
+                          }}
                         >
                           {post.category}
                         </span>
-                        <span className="text-[#A4B3C4] text-[10px] flex items-center gap-1">
-                          <Clock size={9} /> {post.readTime}m
+                        <span className="text-[11px] font-mono text-slate-500">
+                          {post.readTime || '4 min'}
                         </span>
                       </div>
-                      <h3
-                        className="text-[#0F1C31] font-bold text-sm leading-snug line-clamp-2 group-hover:text-[#477BDB] transition-colors"
+
+                      <h4
+                        className="font-bold text-white text-sm leading-snug group-hover:text-cyan-300 transition-colors line-clamp-2 mt-2"
+                        style={{ fontFamily: SYNE_FONT }}
                       >
                         {post.title}
-                      </h3>
-                      <p className="text-[#A4B3C4] text-[11px] mt-1.5">{formatDate(post.publishedAt)}</p>
+                      </h4>
                     </div>
-                    <ArrowRight
-                      size={14}
-                      className="text-[#DDE3EC] group-hover:text-[#477BDB] transition-colors shrink-0 mt-1"
-                    />
+
+                    <div className="flex items-center gap-1.5 text-[11px] font-semibold text-cyan-400 mt-4">
+                      <span>Read insight</span>
+                      <ArrowRight size={11} className="group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </article>
                 </Link>
               );
             })}
-
-            {/* CTA nudge — dark card for contrast on light section */}
-            <div
-              className="mt-auto p-5 rounded-2xl relative overflow-hidden"
-              style={{
-                background: 'linear-gradient(135deg, #0F1C31 0%, #1A2B4A 100%)',
-                border: '1px solid rgba(255,255,255,0.06)',
-              }}
-            >
-              {/* Subtle grid */}
-              <div
-                className="absolute inset-0 opacity-[0.04]"
-                style={{
-                  backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)',
-                  backgroundSize: '20px 20px',
-                }}
-              />
-              <div className="relative z-10">
-                <span
-                  className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest mb-3"
-                  style={{ color: '#32A88A' }}
-                >
-                  <span className="w-3 h-px bg-[#32A88A]" />
-                  Get in touch
-                </span>
-                <p
-                  style={{
-                    fontFamily: SYNE_FONT,
-                    fontWeight: 700,
-                    fontSize: '0.9375rem',
-                    color: '#FFFFFF',
-                    lineHeight: 1.3,
-                    marginBottom: '6px',
-                  }}
-                >
-                  Ready to grow your digital presence?
-                </p>
-                <p style={{ color: 'rgba(255,255,255,0.80)', fontSize: '0.8125rem', lineHeight: 1.6, marginBottom: '16px' }}>
-                  Tell us what you need. We will suggest the right approach.
-                </p>
-                <Link href="/contact" className="btn btn-primary btn-sm w-full justify-center">
-                  Start a Project
-                </Link>
-              </div>
-            </div>
           </div>
 
         </div>
+
       </div>
     </section>
   );

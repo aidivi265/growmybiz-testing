@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Menu,
   X,
@@ -106,9 +106,13 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  const prevPathname = useRef(pathname);
   useEffect(() => {
-    setMobileOpen(false);
-    setActiveDropdown(null);
+    if (prevPathname.current !== pathname) {
+      prevPathname.current = pathname;
+      setMobileOpen(false);
+      setActiveDropdown(null);
+    }
   }, [pathname]);
 
   useEffect(() => {
@@ -134,7 +138,7 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
 
             {/* ── Official Brand Logo ── */}
             <div className="shrink-0 flex items-center">
-              <BrandLogo theme="light" size="md" asLink={true} />
+              <BrandLogo theme="dark" size="md" asLink={true} />
             </div>
 
             {/* ── Desktop Navigation ── */}
@@ -163,16 +167,16 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
               {/* Client Portal Link */}
               <Link
                 href="/portal"
-                className="h-9 px-3 hidden md:inline-flex items-center gap-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 hover:text-slate-900 transition-colors whitespace-nowrap shrink-0"
+                className="h-9 px-3 hidden md:inline-flex items-center gap-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-semibold text-slate-300 hover:text-white transition-colors whitespace-nowrap shrink-0"
               >
-                <LayoutDashboard size={13} className="text-slate-500" />
+                <LayoutDashboard size={13} className="text-cyan-400" />
                 <span>Client Portal</span>
               </Link>
 
               {/* Start a Project (Primary CTA) */}
               <Link
                 href="/start-project"
-                className="h-9 px-3.5 sm:px-4 inline-flex items-center gap-1.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-xs whitespace-nowrap shrink-0"
+                className="h-9 px-3.5 sm:px-4 inline-flex items-center gap-1.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-950 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 transition-all shadow-[0_0_20px_rgba(0,240,255,0.3)] whitespace-nowrap shrink-0"
               >
                 <span>Start a Project</span>
                 <ArrowRight size={14} />
@@ -181,7 +185,7 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
               {/* Mobile Menu Toggle */}
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="lg:hidden h-9 w-9 flex items-center justify-center rounded-xl border border-[#CBD5E1]/70 text-[#1E293B] hover:text-[#0F1C31] hover:bg-[#F8FAFC] transition-colors shrink-0"
+                className="lg:hidden h-9 w-9 flex items-center justify-center rounded-xl border border-white/10 text-slate-300 hover:text-white hover:bg-white/[0.05] transition-colors shrink-0"
                 aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
                 aria-expanded={mobileOpen}
               >
@@ -206,16 +210,16 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
 
         {/* Drawer Panel */}
         <div
-          className={`absolute top-0 right-0 bottom-0 w-full max-w-[320px] bg-white flex flex-col shadow-2xl transition-transform duration-300 ${
+          className={`absolute top-0 right-0 bottom-0 w-full max-w-[320px] bg-[#0B1325] border-l border-white/10 flex flex-col shadow-2xl transition-transform duration-300 ${
             mobileOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
           {/* Drawer Header */}
-          <div className="flex items-center justify-between px-5 h-16 border-b border-[#E8EDF4]">
-            <BrandLogo theme="light" size="sm" asLink={false} />
+          <div className="flex items-center justify-between px-5 h-16 border-b border-white/10 bg-[#070D19]">
+            <BrandLogo theme="dark" size="sm" asLink={false} />
             <button
               onClick={() => setMobileOpen(false)}
-              className="h-8 w-8 flex items-center justify-center rounded-lg text-[#6B7E95] hover:text-[#0F1C31] hover:bg-[#F7F9FC]"
+              className="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/10"
             >
               <X size={18} />
             </button>
@@ -263,8 +267,8 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
                       }
                       className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                         isActive(item.href)
-                          ? 'text-[#2563EB] bg-[#EFF6FF]'
-                          : 'text-[#334155] hover:text-[#0F1C31] hover:bg-[#F8FAFC]'
+                          ? 'text-cyan-400 bg-cyan-950/40'
+                          : 'text-slate-300 hover:text-white hover:bg-white/[0.05]'
                       }`}
                     >
                       <span>{item.label}</span>
@@ -321,7 +325,7 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
           </nav>
 
           {/* Mobile Currency Switcher */}
-          <div className="px-4 py-3 border-t border-[#E8EDF4] bg-[#F8FAFC]">
+          <div className="px-4 py-3 border-t border-white/10 bg-[#070D19]">
             <div className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] mb-2 flex items-center justify-between">
               <span>Currency</span>
               <span className="text-[#2563EB]">Auto IP &amp; Manual</span>
@@ -451,7 +455,7 @@ function NavItemComponent({
         }`}
       >
         {isActive && (
-          <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full bg-[#2563EB]" />
+          <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(0,240,255,0.8)]" />
         )}
         {item.label}
       </Link>
@@ -488,16 +492,16 @@ function NavItemComponent({
           {/* Invisible bridge to prevent mouse leaving gap */}
           <div className="absolute -top-2.5 inset-x-0 h-3" />
 
-          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-[0_20px_50px_rgba(15,28,49,0.12)] overflow-hidden">
+          <div className="bg-[#0B1325]/95 backdrop-blur-2xl rounded-2xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden">
             {/* Header bar */}
-            <div className="px-4.5 pt-3.5 pb-2 flex items-center justify-between border-b border-slate-100">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <div className="px-4.5 pt-3.5 pb-2 flex items-center justify-between border-b border-white/[0.08]">
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-cyan-400">
                 Studio Capabilities
               </span>
               <Link
                 href="/services"
                 prefetch={false}
-                className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1 group"
+                className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 group"
               >
                 <span>All 6 Services</span>
                 <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
@@ -516,7 +520,7 @@ function NavItemComponent({
                     key={child.href}
                     href={child.href}
                     prefetch={false}
-                    className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors group text-left"
+                    className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-white/[0.04] transition-colors group text-left"
                   >
                     <div
                       className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${meta.iconBg} ${meta.iconColor} group-hover:scale-105 transition-transform`}
@@ -524,10 +528,10 @@ function NavItemComponent({
                       <IconComp size={16} />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="text-[13px] font-bold text-slate-800 group-hover:text-blue-600 transition-colors truncate">
+                      <div className="text-[13px] font-bold text-white group-hover:text-cyan-300 transition-colors truncate">
                         {child.label}
                       </div>
-                      <div className="text-[11px] text-slate-500 line-clamp-1 mt-0.5 leading-snug">
+                      <div className="text-[11px] text-slate-400 line-clamp-1 mt-0.5 leading-snug">
                         {meta.desc}
                       </div>
                     </div>
@@ -537,10 +541,10 @@ function NavItemComponent({
             </div>
 
             {/* Bottom Agency Tools Rail */}
-            <div className="border-t border-slate-100 bg-slate-50/90 px-4 py-2.5 flex items-center justify-between">
+            <div className="border-t border-white/[0.08] bg-black/40 px-4 py-2.5 flex items-center justify-between">
               <Link
                 href="/estimator"
-                className="flex items-center gap-2 text-xs font-semibold text-slate-700 hover:text-blue-600 transition-colors group"
+                className="flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-cyan-400 transition-colors group"
               >
                 <div className="w-6 h-6 rounded-lg bg-blue-100/70 text-blue-600 flex items-center justify-center">
                   <Calculator size={13} />
@@ -553,7 +557,7 @@ function NavItemComponent({
 
               <Link
                 href="/audit"
-                className="flex items-center gap-2 text-xs font-semibold text-slate-700 hover:text-emerald-600 transition-colors group"
+                className="flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-emerald-400 transition-colors group"
               >
                 <div className="w-6 h-6 rounded-lg bg-emerald-100/70 text-emerald-600 flex items-center justify-center">
                   <Search size={13} />

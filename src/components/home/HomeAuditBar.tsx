@@ -28,12 +28,12 @@ export default function HomeAuditBar() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-[#0B132B] py-12 lg:py-16 border-y border-[#1E293B]">
+    <section className="relative overflow-hidden bg-[#070D19] py-12 lg:py-16 border-y border-white/[0.08]">
       <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Clean Eyebrow Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[#38BDF8] text-[11px] font-bold uppercase tracking-wider mb-3">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-[11px] font-mono font-bold tracking-wider mb-3 shadow-[0_0_15px_rgba(0,240,255,0.2)]">
           <Search size={12} />
-          <span>Complimentary Audit Tool</span>
+          <span>NEURAL DIAGNOSTIC SCANNER</span>
         </div>
 
         {/* Heading */}
@@ -52,10 +52,10 @@ export default function HomeAuditBar() {
         {/* Clean Audit Form Bar */}
         <form
           onSubmit={handleSubmit}
-          className="max-w-xl mx-auto relative flex flex-col sm:flex-row items-center gap-2 p-1.5 bg-[#0F1C31] border border-slate-700/80 rounded-xl shadow-lg focus-within:border-[#2563EB] focus-within:ring-2 focus-within:ring-[#2563EB]/20 transition-all"
+          className="max-w-xl mx-auto relative flex flex-col sm:flex-row items-center gap-2 p-1.5 bg-[#0B1325]/90 border border-cyan-500/30 rounded-xl shadow-[0_0_25px_rgba(0,240,255,0.1)] focus-within:border-cyan-400 focus-within:ring-2 focus-within:ring-cyan-500/20 transition-all"
         >
           <div className="relative flex-1 w-full flex items-center pl-3">
-            <Globe className="w-4 h-4 text-slate-400 shrink-0 mr-2" />
+            <Globe className="w-4 h-4 text-cyan-400 shrink-0 mr-2" />
             <input
               type="text"
               value={domainInput}
@@ -72,7 +72,7 @@ export default function HomeAuditBar() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full sm:w-auto px-5 py-2.5 rounded-lg font-semibold text-xs text-white bg-[#2563EB] hover:bg-[#1d4ed8] transition-colors flex items-center justify-center gap-1.5 shrink-0 cursor-pointer disabled:opacity-60"
+            className="w-full sm:w-auto px-5 py-2.5 rounded-lg font-bold text-xs text-slate-950 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 transition-all flex items-center justify-center gap-1.5 shrink-0 cursor-pointer disabled:opacity-60 shadow-[0_0_15px_rgba(0,240,255,0.3)]"
           >
             {loading ? (
               <>

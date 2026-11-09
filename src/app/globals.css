@@ -35,8 +35,8 @@
   }
 
   body {
-    background: var(--bg-white);
-    color: var(--text-body);
+    background: #030712;
+    color: #94A3B8;
     /* var(--font-inter) is injected by next/font's .variable class on <html> */
     font-family: var(--font-inter), -apple-system, "Segoe UI", system-ui, sans-serif;
     line-height: 1.65;
@@ -62,10 +62,11 @@
     color: #ffffff !important;
   }
 
-  ::selection { background: #477BDB; color: #fff; }
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: var(--bg-subtle); }
-  ::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 4px; }
+  ::selection { background: #00F0FF; color: #030712; }
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: #030712; }
+  ::-webkit-scrollbar-thumb { background: rgba(0, 240, 255, 0.25); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0, 240, 255, 0.5); }
   :focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 3px; }
 
   /* ── Prose — article body ── */
@@ -550,5 +551,44 @@
     letter-spacing: -0.03em;
     line-height: 1;
     color: var(--text-heading);
+  }
+
+  /* ── AI Design System Utilities ── */
+  .ai-glow-cyan {
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.25);
+  }
+  .ai-glow-purple {
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.25);
+  }
+  .ai-card {
+    background: rgba(11, 19, 37, 0.75);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .ai-card:hover {
+    border-color: rgba(0, 240, 255, 0.4);
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.14);
+    transform: translateY(-3px);
+  }
+  .ai-shimmer-text {
+    background: linear-gradient(120deg, #FFFFFF 0%, #A5F3FC 35%, #C084FC 70%, #67E8F9 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .ai-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-family: monospace;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    background: rgba(0, 240, 255, 0.1);
+    border: 1px solid rgba(0, 240, 255, 0.25);
+    color: #38BDF8;
   }
 }

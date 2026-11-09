@@ -65,7 +65,7 @@ export default function PhoneInput({
   // Sync with external value changes (e.g. form resets)
   useEffect(() => {
     if (value === '') {
-      setNationalNumber('');
+      if (nationalNumber !== '') setNationalNumber('');
       return;
     }
     const parsed = parseInternationalPhone(value, selectedCountry.code);

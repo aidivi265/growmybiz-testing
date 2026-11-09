@@ -59,12 +59,12 @@ export default function ServiceNicheShowcase({
     projects.some((p) => p.published && projectMatchesCategory(p, cat, serviceSlug))
   );
 
+  const [activeTab, setActiveTab] = useState<string>('All');
+
   // If no category has a project, DO NOT RENDER the section
   if (activeCategoriesWithProjects.length === 0) {
     return null;
   }
-
-  const [activeTab, setActiveTab] = useState<string>('All');
 
   // Filter projects based on active tab
   const filteredProjects =
