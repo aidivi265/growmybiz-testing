@@ -22,8 +22,6 @@ import {
 import { SYNE_FONT } from '@/lib/fonts';
 import TurnstileWidget from '@/components/TurnstileWidget';
 import PhoneInput from '@/components/ui/PhoneInput';
-import { useCurrency } from '@/context/CurrencyContext';
-import CurrencySwitcher from '@/components/ui/CurrencySwitcher';
 
 const SERVICES = [
   {
@@ -75,38 +73,12 @@ const FEATURE_OPTIONS = [
   'SEO Schema & OpenGraph Meta Optimizations',
 ];
 
-const getDynamicBudgetRanges = (curr: string) => {
-  switch (curr) {
-    case 'USD':
-      return [
-        { label: 'Starter Sprint', range: '$200 – $450', sub: 'Single-page / Landing' },
-        { label: 'Growth Project', range: '$450 – $950', sub: 'Standard Web Platform' },
-        { label: 'Full-Stack Solution', range: '$950 – $1,800', sub: 'Custom Web App / SaaS' },
-        { label: 'Enterprise / Scale', range: '$1,800+', sub: 'Comprehensive Architecture' },
-      ];
-    case 'EUR':
-      return [
-        { label: 'Starter Sprint', range: '€180 – €420', sub: 'Single-page / Landing' },
-        { label: 'Growth Project', range: '€420 – €880', sub: 'Standard Web Platform' },
-        { label: 'Full-Stack Solution', range: '€880 – €1,650', sub: 'Custom Web App / SaaS' },
-        { label: 'Enterprise / Scale', range: '€1,650+', sub: 'Comprehensive Architecture' },
-      ];
-    case 'AED':
-      return [
-        { label: 'Starter Sprint', range: '750 – 1,650 AED', sub: 'Single-page / Landing' },
-        { label: 'Growth Project', range: '1,650 – 3,500 AED', sub: 'Standard Web Platform' },
-        { label: 'Full-Stack Solution', range: '3,500 – 6,600 AED', sub: 'Custom Web App / SaaS' },
-        { label: 'Enterprise / Scale', range: '6,600+ AED', sub: 'Comprehensive Architecture' },
-      ];
-    default:
-      return [
-        { label: 'Starter Sprint', range: '₹15,000 – ₹35,000', sub: 'Single-page / Landing' },
-        { label: 'Growth Project', range: '₹35,000 – ₹75,000', sub: 'Standard Web Platform' },
-        { label: 'Full-Stack Solution', range: '₹75,000 – ₹1,50,000', sub: 'Custom Web App / SaaS' },
-        { label: 'Enterprise / Scale', range: '₹1,50,000+', sub: 'Comprehensive Architecture' },
-      ];
-  }
-};
+const activeBudgetRanges = [
+  { label: 'Starter Sprint', range: '?15,000 ? ?35,000', sub: 'Single-page / Landing' },
+  { label: 'Growth Project', range: '?35,000 ? ?75,000', sub: 'Standard Web Platform' },
+  { label: 'Full-Stack Solution', range: '?75,000 ? ?1,50,000', sub: 'Custom Web App / SaaS' },
+  { label: 'Enterprise / Scale', range: '?1,50,000+', sub: 'Comprehensive Architecture' },
+];
 
 const TIMELINE_OPTIONS = [
   'Urgent Sprint (< 2 Weeks)',
@@ -118,8 +90,6 @@ const TIMELINE_OPTIONS = [
 export default function StartProjectWizardClient() {
   const [currentSlide, setCurrentSlide] = useState(1);
   const totalSlides = 5;
-  const { currency, formatPrice } = useCurrency();
-  const activeBudgetRanges = getDynamicBudgetRanges(currency);
 
   // Slide 1: Contact
   const [clientName, setClientName] = useState('');
@@ -218,7 +188,7 @@ export default function StartProjectWizardClient() {
           featureWishlist,
           technicalNotes: technicalNotes.trim(),
           budgetRange,
-          currency,
+          currency: 'INR',
           targetTimeline,
           urgencyLevel,
           assetsReady: {
@@ -608,7 +578,7 @@ export default function StartProjectWizardClient() {
                       <label className="block text-xs font-semibold text-[#0F1C31]">
                         Target Investment Budget Range
                       </label>
-                      <CurrencySwitcher variant="pills" />
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#EFF6FF] border border-[#BFDBFE] text-[11px] font-bold text-[#2563EB]">???? INR (?)</span>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {activeBudgetRanges.map((b) => {

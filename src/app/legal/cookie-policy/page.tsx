@@ -1,9 +1,11 @@
 import LegalDocView from '@/components/LegalDocView';
+import { notFound } from 'next/navigation';
+import { fetchPageVisibility } from '@/lib/dal';
 import type { Metadata } from 'next';
 import { Breadcrumb } from '@/components/ui';
 import { siteConfig } from '@/data';
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Cookie Policy',
@@ -19,7 +21,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CookiePolicyPage() {
+export default async function CookiePolicyPage() {
+  const visibility = await fetchPageVisibility();
+  if (visibility.legalCookies === false) notFound();
   return (
     <>
       <div

@@ -459,8 +459,8 @@ export const defaultEstimatorConfig: EstimatorConfig = {
     },
     {
       id: 'localization',
-      title: 'Multi-Lingual & Global Currency Engine',
-      description: 'Automatic IP geolocation detection, real-time currency conversion (INR/USD/AED/EUR), and multi-language content switching.',
+      title: 'Multi-Lingual Content Engine',
+      description: 'Regional language localization across English, Hindi, and regional Indian languages with smart auto-routing.',
       category: 'commerce',
       icon: 'Globe',
       priceINR: 3500,

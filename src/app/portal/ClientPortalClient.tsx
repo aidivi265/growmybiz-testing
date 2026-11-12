@@ -30,7 +30,7 @@ import {
 import { SYNE_FONT } from '@/lib/fonts';
 import type { ProjectRecord, MilestoneItem } from '@/types/project';
 import DocumentModal from '@/components/portal/DocumentModal';
-import { useCurrency } from '@/context/CurrencyContext';
+
 
 export default function ClientPortalClient() {
   const searchParams = useSearchParams();
@@ -73,24 +73,10 @@ export default function ClientPortalClient() {
   const [allowTestimonial, setAllowTestimonial] = useState(true);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   const [submittingFeedback, setSubmittingFeedback] = useState(false);
-  const { currency, rates } = useCurrency();
-
-  const isDemo = project?.receiptId === 'GMB-PRJ-2026-1001';
-  const activeCurr = isDemo ? currency : (project?.currency || currency);
-
   const renderPrice = (amt?: number) => {
     if (amt === undefined || amt === null) return '-';
-    let finalAmt = amt;
-    const rateMap = rates as Record<string, number>;
-    if (isDemo && activeCurr !== 'INR' && rateMap && rateMap['INR'] && rateMap[activeCurr]) {
-      finalAmt = Math.round((amt / rateMap['INR']) * rateMap[activeCurr]);
-    }
-    if (activeCurr === 'USD') return `$${finalAmt.toLocaleString('en-US')}`;
-    if (activeCurr === 'EUR') return `€${finalAmt.toLocaleString('de-DE')}`;
-    if (activeCurr === 'AED') return `${finalAmt.toLocaleString('en-US')} AED`;
-    return `₹${finalAmt.toLocaleString('en-IN')}`;
+    return '₹' + Math.round(amt).toLocaleString('en-IN');
   };
-
 
   // Retrieve token from localStorage if present
   useEffect(() => {

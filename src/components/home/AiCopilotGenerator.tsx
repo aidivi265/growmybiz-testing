@@ -49,7 +49,7 @@ const PRESETS: ArchitecturePreset[] = [
     id: 'saas-mvp',
     badge: 'AI Full-Stack',
     title: 'Scalable Next.js 16 SaaS MVP Platform',
-    tagline: 'Production-ready cloud SaaS platform with modern auth, multi-currency billing and AI workflows.',
+    tagline: 'Production-ready cloud SaaS platform with modern auth, Razorpay & UPI billing and AI workflows.',
     category: 'Web & App Development',
     stack: ['Next.js 16 App Router', 'React 19 + Tailwind v4', 'Supabase Auth & PostgreSQL', 'Stripe / Razorpay', 'Vercel Edge'],
     timeline: '3–4 Weeks Sprint',

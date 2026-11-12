@@ -23,7 +23,6 @@ import {
 import { navItems } from '@/data/navigation';
 import BrandLogo from '@/components/BrandLogo';
 import QuickInquiryModal from '@/components/QuickInquiryModal';
-import CurrencySwitcher from '@/components/ui/CurrencySwitcher';
 import type { NavItem } from '@/types';
 import { getClientSettings } from '@/lib/settingsClient';
 
@@ -60,6 +59,14 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
         setActiveServices(data.services);
       }
     });
+    const onSettingsUpdated = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.pageVisibility) {
+        setPageVisibility(detail.pageVisibility);
+      }
+    };
+    window.addEventListener('growmybiz:settings-updated', onSettingsUpdated);
+    return () => window.removeEventListener('growmybiz:settings-updated', onSettingsUpdated);
   }, []);
 
   const displayedNavItems: NavItem[] = navItems
@@ -150,37 +157,35 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
                   isActive={isActive(item.href)}
                   activeDropdown={activeDropdown}
                   setActiveDropdown={setActiveDropdown}
+                  pageVisibility={pageVisibility}
                 />
               ))}
             </div>
 
             {/* ── Right Actions ── */}
             <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-              {/* Currency Switcher */}
-              <CurrencySwitcher
-                variant="compact"
-                theme="light"
-                showAutoBadge={true}
-                className="hidden sm:inline-block shrink-0"
-              />
 
               {/* Client Portal Link */}
-              <Link
-                href="/portal"
-                className="h-9 px-3 hidden md:inline-flex items-center gap-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-semibold text-slate-300 hover:text-white transition-colors whitespace-nowrap shrink-0"
-              >
-                <LayoutDashboard size={13} className="text-cyan-400" />
-                <span>Client Portal</span>
-              </Link>
+              {pageVisibility.portal !== false && (
+                <Link
+                  href="/portal"
+                  className="h-9 px-3 hidden md:inline-flex items-center gap-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-semibold text-slate-300 hover:text-white transition-colors whitespace-nowrap shrink-0"
+                >
+                  <LayoutDashboard size={13} className="text-cyan-400" />
+                  <span>Client Portal</span>
+                </Link>
+              )}
 
               {/* Start a Project (Primary CTA) */}
-              <Link
-                href="/start-project"
-                className="h-9 px-3.5 sm:px-4 inline-flex items-center gap-1.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-950 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 transition-all shadow-[0_0_20px_rgba(0,240,255,0.3)] whitespace-nowrap shrink-0"
-              >
-                <span>Start a Project</span>
-                <ArrowRight size={14} />
-              </Link>
+              {pageVisibility.startProject !== false && (
+                <Link
+                  href="/start-project"
+                  className="h-9 px-3.5 sm:px-4 inline-flex items-center gap-1.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-950 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 transition-all shadow-[0_0_20px_rgba(0,240,255,0.3)] whitespace-nowrap shrink-0"
+                >
+                  <span>Start a Project</span>
+                  <ArrowRight size={14} />
+                </Link>
+              )}
 
               {/* Mobile Menu Toggle */}
               <button
@@ -228,10 +233,12 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
           {/* Drawer Navigation Links */}
           <nav className="flex-1 overflow-y-auto py-3 px-3">
             {/* Interactive Tools Highlight */}
+            {(pageVisibility.estimator !== false || pageVisibility.audit !== false) && (
             <div className="mb-3.5 p-2 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-1.5">
               <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-2 pt-0.5">
                 Interactive Studio Tools
               </div>
+              {pageVisibility.estimator !== false && (
               <Link
                 href="/estimator"
                 onClick={() => setMobileOpen(false)}
@@ -243,6 +250,8 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
                 </span>
                 <ArrowRight size={13} className="text-slate-400" />
               </Link>
+              )}
+              {pageVisibility.audit !== false && (
               <Link
                 href="/audit"
                 onClick={() => setMobileOpen(false)}
@@ -254,7 +263,9 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
                 </span>
                 <ArrowRight size={13} className="text-slate-400" />
               </Link>
+              )}
             </div>
+            )}
 
             {/* Main Links */}
             {displayedNavItems.map((item) => (
@@ -323,18 +334,14 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
               </div>
             ))}
           </nav>
-
-          {/* Mobile Currency Switcher */}
-          <div className="px-4 py-3 border-t border-white/10 bg-[#070D19]">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] mb-2 flex items-center justify-between">
-              <span>Currency</span>
-              <span className="text-[#2563EB]">Auto IP &amp; Manual</span>
-            </div>
-            <CurrencySwitcher variant="pills" theme="light" className="w-full justify-between" />
+          <div className="px-4 py-2.5 border-t border-white/10 bg-[#070D19] flex items-center justify-between text-[11px] text-slate-400">
+            <span>???? India Operations</span>
+            <span className="font-mono font-bold text-cyan-400">INR (?)</span>
           </div>
 
           {/* Drawer Footer CTA */}
           <div className="p-4 border-t border-[#E8EDF4] space-y-2">
+            {pageVisibility.startProject !== false && (
             <Link
               href="/start-project"
               onClick={() => setMobileOpen(false)}
@@ -344,7 +351,9 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
               Start a Project
               <ArrowRight size={14} />
             </Link>
+            )}
             <div className="grid grid-cols-2 gap-2 pt-1">
+              {pageVisibility.portal !== false && (
               <Link
                 href="/portal"
                 onClick={() => setMobileOpen(false)}
@@ -353,6 +362,7 @@ export default function Navbar({ initialVisibility }: NavbarProps = {}) {
                 <LayoutDashboard size={13} className="text-[#2563EB]" />
                 Client Portal
               </Link>
+              )}
               <button
                 type="button"
                 onClick={() => {
@@ -436,11 +446,13 @@ function NavItemComponent({
   isActive,
   activeDropdown,
   setActiveDropdown,
+  pageVisibility,
 }: {
   item: NavItem;
   isActive: boolean;
   activeDropdown: string | null;
   setActiveDropdown: (v: string | null) => void;
+  pageVisibility: Record<string, boolean>;
 }) {
   const isOpen = activeDropdown === item.href;
 
@@ -541,31 +553,39 @@ function NavItemComponent({
             </div>
 
             {/* Bottom Agency Tools Rail */}
-            <div className="border-t border-white/[0.08] bg-black/40 px-4 py-2.5 flex items-center justify-between">
-              <Link
-                href="/estimator"
-                className="flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-cyan-400 transition-colors group"
-              >
-                <div className="w-6 h-6 rounded-lg bg-blue-100/70 text-blue-600 flex items-center justify-center">
-                  <Calculator size={13} />
-                </div>
-                <span>Scope &amp; Cost Estimator</span>
-                <span className="text-[11px] text-slate-400 group-hover:translate-x-0.5 transition-transform">→</span>
-              </Link>
+            {(pageVisibility.estimator !== false || pageVisibility.audit !== false) && (
+              <div className="border-t border-white/[0.08] bg-black/40 px-4 py-2.5 flex items-center justify-between">
+                {pageVisibility.estimator !== false && (
+                  <Link
+                    href="/estimator"
+                    className="flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-cyan-400 transition-colors group"
+                  >
+                    <div className="w-6 h-6 rounded-lg bg-blue-100/70 text-blue-600 flex items-center justify-center">
+                      <Calculator size={13} />
+                    </div>
+                    <span>Scope &amp; Cost Estimator</span>
+                    <span className="text-[11px] text-slate-400 group-hover:translate-x-0.5 transition-transform">?</span>
+                  </Link>
+                )}
 
-              <span className="w-1 h-1 rounded-full bg-slate-300" />
+                {pageVisibility.estimator !== false && pageVisibility.audit !== false && (
+                  <span className="w-1 h-1 rounded-full bg-slate-300" />
+                )}
 
-              <Link
-                href="/audit"
-                className="flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-emerald-400 transition-colors group"
-              >
-                <div className="w-6 h-6 rounded-lg bg-emerald-100/70 text-emerald-600 flex items-center justify-center">
-                  <Search size={13} />
-                </div>
-                <span>Free Website &amp; SEO Audit</span>
-                <span className="text-[11px] text-slate-400 group-hover:translate-x-0.5 transition-transform">→</span>
-              </Link>
-            </div>
+                {pageVisibility.audit !== false && (
+                  <Link
+                    href="/audit"
+                    className="flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-emerald-400 transition-colors group"
+                  >
+                    <div className="w-6 h-6 rounded-lg bg-emerald-100/70 text-emerald-600 flex items-center justify-center">
+                      <Search size={13} />
+                    </div>
+                    <span>Free Website &amp; SEO Audit</span>
+                    <span className="text-[11px] text-slate-400 group-hover:translate-x-0.5 transition-transform">?</span>
+                  </Link>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}

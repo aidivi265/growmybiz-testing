@@ -81,11 +81,9 @@ export async function POST(request: Request) {
       timelineTitle = 'Standard Cadence',
       estimatedMin = 0,
       estimatedMax = 0,
-      currency = 'INR',
-      currencySymbol = '₹',
     } = estimateDetails;
 
-    const budgetFormatted = `${currencySymbol}${Number(estimatedMin).toLocaleString()} - ${currencySymbol}${Number(estimatedMax).toLocaleString()} ${currency}`;
+    const budgetFormatted = `₹${Number(estimatedMin).toLocaleString('en-IN')} - ₹${Number(estimatedMax).toLocaleString('en-IN')} INR`;
 
     // Construct structured specification memo for admin lead tracking
     const featureListFormatted = Array.isArray(selectedFeatureTitles) && selectedFeatureTitles.length > 0

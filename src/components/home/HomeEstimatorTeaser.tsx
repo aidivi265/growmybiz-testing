@@ -11,12 +11,8 @@ import {
   Smartphone,
   Palette,
   Bot,
-  Zap,
   Clock,
-  Sparkles,
 } from 'lucide-react';
-import { useCurrency } from '@/context/CurrencyContext';
-import CurrencySwitcher from '@/components/ui/CurrencySwitcher';
 import { ScheduleCallModal } from '@/components/ScheduleCallModal';
 
 interface ScopePreset {
@@ -45,7 +41,7 @@ const SCOPE_PRESETS: ScopePreset[] = [
       'Tailored Next.js 16 + React 19 Frontend',
       'Headless CMS & Supabase Cloud Integration',
       'SEO Architecture & Schema.org Rich Snippets',
-      'Payment Gateway & WhatsApp Lead Sync',
+      'Razorpay / UPI & WhatsApp Lead Sync',
     ],
   },
   {
@@ -60,7 +56,7 @@ const SCOPE_PRESETS: ScopePreset[] = [
     features: [
       'Cross-platform Flutter / React Native or SaaS UI',
       'Row-Level Security & Role-Based User Auth',
-      'Stripe / Razorpay Recurring Billing & Webhooks',
+      'Razorpay / UPI Recurring Billing & Webhooks',
       'Real-time PostgreSQL Database & Edge APIs',
     ],
   },
@@ -101,16 +97,8 @@ const SCOPE_PRESETS: ScopePreset[] = [
 export default function HomeEstimatorTeaser() {
   const [selectedId, setSelectedId] = useState<string>('web-dev');
   const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
-  const { currency, rates, currencyDetails } = useCurrency();
 
   const activePreset = SCOPE_PRESETS.find((p) => p.id === selectedId) || SCOPE_PRESETS[0];
-
-  // Currency converted prices
-  const rate = rates[currency] || 1;
-  const symbol = currencyDetails.symbol;
-
-  const minConverted = Math.round((activePreset.minINR / rates.INR) * rate);
-  const maxConverted = Math.round((activePreset.maxINR / rates.INR) * rate);
 
   return (
     <section className="relative overflow-hidden bg-[#0A101C] py-20 lg:py-28 border-y border-[#1E2D4A]">
@@ -134,14 +122,13 @@ export default function HomeEstimatorTeaser() {
               Instant Project Scope &amp; Cost Estimator
             </h2>
             <p className="text-base sm:text-lg text-[#94A3B8] mt-3 leading-relaxed">
-              No hidden fees, no opaque sales calls. Pick your digital requirement below for an instant, verified agency budget range.
+              No hidden fees, no opaque sales calls. Pick your digital requirement below for an instant, verified INR budget range.
             </p>
           </div>
 
-          {/* Currency pill switcher */}
-          <div className="shrink-0 flex items-center gap-2">
-            <span className="text-xs font-semibold text-[#64748B] hidden sm:inline">Viewing in:</span>
-            <CurrencySwitcher variant="pills" theme="dark" />
+          <div className="shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-cyan-300">
+            <span>🇮🇳</span>
+            <span>India Pricing (INR ₹)</span>
           </div>
         </div>
 
@@ -221,12 +208,12 @@ export default function HomeEstimatorTeaser() {
               <div>
                 <div className="text-xs font-semibold text-[#94A3B8]">Estimated Investment Range</div>
                 <div className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-1 flex items-baseline gap-1">
-                  <span className="text-[#38BDF8]">{symbol}</span>
-                  <span>{minConverted.toLocaleString()}</span>
+                  <span className="text-[#38BDF8]">₹</span>
+                  <span>{activePreset.minINR.toLocaleString('en-IN')}</span>
                   <span className="text-sm font-normal text-[#64748B] mx-1">–</span>
-                  <span className="text-[#38BDF8]">{symbol}</span>
-                  <span>{maxConverted.toLocaleString()}</span>
-                  <span className="text-xs font-bold text-[#64748B] ml-2 font-mono uppercase">{currency}</span>
+                  <span className="text-[#38BDF8]">₹</span>
+                  <span>{activePreset.maxINR.toLocaleString('en-IN')}</span>
+                  <span className="text-xs font-bold text-[#64748B] ml-2 font-mono uppercase">INR</span>
                 </div>
               </div>
 

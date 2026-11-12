@@ -91,10 +91,10 @@ export default async function HomePage() {
       />
 
       {/* Interactive AI Architecture Copilot & Blueprint Generator */}
-      <AiCopilotGenerator />
+      {visibility.aiCopilot !== false && <AiCopilotGenerator />}
 
       {/* Free Website & Technical SEO Diagnostic Lead Magnet */}
-      <HomeAuditBar />
+      {visibility.homeAuditBar !== false && <HomeAuditBar />}
 
       {/* Services Section */}
       {visibility.services !== false && services.length > 0 && (
@@ -105,16 +105,28 @@ export default async function HomePage() {
       )}
 
       {/* Value Propositions / Why Choose Growmybiz24 */}
-      <div style={{ height: '2px', background: 'linear-gradient(90deg, #0F1C31, #1A2B4A, #0F1C31)' }} />
-      <ValuePropsSection items={valueProps} />
+      {visibility.valueProps !== false && (
+        <>
+          <div style={{ height: '2px', background: 'linear-gradient(90deg, #0F1C31, #1A2B4A, #0F1C31)' }} />
+          <ValuePropsSection items={valueProps} />
+        </>
+      )}
 
       {/* Interactive Project Cost & Scope Estimator Preview */}
-      <div style={{ height: '2px', background: 'linear-gradient(90deg, #1A2B4A, #243B66, #1A2B4A)' }} />
-      <HomeEstimatorTeaser />
+      {visibility.homeEstimator !== false && (
+        <>
+          <div style={{ height: '2px', background: 'linear-gradient(90deg, #1A2B4A, #243B66, #1A2B4A)' }} />
+          <HomeEstimatorTeaser />
+        </>
+      )}
 
       {/* Interactive Before & After Transformation Slider */}
-      <div style={{ height: '2px', background: 'linear-gradient(90deg, #1A2B4A, #243B66, #1A2B4A)' }} />
-      <BeforeAfterSlider initialItems={beforeAfterShowcases} />
+      {visibility.beforeAfter !== false && (
+        <>
+          <div style={{ height: '2px', background: 'linear-gradient(90deg, #1A2B4A, #243B66, #1A2B4A)' }} />
+          <BeforeAfterSlider initialItems={beforeAfterShowcases} />
+        </>
+      )}
 
       {/* Portfolio Preview */}
       {visibility.portfolio !== false && portfolio.length > 0 && (

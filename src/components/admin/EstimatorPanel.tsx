@@ -10,7 +10,6 @@ import {
   ExternalLink,
   Code,
   Sliders,
-  DollarSign,
   AlertCircle,
   HelpCircle,
 } from 'lucide-react';
@@ -26,7 +25,7 @@ export default function EstimatorPanel() {
   const [jsonMode, setJsonMode] = useState(false);
   const [jsonText, setJsonText] = useState('');
   const [jsonError, setJsonError] = useState('');
-  const [activeTab, setActiveTab] = useState<'rates' | 'platforms' | 'tiers' | 'features'>('platforms');
+  const [activeTab, setActiveTab] = useState<'platforms' | 'tiers' | 'features'>('platforms');
 
   const loadConfig = async () => {
     setLoading(true);
@@ -95,7 +94,7 @@ export default function EstimatorPanel() {
   const updatePlatformPrice = (
     catIndex: number,
     platIndex: number,
-    field: 'basePriceINR' | 'basePriceUSD' | 'baseWeeks',
+    field: 'basePriceINR' | 'baseWeeks',
     val: number
   ) => {
     const updated = { ...config };
@@ -109,7 +108,7 @@ export default function EstimatorPanel() {
     setJsonText(JSON.stringify(updated, null, 2));
   };
 
-  const updateTierPrice = (tierIndex: number, field: 'additionalPriceINR' | 'additionalPriceUSD', val: number) => {
+  const updateTierPrice = (tierIndex: number, field: 'additionalPriceINR', val: number) => {
     const updated = { ...config };
     updated.designTiers = [...updated.designTiers];
     updated.designTiers[tierIndex] = {
@@ -120,7 +119,7 @@ export default function EstimatorPanel() {
     setJsonText(JSON.stringify(updated, null, 2));
   };
 
-  const updateFeaturePrice = (featureIndex: number, field: 'priceINR' | 'priceUSD', val: number) => {
+  const updateFeaturePrice = (featureIndex: number, field: 'priceINR', val: number) => {
     const updated = { ...config };
     updated.features = [...updated.features];
     updated.features[featureIndex] = {
@@ -165,7 +164,7 @@ export default function EstimatorPanel() {
             </span>
           </div>
           <p className="text-xs text-white/50 mt-1">
-            Configure base prices, design tier multipliers, modular add-on rates, and currency exchange live on the public calculator.
+            Configure INR (?) base prices, design tier multipliers, and modular add-on rates live on the public calculator.
           </p>
         </div>
 
@@ -238,7 +237,6 @@ export default function EstimatorPanel() {
               { id: 'platforms', label: '1. Service Deliverables & Base Rates' },
               { id: 'tiers', label: '2. Design Tier Multipliers' },
               { id: 'features', label: '3. Modular Add-on Pricing' },
-              { id: 'rates', label: '4. Currency & Exchange Rates' },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -286,7 +284,7 @@ export default function EstimatorPanel() {
                           )}
                         </div>
 
-                        <div className="grid grid-cols-3 gap-2 text-xs">
+                        <div className="grid grid-cols-2 gap-2 text-xs">
                           <div>
                             <label className="block text-[10px] text-white/40 mb-1">Base INR (₹)</label>
                             <input
@@ -299,18 +297,7 @@ export default function EstimatorPanel() {
                             />
                           </div>
 
-                          <div>
-                            <label className="block text-[10px] text-white/40 mb-1">Base USD ($)</label>
-                            <input
-                              type="number"
-                              value={plat.basePriceUSD}
-                              onChange={(e) =>
-                                updatePlatformPrice(catIdx, platIdx, 'basePriceUSD', parseInt(e.target.value, 10) || 0)
-                              }
-                              className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white font-mono text-xs outline-none focus:border-[#477BDB]"
-                            />
-                          </div>
-
+                          
                           <div>
                             <label className="block text-[10px] text-white/40 mb-1">Est. Weeks</label>
                             <input
@@ -348,7 +335,7 @@ export default function EstimatorPanel() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                     <div>
                       <label className="block text-[10px] text-white/50 mb-1">Additional Cost INR (₹)</label>
                       <input
@@ -360,18 +347,7 @@ export default function EstimatorPanel() {
                         className="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/10 text-white font-mono text-xs"
                       />
                     </div>
-                    <div>
-                      <label className="block text-[10px] text-white/50 mb-1">Additional Cost USD ($)</label>
-                      <input
-                        type="number"
-                        value={tier.additionalPriceUSD}
-                        onChange={(e) =>
-                          updateTierPrice(tierIdx, 'additionalPriceUSD', parseInt(e.target.value, 10) || 0)
-                        }
-                        className="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/10 text-white font-mono text-xs"
-                      />
-                    </div>
-                    <div>
+                                        <div>
                       <label className="block text-[10px] text-white/50 mb-1">Tier Multiplier Factor</label>
                       <input
                         type="number"
@@ -402,7 +378,7 @@ export default function EstimatorPanel() {
                   </div>
                   <p className="text-[11px] text-white/50 line-clamp-2">{feat.description}</p>
 
-                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/5">
+                  <div className="grid grid-cols-1 gap-2 pt-2 border-t border-white/5">
                     <div>
                       <label className="block text-[10px] text-white/40 mb-1">Price INR (₹)</label>
                       <input
@@ -414,55 +390,13 @@ export default function EstimatorPanel() {
                         className="w-full px-2 py-1 rounded bg-black/40 border border-white/10 text-white font-mono text-xs"
                       />
                     </div>
-                    <div>
-                      <label className="block text-[10px] text-white/40 mb-1">Price USD ($)</label>
-                      <input
-                        type="number"
-                        value={feat.priceUSD}
-                        onChange={(e) =>
-                          updateFeaturePrice(featIdx, 'priceUSD', parseInt(e.target.value, 10) || 0)
-                        }
-                        className="w-full px-2 py-1 rounded bg-black/40 border border-white/10 text-white font-mono text-xs"
-                      />
-                    </div>
-                  </div>
+                                      </div>
                 </div>
               ))}
             </div>
           )}
 
-          {/* Tab 4: Currency & Exchange Rate */}
-          {activeTab === 'rates' && (
-            <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/10 space-y-4 max-w-lg">
-              <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                <DollarSign size={16} className="text-[#477BDB]" />
-                Currency Conversion Benchmark
-              </h4>
-              <p className="text-xs text-white/50">
-                Set the internal exchange rate used when calculating approximate USD equivalencies.
-              </p>
-
-              <div>
-                <label className="block text-xs font-semibold text-white/80 mb-1">
-                  1 USD to INR (₹) Benchmark
-                </label>
-                <input
-                  type="number"
-                  value={config.exchangeRateUsdToInr}
-                  onChange={(e) => {
-                    const rate = parseFloat(e.target.value) || 85;
-                    setConfig({ ...config, exchangeRateUsdToInr: rate });
-                  }}
-                  className="w-full max-w-xs px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-white font-mono text-xs"
-                />
-              </div>
-
-              <div className="pt-2 text-xs text-white/40">
-                Last updated: <span className="font-mono text-white/60">{new Date(config.lastUpdated).toLocaleString()}</span>
-              </div>
-            </div>
-          )}
-        </div>
+                  </div>
       )}
     </div>
   );

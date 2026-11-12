@@ -4,6 +4,11 @@ import { revalidatePath } from 'next/cache';
 import { verifySessionToken, ADMIN_COOKIE_NAME } from '@/lib/adminAuth';
 import { supabaseAdmin } from '@/lib/supabaseServer';
 import { siteConfig } from '@/data/siteConfig';
+import {
+  ALL_REVALIDATE_PATHS,
+  defaultPageVisibility,
+  normalizePageVisibility,
+} from '@/lib/pageVisibility';
 
 async function checkAuth(): Promise<boolean> {
   const cookieStore = await cookies();
@@ -11,7 +16,7 @@ async function checkAuth(): Promise<boolean> {
   return verifySessionToken(token);
 }
 
-// GET /api/admin/settings - Read site settings
+// GET /api/admin/settings - Read site settings & page visibility
 export async function GET() {
   const isAuthed = await checkAuth();
   if (!isAuthed) {
@@ -25,15 +30,9 @@ export async function GET() {
     ]);
 
     const data = settingsRes.data;
-    const pageVisibility = visibilityRes.data?.data || {
-      about: true,
-      services: true,
-      portfolio: true,
-      process: true,
-      insights: true,
-      contact: true,
-      testimonials: true,
-    };
+    const pageVisibility = normalizePageVisibility(
+      visibilityRes.data?.data as Record<string, unknown> | undefined
+    );
 
     if (!settingsRes.error && data) {
       const rawSocial = data.social || siteConfig.social;
@@ -82,20 +81,12 @@ export async function GET() {
       whatsappUrl: siteConfig.whatsappUrl,
       social: siteConfig.social,
     },
-    pageVisibility: {
-      about: true,
-      services: true,
-      portfolio: true,
-      process: true,
-      insights: true,
-      contact: true,
-      testimonials: true,
-    },
+    pageVisibility: defaultPageVisibility,
     source: 'siteConfig',
   });
 }
 
-// POST /api/admin/settings - Save site settings to Supabase
+// POST /api/admin/settings - Save site settings and/or page visibility to Supabase
 export async function POST(request: Request) {
   const isAuthed = await checkAuth();
   if (!isAuthed) {
@@ -113,76 +104,85 @@ export async function POST(request: Request) {
       address,
       whatsappNumber,
       social,
+      pageVisibility,
+      visibilityOnly,
     } = body;
 
-    const cleanWhatsapp = (whatsappNumber || '').replace(/[^0-9]/g, '');
-    const cleanWhatsappUrl = cleanWhatsapp
-      ? `https://wa.me/${cleanWhatsapp}?text=${encodeURIComponent(
-          `Hi ${siteName || 'Growmybiz24'} team, I would like to discuss a new project.`
-        )}`
-      : undefined;
+    let savedSettings = null;
 
-    const updates = {
-      id: 'global',
-      updated_at: new Date().toISOString(),
-      site_name: siteName,
-      tagline: tagline,
-      description: description,
-      email: email,
-      phone: phone,
-      address: address,
-      whatsapp_number: whatsappNumber,
-      social: {
-        ...(social || siteConfig.social),
-        _visibility: body.socialVisibility || {},
-      },
-      ...(cleanWhatsappUrl ? { whatsapp_url: cleanWhatsappUrl } : {}),
-    };
+    if (!visibilityOnly) {
+      const cleanWhatsapp = (whatsappNumber || '').replace(/[^0-9]/g, '');
+      const cleanWhatsappUrl = cleanWhatsapp
+        ? `https://wa.me/${cleanWhatsapp}?text=${encodeURIComponent(
+            `Hi ${siteName || 'Growmybiz24'} team, I would like to discuss a new project.`
+          )}`
+        : undefined;
 
-    const { data, error } = await supabaseAdmin
-      .from('site_settings')
-      .upsert(updates)
-      .select()
-      .single();
+      const updates = {
+        id: 'global',
+        updated_at: new Date().toISOString(),
+        site_name: siteName,
+        tagline: tagline,
+        description: description,
+        email: email,
+        phone: phone,
+        address: address,
+        whatsapp_number: whatsappNumber,
+        social: {
+          ...(social || siteConfig.social),
+          _visibility: body.socialVisibility || {},
+        },
+        ...(cleanWhatsappUrl ? { whatsapp_url: cleanWhatsappUrl } : {}),
+      };
 
-    if (error) {
-      console.error('Supabase site_settings upsert error:', error);
-      return NextResponse.json(
-        { error: 'Failed to update settings in Supabase: ' + error.message },
-        { status: 500 }
-      );
+      const { data, error } = await supabaseAdmin
+        .from('site_settings')
+        .upsert(updates)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Supabase site_settings upsert error:', error);
+        return NextResponse.json(
+          { error: 'Failed to update settings in Supabase: ' + error.message },
+          { status: 500 }
+        );
+      }
+      savedSettings = data;
     }
 
-    // Save page visibility if provided
-    if (body.pageVisibility && typeof body.pageVisibility === 'object') {
-      try {
-        await supabaseAdmin
-          .from('page_content')
-          .upsert({
-            id: 'page_visibility',
-            data: body.pageVisibility,
-            updated_at: new Date().toISOString(),
-          });
-      } catch (visErr) {
-        console.warn('Page visibility upsert notice:', visErr);
+    let normalizedVisibility = null;
+    if (pageVisibility && typeof pageVisibility === 'object') {
+      normalizedVisibility = normalizePageVisibility(pageVisibility as Record<string, unknown>);
+      const { error: visError } = await supabaseAdmin
+        .from('page_content')
+        .upsert({
+          id: 'page_visibility',
+          data: normalizedVisibility,
+          updated_at: new Date().toISOString(),
+        });
+
+      if (visError) {
+        console.error('Page visibility upsert error:', visError);
+        return NextResponse.json(
+          { error: 'Failed to update page visibility in Supabase: ' + visError.message },
+          { status: 500 }
+        );
       }
     }
 
     revalidatePath('/', 'layout');
-    revalidatePath('/');
-    revalidatePath('/about');
-    revalidatePath('/services');
-    revalidatePath('/portfolio');
-    revalidatePath('/process');
-    revalidatePath('/insights');
-    revalidatePath('/contact');
-    revalidatePath('/sitemap.xml');
+    for (const p of ALL_REVALIDATE_PATHS) {
+      revalidatePath(p);
+    }
 
     return NextResponse.json({
       success: true,
-      message: 'Site settings and page visibility updated successfully in Supabase.',
-      settings: data,
-      pageVisibility: body.pageVisibility,
+      message: visibilityOnly
+        ? 'Page visibility updated successfully.'
+        : 'Site settings and page visibility updated successfully.',
+      settings: savedSettings,
+      pageVisibility: normalizedVisibility || pageVisibility,
     });
   } catch (err) {
     console.error('Error saving site settings:', err);

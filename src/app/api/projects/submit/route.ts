@@ -100,7 +100,7 @@ export async function POST(request: Request) {
         : [],
       technicalNotes: sanitizeString(body.technicalNotes, 2000) || '',
       budgetRange: sanitizeString(body.budgetRange, 100) || '₹50,000 – ₹1,50,000',
-      currency: body.currency === 'USD' ? 'USD' : 'INR',
+      currency: 'INR',
       targetTimeline: sanitizeString(body.targetTimeline, 100) || 'Standard (3–5 weeks)',
       urgencyLevel: sanitizeString(body.urgencyLevel, 50) || 'Standard',
       assetsReady: {

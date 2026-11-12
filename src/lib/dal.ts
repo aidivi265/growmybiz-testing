@@ -500,25 +500,13 @@ export async function fetchOrbitConfig(): Promise<OrbitConfig> {
 }
 
 // ── 16. Global Page & Navigation Visibility ───────────────────────────────────
-export interface PageVisibility {
-  about: boolean;
-  services: boolean;
-  portfolio: boolean;
-  process: boolean;
-  insights: boolean;
-  contact: boolean;
-  testimonials: boolean;
-}
-
-export const defaultPageVisibility: PageVisibility = {
-  about: true,
-  services: true,
-  portfolio: true,
-  process: true,
-  insights: true,
-  contact: true,
-  testimonials: true,
-};
+import {
+  type PageVisibility,
+  defaultPageVisibility,
+  normalizePageVisibility,
+} from '@/lib/pageVisibility';
+export type { PageVisibility };
+export { defaultPageVisibility };
 
 export async function fetchPageVisibility(): Promise<PageVisibility> {
   try {
@@ -529,16 +517,7 @@ export async function fetchPageVisibility(): Promise<PageVisibility> {
       .maybeSingle();
 
     if (!error && data?.data && typeof data.data === 'object') {
-      const d = data.data as any;
-      return {
-        about: d.about ?? true,
-        services: d.services ?? true,
-        portfolio: d.portfolio ?? true,
-        process: d.process ?? true,
-        insights: d.insights ?? true,
-        contact: d.contact ?? true,
-        testimonials: d.testimonials ?? true,
-      };
+      return normalizePageVisibility(data.data as Record<string, unknown>);
     }
   } catch (err) {
     console.warn('[DAL Notice] Page visibility fetch fallback:', err);

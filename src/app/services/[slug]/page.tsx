@@ -366,7 +366,7 @@ export default async function ServicePage({ params }: Props) {
                 Calculate your investment for {service.title.toLowerCase()}
               </h2>
               <p className="text-sm text-slate-300 leading-relaxed">
-                Select your deliverables, design fidelity, and required delivery pace to receive a transparent scope breakdown with real-time currency pricing.
+                Select your deliverables, design fidelity, and required delivery pace to receive a transparent scope breakdown with transparent INR (?) pricing.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">

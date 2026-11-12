@@ -1,6 +1,10 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import ClientPortalClient from './ClientPortalClient';
+import { fetchPageVisibility } from '@/lib/dal';
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Client Portal | Track Project, Quotation & Milestones | Growmybiz24',
@@ -19,7 +23,12 @@ function PortalLoadingFallback() {
   );
 }
 
-export default function ClientPortalPage() {
+export default async function ClientPortalPage() {
+  const visibility = await fetchPageVisibility();
+  if (visibility.portal === false) {
+    notFound();
+  }
+
   return (
     <Suspense fallback={<PortalLoadingFallback />}>
       <ClientPortalClient />

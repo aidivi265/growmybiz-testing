@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import WebsiteAuditClient from '@/components/audit/WebsiteAuditClient';
+import { fetchPageVisibility } from '@/lib/dal';
 
 export const revalidate = 60; // 60s ISR revalidation window
 
@@ -17,6 +19,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AuditPage() {
+export default async function AuditPage() {
+  const visibility = await fetchPageVisibility();
+  if (visibility.audit === false) {
+    notFound();
+  }
+
   return <WebsiteAuditClient />;
 }

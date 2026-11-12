@@ -40,7 +40,7 @@ export const portfolioItems: PortfolioItem[] = [
       'Custom Next.js 16 Storefront with Sub-Second Navigation',
       'Mobile-First Cart Drawer & One-Page Checkout Flow',
       'Faceted Product Filtering (Size, Color, Price, Category)',
-      'Automated Inventory & Multi-Currency Ready Architecture',
+      'Automated Inventory & Razorpay & UPI Ready Architecture',
     ],
     technologies: ['Next.js 16', 'React', 'TypeScript', 'Tailwind CSS', 'Vercel'],
     techStack: ['Next.js 16', 'React', 'TypeScript', 'Tailwind CSS', 'Vercel'],

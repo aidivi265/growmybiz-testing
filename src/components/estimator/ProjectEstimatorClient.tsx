@@ -62,9 +62,6 @@ import PhoneInput from '@/components/ui/PhoneInput';
 import TurnstileWidget from '@/components/TurnstileWidget';
 import { ScheduleCallModal } from '@/components/ScheduleCallModal';
 import { trackGAEvent } from '@/components/GoogleAnalytics';
-import { useCurrency } from '@/context/CurrencyContext';
-import CurrencySwitcher from '@/components/ui/CurrencySwitcher';
-import { CurrencyCode } from '@/data/currencyConfig';
 
 interface ProjectEstimatorClientProps {
   initialConfig: EstimatorConfig;
@@ -118,7 +115,6 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
   const config = initialConfig;
 
   // ── 1. Interactive Selection State ──
-  const { currency, setCurrency, rates, currencyDetails } = useCurrency();
   const [currentStep, setCurrentStep] = useState<number>(1);
 
   // Selections
@@ -214,36 +210,25 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
     }
   };
 
-  // ── 5. Real-Time Multi-Currency Calculation ──
-  const currencySymbol = currencyDetails.symbol;
-
-  const getItemPrice = useCallback(
-    (priceUSD: number, priceINR: number): number => {
-      if (currency === 'INR') return priceINR;
-      if (currency === 'USD') return priceUSD;
-      const rate = rates[currency] || (currency === 'EUR' ? 0.92 : 3.67);
-      return Math.round(priceUSD * rate);
-    },
-    [currency, rates]
-  );
-
-  const basePrice = getItemPrice(activePlatform.basePriceUSD, activePlatform.basePriceINR);
-  const tierPrice = getItemPrice(activeTier.additionalPriceUSD, activeTier.additionalPriceINR);
+  // ?? 5. Real-Time INR Calculation ??
+  const currency = 'INR';
+  const currencySymbol = '?';
+  const basePrice = activePlatform.basePriceINR;
+  const tierPrice = activeTier.additionalPriceINR;
 
   const featuresTotal = useMemo(() => {
     return selectedFeatureIds.reduce((sum, fId) => {
       const feat = config.features.find((f) => f.id === fId);
       if (!feat) return sum;
-      return sum + getItemPrice(feat.priceUSD, feat.priceINR);
+      return sum + feat.priceINR;
     }, 0);
-  }, [config, selectedFeatureIds, getItemPrice]);
+  }, [config, selectedFeatureIds]);
 
   const rawSubtotal = (basePrice + tierPrice + featuresTotal) * activeTimeline.multiplier;
 
-  // Adaptive round increment and floor per currency
-  const roundIncrement = currencyDetails.roundIncrement;
-  const minFloor = currency === 'INR' ? 12000 : currency === 'AED' ? 550 : currency === 'EUR' ? 130 : 140;
-  const minSpread = currency === 'INR' ? 5000 : currency === 'AED' ? 250 : currency === 'EUR' ? 60 : 70;
+  const roundIncrement = 500;
+  const minFloor = 12000;
+  const minSpread = 5000;
 
   const estimatedMin = Math.max(
     minFloor,
@@ -369,7 +354,7 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
 
           {/* Currency Toggle Switch */}
           <div className="mt-6">
-            <CurrencySwitcher variant="pills" />
+            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-cyan-300">???? India Pricing (INR ?)</span>
           </div>
         </div>
 
@@ -426,7 +411,7 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
                 <div className="flex justify-between items-center pt-1">
                   <span className="text-xs font-bold text-emerald-400">Investment Range</span>
                   <span className="text-lg font-bold font-mono text-emerald-400">
-                    {currencySymbol}{estimatedMin.toLocaleString()} – {currencySymbol}{estimatedMax.toLocaleString()}
+                    {currencySymbol}{estimatedMin.toLocaleString('en-IN')} – {currencySymbol}{estimatedMax.toLocaleString('en-IN')}
                   </span>
                 </div>
               </div>
@@ -555,7 +540,7 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {activeCategory.platforms.map((plat) => {
                         const isSelected = plat.id === selectedPlatformId;
-                        const price = getItemPrice(plat.basePriceUSD, plat.basePriceINR);
+                        const price = plat.basePriceINR;
                         return (
                           <button
                             key={plat.id}
@@ -587,7 +572,7 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
                             <div className="flex items-center justify-between pt-2 border-t border-white/5 text-xs font-mono">
                               <span className="text-white/40">Base from</span>
                               <span className="font-bold text-emerald-400">
-                                {currencySymbol}{price.toLocaleString()}
+                                {currencySymbol}{price.toLocaleString('en-IN')}
                               </span>
                             </div>
                           </button>
@@ -626,7 +611,7 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
                   <div className="grid grid-cols-1 gap-4">
                     {config.designTiers.map((tier) => {
                       const isSelected = tier.id === selectedTierId;
-                      const addPrice = getItemPrice(tier.additionalPriceUSD, tier.additionalPriceINR);
+                      const addPrice = tier.additionalPriceINR;
                       return (
                         <button
                           key={tier.id}
@@ -661,7 +646,7 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
 
                           <div className="text-right shrink-0">
                             <div className="text-xs font-mono font-bold text-emerald-400">
-                              {addPrice === 0 ? 'Included' : `+${currencySymbol}${addPrice.toLocaleString()}`}
+                              {addPrice === 0 ? 'Included' : `+${currencySymbol}${addPrice.toLocaleString('en-IN')}`}
                             </div>
                             <div className="text-[10px] font-mono text-white/40 mt-0.5">
                               {tier.multiplier === 1.0 ? '1.0x baseline' : `${tier.multiplier}x polish factor`}
@@ -710,7 +695,7 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {config.features.map((feat) => {
                       const isSelected = selectedFeatureIds.includes(feat.id);
-                      const price = getItemPrice(feat.priceUSD, feat.priceINR);
+                      const price = feat.priceINR;
                       return (
                         <button
                           key={feat.id}
@@ -734,7 +719,7 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
                             <div className="flex items-center justify-between gap-2 mb-1">
                               <span className="text-xs font-bold text-white truncate">{feat.title}</span>
                               <span className="text-[11px] font-mono font-bold text-emerald-400 shrink-0">
-                                +{currencySymbol}{price.toLocaleString()}
+                                +{currencySymbol}{price.toLocaleString('en-IN')}
                               </span>
                             </div>
                             <p className="text-[11px] text-white/50 leading-relaxed line-clamp-2">
@@ -994,7 +979,7 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
                 <div className="py-4 space-y-1">
                   <div className="text-[11px] text-white/40 uppercase tracking-wider font-mono">Estimated Investment Range</div>
                   <div className="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-400 tracking-tight">
-                    {currencySymbol}{estimatedMin.toLocaleString()} – {currencySymbol}{estimatedMax.toLocaleString()}
+                    {currencySymbol}{estimatedMin.toLocaleString('en-IN')} – {currencySymbol}{estimatedMax.toLocaleString('en-IN')}
                   </div>
                   <div className="text-[11px] text-white/50 flex items-center gap-1.5 pt-1">
                     <Clock size={12} className="text-[#477BDB]" />
@@ -1011,7 +996,7 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
                       <div className="text-[10px] text-white/40">{activeCategory.title}</div>
                     </div>
                     <span className="font-mono text-white/90">
-                      {currencySymbol}{basePrice.toLocaleString()}
+                      {currencySymbol}{basePrice.toLocaleString('en-IN')}
                     </span>
                   </div>
 
@@ -1022,7 +1007,7 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
                       <div className="text-[10px] text-white/40">{activeTier.multiplier}x Polish Factor</div>
                     </div>
                     <span className="font-mono text-white/90">
-                      {tierPrice === 0 ? 'Included' : `+${currencySymbol}${tierPrice.toLocaleString()}`}
+                      {tierPrice === 0 ? 'Included' : `+${currencySymbol}${tierPrice.toLocaleString('en-IN')}`}
                     </span>
                   </div>
 
@@ -1035,7 +1020,7 @@ export default function ProjectEstimatorClient({ initialConfig }: ProjectEstimat
                       </div>
                     </div>
                     <span className="font-mono text-white/90">
-                      +{currencySymbol}{featuresTotal.toLocaleString()}
+                      +{currencySymbol}{featuresTotal.toLocaleString('en-IN')}
                     </span>
                   </div>
 

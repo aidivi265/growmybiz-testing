@@ -1,6 +1,6 @@
 'use client';
 
-import { useCurrency } from '@/context/CurrencyContext';
+
 
 import { X, Printer, Shield, CheckCircle, FileText, AlertTriangle } from 'lucide-react';
 import type { ProjectRecord, MilestoneItem } from '@/types/project';
@@ -20,7 +20,7 @@ export default function DocumentModal({
   project,
   milestone,
 }: DocumentModalProps) {
-  const { currency, rates } = useCurrency();
+
 
   const handlePrint = () => {
     window.print();
@@ -28,28 +28,11 @@ export default function DocumentModal({
 
   if (!isOpen) return null;
   const q = project.quotation;
-  const isDemo = project.receiptId === 'GMB-PRJ-2026-1001';
-  const activeCurr = isDemo ? currency : (project.currency || currency);
-
-  const convertAmt = (amt?: number) => {
-    if (amt === undefined || amt === null) return 0;
-    const rateMap = rates as Record<string, number>;
-    if (isDemo && activeCurr !== 'INR' && rateMap && rateMap['INR'] && rateMap[activeCurr]) {
-      return Math.round((amt / rateMap['INR']) * rateMap[activeCurr]);
-    }
-    return amt;
-  };
-
-  const currSymbol = activeCurr === 'USD' ? '$' : activeCurr === 'EUR' ? '€' : activeCurr === 'AED' ? 'AED ' : '₹';
+  const activeCurr = 'INR';
   const fmt = (amt?: number) => {
     if (amt === undefined || amt === null) return '-';
-    const finalVal = convertAmt(amt);
-    if (activeCurr === 'AED') {
-      return `${finalVal.toLocaleString('en-US')} AED`;
-    }
-    return `${currSymbol}${finalVal.toLocaleString(activeCurr === 'USD' ? 'en-US' : activeCurr === 'EUR' ? 'de-DE' : 'en-IN')}`;
+    return '₹' + Math.round(amt).toLocaleString('en-IN');
   };
-
   const m1 = q?.milestones.find((m) => m.number === 1);
   const activeMilestone = milestone || m1;
 

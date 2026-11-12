@@ -1,11 +1,15 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import StartProjectWizardClient from './StartProjectWizardClient';
+import { fetchPageVisibility } from '@/lib/dal';
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Start a Project | Growmybiz24 Client Intake & Scoping',
   description:
-    'Submit your project requirement slide by slide. Receive an itemized quotation, transparent 50-30-20 milestone billing, and a dedicated client portal.',
+    'Submit your project requirement slide by slide. Receive an itemized INR quotation, transparent 50-30-20 milestone billing, and a dedicated client portal.',
 };
 
 function WizardLoadingFallback() {
@@ -19,7 +23,12 @@ function WizardLoadingFallback() {
   );
 }
 
-export default function StartProjectPage() {
+export default async function StartProjectPage() {
+  const visibility = await fetchPageVisibility();
+  if (visibility.startProject === false) {
+    notFound();
+  }
+
   return (
     <Suspense fallback={<WizardLoadingFallback />}>
       <StartProjectWizardClient />

@@ -110,7 +110,7 @@ export const DEMO_PROJECT_RECORD: ProjectRecord = {
     deliverables: [
       { id: 'del_1', title: 'Interactive High-Converting UI/UX', description: 'Complete responsive design system with dark/light fidelity.', includedRevisions: '3 rounds' },
       { id: 'del_2', title: 'Full-Stack Next.js Architecture', description: 'Server components, dynamic data loading, and optimized routing.', includedRevisions: 'Included' },
-      { id: 'del_3', title: 'Payment & Authentication Integration', description: 'Secure role-based auth and multi-currency billing.', includedRevisions: 'Included' },
+      { id: 'del_3', title: 'Payment & Authentication Integration', description: 'Secure role-based auth and Razorpay / UPI billing.', includedRevisions: 'Included' },
     ],
     exclusions: ['Third-party API recurring licensing fees', 'Content authoring beyond agreed sitemap'],
     milestones: [

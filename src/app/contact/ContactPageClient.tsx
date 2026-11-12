@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { ArrowRight, CheckCircle, Mail, Phone, MapPin, MessageSquare, AlertCircle } from 'lucide-react';
 import { services as defaultServices } from '@/data/services';
 import { getBudgetRanges, timelineOptions, type BudgetRangeItem } from '@/data/forms';
-import { useCurrency } from '@/context/CurrencyContext';
+
 import { siteConfig } from '@/data/siteConfig';
 import { Input, Textarea, Select, Breadcrumb, PhoneInput } from '@/components/ui';
 import type { EnquiryFormData, Service } from '@/types';
@@ -32,8 +32,8 @@ export default function ContactPageClient({
   initialServices,
   initialSettings,
 }: ContactPageClientProps) {
-  const { currency } = useCurrency();
-  const activeBudgetRanges = getBudgetRanges(currency);
+
+  const activeBudgetRanges = getBudgetRanges();
   const [form, setForm] = useState<EnquiryFormData>(INITIAL);
   const [honeypot, setHoneypot] = useState('');
   const [turnstileToken, setTurnstileToken] = useState('');

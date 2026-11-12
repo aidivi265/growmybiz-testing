@@ -128,7 +128,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         },
         sameAs: visibleSameAs,
         priceRange: '₹₹₹',
-        currenciesAccepted: 'INR, USD, EUR, AED',
+        currenciesAccepted: 'INR',
         paymentAccepted: 'UPI, Net Banking, Credit Card, Bank Transfer',
         openingHoursSpecification: [
           {

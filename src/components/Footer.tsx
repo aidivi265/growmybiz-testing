@@ -296,8 +296,8 @@ export default function Footer({ initialSettings, initialVisibility }: FooterPro
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#8BA5C8]">
               <p>&copy; {CURRENT_YEAR} {config.siteName}. All rights reserved.</p>
               <div className="flex items-center gap-4">
-                <Link href="/legal/privacy-policy" prefetch={false} className="hover:text-white transition-colors">Privacy</Link>
-                <Link href="/legal/terms-of-service" prefetch={false} className="hover:text-white transition-colors">Terms</Link>
+                {pageVisibility.legalPrivacy !== false && <Link href="/legal/privacy-policy" prefetch={false} className="hover:text-white transition-colors">Privacy</Link>}
+                {pageVisibility.legalTerms !== false && <Link href="/legal/terms-of-service" prefetch={false} className="hover:text-white transition-colors">Terms</Link>}
                 <Link href="/sitemap.xml" prefetch={false} className="hover:text-white transition-colors">Sitemap</Link>
               </div>
             </div>

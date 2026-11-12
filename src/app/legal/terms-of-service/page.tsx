@@ -1,9 +1,11 @@
 import LegalDocView from '@/components/LegalDocView';
+import { notFound } from 'next/navigation';
+import { fetchPageVisibility } from '@/lib/dal';
 import type { Metadata } from 'next';
 import { Breadcrumb } from '@/components/ui';
 import { siteConfig } from '@/data';
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
@@ -19,7 +21,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function TermsOfServicePage() {
+export default async function TermsOfServicePage() {
+  const visibility = await fetchPageVisibility();
+  if (visibility.legalTerms === false) notFound();
   return (
     <>
       <div className="pt-24 pb-12 border-b border-white/[0.06]" style={{ background: 'linear-gradient(135deg, #1A2B4A 0%, #243B66 100%)' }}>
